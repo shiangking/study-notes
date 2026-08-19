@@ -1,28 +1,585 @@
 <!doctype html>
-<html lang="en-US" dir="ltr">
+<html lang="en">
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <meta name="color-scheme" content="light dark">
-  <meta http-equiv="Content-Security-Policy" content="default-src 'none'; script-src 'none'; style-src 'unsafe-inline'; img-src 'none'; connect-src 'none'; font-src 'none'; object-src 'none'; base-uri 'none'; form-action 'none'; frame-src 'none'; media-src 'none'; worker-src 'none'">
-  <meta name="student-renderer" content="student-study-guide-renderer-v7">
-  <title>MA1521 Calculus: Exam-Ready Study Guide</title>
-  <style>:root{--bg:#f7f7f8;--surface:#fff;--soft:#f3f3f3;--text:#0d0d0d;--muted:#5d5d5d;--line:#dedede;--accent:#2563eb;--accent-soft:#edf3ff;--source:#5d5d5d;--source-soft:#f7f7f8;font-family:var(--font-sans,-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif);font-size:14px;color:var(--text);background:var(--bg)}*{box-sizing:border-box}html{scroll-behavior:smooth;scroll-padding-top:5rem}body{margin:0;line-height:1.5;background:var(--bg)}a{color:inherit}.skip{position:fixed;top:-5rem;left:1rem;z-index:10;padding:.7rem 1rem;border-radius:.6rem;background:var(--text);color:var(--surface)}.skip:focus{top:1rem}.topbar{height:4.2rem;position:sticky;top:0;z-index:5;display:flex;align-items:center;justify-content:space-between;gap:1rem;padding:0 max(1rem,calc((100% - 70rem)/2));border-bottom:1px solid var(--line);background:color-mix(in srgb,var(--surface) 94%,transparent);backdrop-filter:blur(15px)}.top-title{max-width:min(70vw,50rem);font-weight:760;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;text-decoration:none}.top-title:focus-visible,.section-index a:focus-visible{outline:3px solid var(--accent);outline-offset:3px}.page{width:min(70rem,calc(100% - 2rem));margin:0 auto 4rem}.hero,.section-index,.guide-section{margin-top:1.4rem;border:1px solid var(--line);border-radius:1.5rem;background:var(--surface);box-shadow:0 12px 40px rgba(15,31,59,.05)}.hero{padding:clamp(1.8rem,4vw,3rem)}.eyebrow{margin:0;color:var(--accent);font-size:.78rem;font-weight:800;letter-spacing:.1em;text-transform:uppercase}.hero h1,.section-header h2,.section-index h2{font-family:inherit;line-height:1.22;letter-spacing:-.02em}.hero h1{margin:.45rem 0;font-size:clamp(1.75rem,3vw,2.5rem)}.subtitle,.guide-context{max-width:60rem;margin:.65rem 0 0;color:var(--muted);font-size:1.06rem}.guide-context{font-size:.95rem}.hero-context{margin:1rem 0 0;padding-top:.9rem;border-top:1px solid var(--line);color:var(--muted);font-size:.86rem;overflow-wrap:anywhere}.section-index{padding:clamp(1.25rem,3vw,2.3rem)}.section-index h2{margin:0 0 .85rem;font-size:clamp(1.2rem,2vw,1.5rem)}.section-index ol{display:grid;grid-template-columns:repeat(auto-fit,minmax(min(16rem,100%),1fr));gap:.7rem;list-style:none;margin:0;padding:0}.section-index a{height:100%;display:grid;gap:.15rem;padding:.85rem 1rem;border:1px solid var(--line);border-radius:.9rem;background:var(--soft);text-decoration:none}.section-index a:hover{border-color:color-mix(in srgb,var(--accent) 40%,var(--line));background:var(--accent-soft)}.index-number{color:var(--accent);font-size:.76rem;font-weight:800;text-transform:uppercase;letter-spacing:.065em}.index-title{font-weight:680;line-height:1.35;overflow-wrap:anywhere}.guide-section{padding:clamp(1.25rem,3vw,2.3rem)}.section-header h2{margin:.4rem 0 .9rem;font-size:clamp(1.35rem,2.2vw,1.75rem)}.summary{display:grid;grid-template-columns:minmax(0,1fr);gap:1.4rem}.summary-copy>*:first-child{margin-top:0}.summary-copy>*:last-child{margin-bottom:0}.summary-copy p,.summary-copy li{overflow-wrap:anywhere}.summary-copy h3{margin:1.15rem 0 .4rem;font-size:1.05rem}.summary-copy ul{margin:.4rem 0 1rem;padding-inline-start:1.3rem}.summary-copy li+li{margin-top:.4rem}.key-topics{margin:0;padding:1rem 1.1rem;border-inline-start:.3rem solid var(--accent);border-radius:.7rem;background:var(--accent-soft)}.key-topics strong{display:block;color:var(--accent);font-size:.78rem;text-transform:uppercase;letter-spacing:.06em}.key-topics ul{margin:.55rem 0 0;padding-inline-start:1.25rem}.key-topics li{overflow-wrap:anywhere}.key-topics li+li{margin-top:.4rem}.visual{width:100%;min-width:0;margin:0;padding:1rem;border:1px solid var(--line);border-radius:1rem;background:var(--soft)}.visual figcaption{margin-bottom:.7rem;font-weight:760}.table-wrap{overflow-x:auto}.visual table{width:100%;border-collapse:collapse}.visual th,.visual td{padding:.55rem;border-bottom:1px solid var(--line);text-align:start;vertical-align:top;font-size:.9rem;overflow-wrap:anywhere}.steps{margin:.2rem 0;padding-inline-start:1.2rem}.steps li+li{margin-top:.55rem}.caption{margin:.65rem 0 0;color:var(--muted);font-size:.84rem}.source-notes{margin-top:1.3rem;padding:.85rem 1rem;border:1px solid var(--line);border-radius:.8rem;background:var(--source-soft)}.source-heading{margin:0;color:var(--source);font-size:.76rem;font-weight:760;letter-spacing:.035em}.source-line{margin:.25rem 0 0;color:var(--muted);font-size:.88rem;font-weight:620;overflow-wrap:anywhere}@media(max-width:720px){.page{width:min(100% - 1rem,44rem)}.hero,.section-index,.guide-section{border-radius:1.1rem}.section-index ol{grid-template-columns:1fr}}@media(max-width:390px){.top-title{max-width:57vw}.hero,.section-index,.guide-section{padding:1.1rem}.source-notes{padding:.8rem}.visual th,.visual td{padding:.45rem}}@media(prefers-color-scheme:dark){:root{--bg:#212121;--surface:#2a2a2a;--soft:#333;--text:#f5f5f5;--muted:#b4b4b4;--line:#414141;--accent:#8bb4ff;--accent-soft:#17294d;--source:#b4b4b4;--source-soft:#252525}.hero,.section-index,.guide-section{box-shadow:none}}@media(prefers-reduced-motion:reduce){html{scroll-behavior:auto}*,*::before,*::after{scroll-behavior:auto!important;transition:none!important;animation:none!important}}.hero h1,.section-header h2,.section-index h2,.subtitle,.guide-context,.hero-context,.source-line{min-width:0;overflow-wrap:anywhere}.top-title{display:inline-flex;min-height:44px;align-items:center;touch-action:manipulation;-webkit-tap-highlight-color:transparent}.section-index a,.skip{touch-action:manipulation;-webkit-tap-highlight-color:transparent}.top-title:focus-visible,.section-index a:focus-visible,.table-wrap:focus-visible{outline:3px solid var(--accent);outline-offset:3px}.table-wrap{-webkit-overflow-scrolling:touch}@media(max-width:720px){.visual th,.visual td{min-width:5.5rem}}.page{padding-bottom:env(safe-area-inset-bottom,0px)}</style>
+  <title>MA1521 Study Notes - Week 1</title>
+  <link rel="stylesheet" href="site-assets/styles.css">
 </head>
-<body id="guide-top">
-  <a class="skip" href="#study-guide-content">Skip to guide content</a>
-  <header class="topbar"><a class="top-title" href="#guide-top" aria-label="Back to top">MA1521 Calculus: Exam-Ready Study Guide</a></header>
-  <main id="study-guide-content" class="page">
-    <section class="hero"><p class="eyebrow">Study Guide</p><h1>MA1521 Calculus: Exam-Ready Study Guide</h1><p class="subtitle">Comprehensive revision guide for the supplied Sessions 1-38 materials</p><p class="guide-context">Use this as a method-selection and theorem-condition guide. The supplied PDFs span a full single-variable calculus sequence, so this is broader than one calendar teaching week.</p><p class="hero-context">Study goal: MA1521 Calculus - Lectures 1-38 · Materials: Sessions 1-8: Single Variable Calculus, MA1521 Calculus Guide (Markdown notes), Sessions 9-16: Single Variable Calculus, Sessions 18-25: Single Variable Calculus, and Sessions 26-38: Single Variable Calculus · General Knowledge: disabled</p></section>
-    <nav class="section-index" id="section-index" aria-labelledby="section-index-heading"><h2 id="section-index-heading">In this guide</h2><ol><li><a href="#section-001"><span class="index-number">Section 1</span><span class="index-title">Limits, continuity, and the derivative</span></a></li><li><a href="#section-002"><span class="index-number">Section 2</span><span class="index-title">Differentiation and local analysis</span></a></li><li><a href="#section-003"><span class="index-number">Section 3</span><span class="index-title">Modelling with derivatives</span></a></li><li><a href="#section-004"><span class="index-number">Section 4</span><span class="index-title">Definite integrals and the Fundamental Theorem of Calculus</span></a></li><li><a href="#section-005"><span class="index-number">Section 5</span><span class="index-title">Applications and numerical integration</span></a></li><li><a href="#section-006"><span class="index-number">Section 6</span><span class="index-title">Integration-technique selection</span></a></li><li><a href="#section-007"><span class="index-number">Section 7</span><span class="index-title">Parametric curves, polar coordinates, and improper integrals</span></a></li><li><a href="#section-008"><span class="index-number">Section 8</span><span class="index-title">Indeterminate forms, sequences, and Taylor series</span></a></li></ol></nav>
-    <section class="guide-section" id="section-001" aria-labelledby="heading-section-001"><header class="section-header"><p class="eyebrow">Section 1</p><h2 id="heading-section-001">Limits, continuity, and the derivative</h2></header><div class="summary"><div class="summary-copy"><p>A limit lim(x -&gt; a) f(x) = L describes the values of f(x) for x close to a; it does not require f(a) to be defined or equal to L. A two-sided limit exists exactly when both one-sided limits exist and are equal. Continuity at a requires f(a) to be defined, lim(x -&gt; a) f(x) to exist, and that limit to equal f(a).</p><p>The derivative at x<sub>0</sub> is f&#39;(x<sub>0</sub>) = lim(Delta x -&gt; 0) [f(x<sub>0</sub> + Delta x) - f(x<sub>0</sub>)] / Delta x, when this limit exists. Geometrically it is the tangent-line slope, obtained as the limit of secant slopes; physically it is an instantaneous rate of change. Never substitute Delta x = 0 before simplifying the difference quotient: that creates 0/0, not a derivative.</p><p>For a limit, first try direct substitution. If it gives 0/0, use algebra such as factoring/cancellation or rationalisation, or a justified standard limit. Check left and right limits separately for piecewise formulae, absolute values, or domain boundaries. Trigonometric limits involving sin x / x require radians. L&#39;Hopital&#39;s rule belongs later in the course and applies only after the expression has been verified to be an allowed indeterminate quotient form.</p><ul><li>Tangent at (x<sub>0</sub>,f(x<sub>0</sub>)): y - f(x<sub>0</sub>) = f&#39;(x<sub>0</sub>)(x-x<sub>0</sub>).</li><li>A removable discontinuity has matching one-sided limits but a missing or mismatched function value.</li><li>Derivative notation: f&#39;(x), df/dx, and Df all denote the derivative when their evaluation point is clear.</li></ul></div><aside class="key-topics"><strong>Key Topics</strong><ul><li>Limit versus function value</li><li>One-sided limits and continuity</li><li>Difference quotient</li><li>Geometric and rate interpretations</li><li>Tangent-line equation</li></ul></aside></div><aside class="source-notes" aria-label="Sources"><p class="source-heading">Sources</p><p class="source-line">Source: Sessions 1-8: Single Variable Calculus, page 2; MA1521 Calculus Guide (Markdown notes), sections 2-3</p></aside></section>
-<section class="guide-section" id="section-002" aria-labelledby="heading-section-002"><header class="section-header"><p class="eyebrow">Section 2</p><h2 id="heading-section-002">Differentiation and local analysis</h2></header><div class="summary"><div class="summary-copy"><p>Differentiation rules compress the limit definition into reliable procedures: linearity, the power rule, product rule, quotient rule, and chain rule. The chain rule is the key recognition pattern for a composite expression: differentiate the outer function at the inner expression, then multiply by the derivative of the inner expression. A missing inner derivative is a common exam error.</p><p>Use f&#39;(x) to locate critical points: points in the domain where f&#39;(x)=0 or f&#39; does not exist. A sign chart for f&#39; determines increasing and decreasing intervals. Use f&#39;&#39;(x) to analyse concavity; an inflection point requires a change in concavity, not merely f&#39;&#39;(x)=0. For an absolute maximum/minimum on a closed interval, compare all interior critical points and both endpoints.</p><p>Linearisation near a basepoint a is L(x)=f(a)+f&#39;(a)(x-a). Its reliability is local: it normally degrades as x moves away from a. The quadratic approximation adds (f&#39;&#39;(a)/2)(x-a)<sup>2</sup>. Mean Value Theorem arguments require continuity on [a,b] and differentiability on (a,b), and then guarantee a c in (a,b) with f&#39;(c)=[f(b)-f(a)]/(b-a).</p></div><figure class="visual"><figcaption>Curve-sketching procedure</figcaption><ol class="steps"><li>State the domain and find intercepts/asymptotes when relevant.</li><li>Find critical points from f&#39;=0 or undefined f&#39;.</li><li>Use a sign chart for f&#39; to determine monotonicity and local extrema.</li><li>Use f&#39;&#39; and a sign change to determine concavity and inflection points.</li><li>Combine the evidence; do not infer a global conclusion from a derivative equation alone.</li></ol></figure><aside class="key-topics"><strong>Key Topics</strong><ul><li>Derivative-rule selection</li><li>Critical points and endpoints</li><li>First- and second-derivative tests</li><li>Linear and quadratic approximation</li><li>Mean Value Theorem conditions</li></ul></aside></div><aside class="source-notes" aria-label="Sources"><p class="source-heading">Sources</p><p class="source-line">Source: Sessions 9-16: Single Variable Calculus, pages 2, 8, 30, 34; MA1521 Calculus Guide (Markdown notes), section 3</p></aside></section>
-<section class="guide-section" id="section-003" aria-labelledby="heading-section-003"><header class="section-header"><p class="eyebrow">Section 3</p><h2 id="heading-section-003">Modelling with derivatives</h2></header><div class="summary"><div class="summary-copy"><p>Optimisation begins with modelling, not differentiation: define variables, translate constraints, reduce the objective to one variable, identify its feasible domain, then differentiate and justify the final choice. A stationary point is only a candidate; the constraint domain and endpoints determine whether the result is an absolute optimum.</p><p>In related-rates problems, write one equation relating the changing quantities, differentiate it with respect to time before inserting the instantaneous numerical values, then substitute the given values and units. This preserves the relationship among all rates. Newton&#39;s method solves f(x)=0 iteratively by x<sub>n+1</sub>=x<sub>n</sub>-f(x<sub>n</sub>)/f&#39;(x<sub>n</sub>), provided f&#39;(x<sub>n</sub>) is nonzero. It is an approximation method, not a proof that convergence will occur or that it will select the intended root.</p><p>For separable differential equations, first rearrange into a y-only expression times dy equal to an x-only expression times dx, integrate both sides, and impose any initial condition. Check domain restrictions introduced by division, logarithms, or inverse operations.</p></div><aside class="key-topics"><strong>Key Topics</strong><ul><li>Constraint-first optimisation</li><li>Differentiate before substituting in related rates</li><li>Newton iteration and failure modes</li><li>Separation of variables</li><li>Units and domain checks</li></ul></aside></div><aside class="source-notes" aria-label="Sources"><p class="source-heading">Sources</p><p class="source-line">Source: Sessions 9-16: Single Variable Calculus, pages 15, 20, 24, 30, 34, 38</p></aside></section>
-<section class="guide-section" id="section-004" aria-labelledby="heading-section-004"><header class="section-header"><p class="eyebrow">Section 4</p><h2 id="heading-section-004">Definite integrals and the Fundamental Theorem of Calculus</h2></header><div class="summary"><div class="summary-copy"><p>A definite integral is the limiting accumulated quantity represented by Riemann sums. It can model signed area, accumulated change, mass, work, and other quantities, depending on the integrand and differential. The value is signed: regions below the x-axis contribute negatively to an integral with respect to x.</p><p>FTC 1 connects accumulation to differentiation: for a continuous integrand f, an accumulation function F(x)=integral(a to x) f(t) dt has derivative F&#39;(x)=f(x). FTC 2 evaluates a definite integral: if A&#39;(x)=f(x), then integral(a to b) f(x) dx=A(b)-A(a). State the continuity/antiderivative hypotheses before applying these results.</p><p>For substitution in an integral, identify an inner expression u and its differential du. Rewrite the entire integrand and bounds in the new variable for a definite integral, integrate with respect to u, then either use transformed bounds or correctly return to x. Do not mix x-bounds with a u-integrand.</p></div><aside class="key-topics"><strong>Key Topics</strong><ul><li>Riemann-sum meaning</li><li>Signed accumulation</li><li>FTC 1 and FTC 2</li><li>Indefinite versus definite integrals</li><li>u-substitution and bounds</li></ul></aside></div><aside class="source-notes" aria-label="Sources"><p class="source-heading">Sources</p><p class="source-line">Source: Sessions 9-16: Single Variable Calculus, page 34; Sessions 18-25: Single Variable Calculus, pages 2, 7, 11</p></aside></section>
-<section class="guide-section" id="section-005" aria-labelledby="heading-section-005"><header class="section-header"><p class="eyebrow">Section 5</p><h2 id="heading-section-005">Applications and numerical integration</h2></header><div class="summary"><div class="summary-copy"><p>Choose a differential element before setting up an application. For volumes of revolution, disks/washers use cross-sectional areas perpendicular to the axis, while shells use circumference times height times thickness parallel to the axis. Sketch the region and axis first; the choice of dx versus dy follows the chosen slices, not a memorised preference.</p><p>For work, integrate force with respect to displacement; for average value over [a,b], use (1/(b-a)) integral(a to b) f(x) dx. In probability contexts, a density must be nonnegative and integrate to 1 over its support. Interpret units: integrating a rate with respect to time produces the accumulated quantity.</p><p>When an antiderivative is unavailable or data are discrete, approximate the integral. Riemann sums use rectangles, the trapezoidal rule uses linear joins, and Simpson&#39;s rule uses quadratic fitting. Simpson&#39;s rule requires an even number of subintervals. Numerical answers are approximations and should be labelled as such.</p></div><figure class="visual"><figcaption>Integral-setup selection</figcaption><div class="table-wrap" role="region" tabindex="0" aria-label="Integral-setup selection"><table><thead><tr><th scope="col">Problem</th><th scope="col">Element to add</th><th scope="col">Recognition cue</th></tr></thead><tbody><tr><td>Volume by washers</td><td>pi(R<sup>2</sup>-r<sup>2</sup>) dx or dy</td><td>Slices perpendicular to the rotation axis</td></tr><tr><td>Volume by shells</td><td>2pi(radius)(height) dx or dy</td><td>Slices parallel to the rotation axis</td></tr><tr><td>Work</td><td>F(x) dx</td><td>Force varies with displacement</td></tr><tr><td>Average value</td><td>(1/(b-a)) f(x) dx</td><td>Mean height/value over an interval</td></tr></tbody></table></div></figure><aside class="key-topics"><strong>Key Topics</strong><ul><li>Disks, washers, and shells</li><li>Work and average value</li><li>Density interpretation</li><li>Riemann, trapezoid, and Simpson methods</li><li>Unit analysis</li></ul></aside></div><aside class="source-notes" aria-label="Sources"><p class="source-heading">Sources</p><p class="source-line">Source: Sessions 18-25: Single Variable Calculus, pages 21, 26, 36</p></aside></section>
-<section class="guide-section" id="section-006" aria-labelledby="heading-section-006"><header class="section-header"><p class="eyebrow">Section 6</p><h2 id="heading-section-006">Integration-technique selection</h2></header><div class="summary"><div class="summary-copy"><p>Technique selection is structural. Use substitution when the integrand contains a composite function together with its derivative up to a constant factor. Use integration by parts, integral u dv = uv - integral v du, when differentiating one factor simplifies it and integrating the other is feasible. Derive the sign from the product rule rather than memorising an altered formula.</p><p>For rational functions, first perform polynomial division if the numerator degree is at least the denominator degree, factor the denominator as far as allowed, decompose into partial fractions, solve coefficients, and integrate each term. The cover-up shortcut works only for the relevant simple linear factors; repeated or irreducible quadratic factors require the correct general numerator form.</p><p>For powers of sine and cosine, inspect parity. If one power is odd, save one factor and convert the rest with sin<sup>2</sup> x + cos<sup>2</sup> x = 1 before substitution. If both are even, use double-angle/half-angle identities. Trigonometric substitutions and inverse-substitution methods require careful domain/triangle choices and a final back-substitution check.</p></div><aside class="key-topics"><strong>Key Topics</strong><ul><li>u-substitution versus integration by parts</li><li>Partial-fraction setup</li><li>Trig-power parity strategy</li><li>Reduction formula idea</li><li>Algebra and constant-of-integration checks</li></ul></aside></div><aside class="source-notes" aria-label="Sources"><p class="source-heading">Sources</p><p class="source-line">Source: Sessions 26-38: Single Variable Calculus, pages 2, 7, 12, 15</p></aside></section>
-<section class="guide-section" id="section-007" aria-labelledby="heading-section-007"><header class="section-header"><p class="eyebrow">Section 7</p><h2 id="heading-section-007">Parametric curves, polar coordinates, and improper integrals</h2></header><div class="summary"><div class="summary-copy"><p>For a parametric curve x=x(t), y=y(t), the slope is dy/dx=(dy/dt)/(dx/dt) when dx/dt is nonzero. Compute arc length by integrating ds=sqrt((dx/dt)<sup>2</sup>+(dy/dt)<sup>2</sup>) dt over the parameter interval. A parameter direction matters: it determines traversal and can expose repeated tracing.</p><p>Polar conversion uses x=r cos theta, y=r sin theta, and r<sup>2</sup>=x<sup>2</sup>+y<sup>2</sup>. Area in polar coordinates is (1/2) integral r<sup>2</sup> dtheta over an interval that traces the region exactly once. Draw or analyse the curve to choose bounds; a negative r can represent a point in the opposite direction.</p><p>An improper integral is defined by a limit: either a bound is infinite or the integrand is unbounded at an endpoint/interior point. Split at every singularity and test each resulting limit. A finite-looking antiderivative evaluation is invalid unless those defining limits converge. For p-integrals at infinity, integral(1 to infinity) 1/x<sup>p</sup> dx converges exactly when p&gt;1.</p></div><aside class="key-topics"><strong>Key Topics</strong><ul><li>dy/dx and arc length for parameters</li><li>Polar conversion and one-trace bounds</li><li>Polar area</li><li>Improper-integral definition</li><li>p-test for improper integrals</li></ul></aside></div><aside class="source-notes" aria-label="Sources"><p class="source-heading">Sources</p><p class="source-line">Source: Sessions 26-38: Single Variable Calculus, pages 23, 27, 44, 50</p></aside></section>
-<section class="guide-section" id="section-008" aria-labelledby="heading-section-008"><header class="section-header"><p class="eyebrow">Section 8</p><h2 id="heading-section-008">Indeterminate forms, sequences, and Taylor series</h2></header><div class="summary"><div class="summary-copy"><p>L&#39;Hopital&#39;s rule is a conditional theorem for quotient limits of genuine 0/0 or infinity/infinity form. Verify the form first, differentiate numerator and denominator, and re-evaluate the resulting limit; repeat only while the hypotheses and form justify it. Other indeterminate forms such as 0 times infinity or 1<sup>infinity</sup> must first be transformed to a valid quotient form. Prefer algebra or local approximations when they expose the result more directly.</p><p>For an infinite series sum a<sub>n</sub>, the necessary term test is a<sub>n</sub> -&gt; 0; if terms do not tend to zero, the series diverges. Passing this test does not prove convergence. Choose a supported test by structure: geometric, p-series, comparison, ratio, or other stated convergence criteria, and clearly distinguish convergence of a series from convergence of its terms.</p><p>Taylor&#39;s formula approximates f near a by a polynomial using derivatives at a: f(x) approximately equals the sum from n=0 to N of f<sup>n</sup>(a)(x-a)<sup>n</sup>/n!. A Taylor series is an infinite series; using it as an equality needs an appropriate convergence statement. For an approximation, state the centre, degree, and local nature of the estimate.</p></div><aside class="key-topics"><strong>Key Topics</strong><ul><li>Allowed forms for L&#39;Hopital</li><li>Transforming other indeterminate forms</li><li>Series term test and convergence-test selection</li><li>Taylor polynomial coefficients</li><li>Approximation versus series equality</li></ul></aside></div><aside class="source-notes" aria-label="Sources"><p class="source-heading">Sources</p><p class="source-line">Source: Sessions 26-38: Single Variable Calculus, pages 44, 50, 57, 62</p></aside></section>
+<body>
+  <nav class="site-nav" aria-label="Study note weeks"><div class="nav-inner"><a class="brand" href="index.html">Study Notes</a><div class="weeks"><a class="current" href="index.html" aria-current="page">Week 1</a><span>Week 2 - coming soon</span><span>Week 3 - coming soon</span><span>More weeks to come</span></div></div></nav>
+  <main class="page">
+  <p class="scope-note"><strong>Navigation:</strong> this is the Week 1 page. As we create later notes, each week will get its own page and an active link in this bar.</p>
+  <h1
+  id="ma1521-calculus-guide-limits-differentiation-and-integration">MA1521
+  Calculus Guide: Limits, Differentiation, and Integration</h1>
+  <p><strong>Primary source:</strong> the four uploaded MIT
+  OpenCourseWare 18.01 PDFs, Lectures 1-38. The notes cover more than
+  one week, so this guide focuses on the areas requested: limits,
+  differentiation, and integration techniques.</p>
+  <h2 id="1-the-central-idea">1. The central idea</h2>
+  <p>Calculus has one recurring pattern:</p>
+  <ul>
+  <li><strong>Limits</strong> describe what happens as an input gets
+  arbitrarily close to a value.</li>
+  <li><strong>Differentiation</strong> uses a limit to measure
+  instantaneous change.</li>
+  <li><strong>Integration</strong> uses limits to measure accumulated
+  change and is closely linked to differentiation by the Fundamental
+  Theorem of Calculus.</li>
+  </ul>
+  <p>The most important habit is to ask: <em>What is changing? What is
+  being accumulated? What assumptions make the operation valid?</em></p>
+  <h2 id="2-limits-the-part-to-understand-first">2. Limits: the part to
+  understand first</h2>
+  <h3 id="what-a-limit-means">What a limit means</h3>
+  <p><code>lim(x -&gt; a) f(x) = L</code> means that by choosing
+  <code>x</code> sufficiently close to <code>a</code> (but not
+  necessarily equal to <code>a</code>), <code>f(x)</code> can be made as
+  close to <code>L</code> as desired.</p>
+  <p>The limit concerns nearby behaviour, not necessarily the value at
+  <code>a</code>. For example, a function may have a hole at
+  <code>a</code> but still have a limit there.</p>
+  <h3 id="one-sided-and-two-sided-limits">One-sided and two-sided
+  limits</h3>
+  <ul>
+  <li><code>lim(x -&gt; a-) f(x)</code>: approach from the left.</li>
+  <li><code>lim(x -&gt; a+) f(x)</code>: approach from the right.</li>
+  <li>A two-sided limit exists only when both one-sided limits exist and
+  are equal.</li>
+  </ul>
+  <p><strong>Example:</strong> if the left-hand behaviour approaches 2
+  but the right-hand behaviour approaches 5, then
+  <code>lim(x -&gt; a) f(x)</code> does not exist, even though both
+  one-sided limits exist.</p>
+  <h3 id="direct-substitution">Direct substitution</h3>
+  <p>If <code>f</code> is continuous at <code>a</code>, then</p>
+  <p><code>lim(x -&gt; a) f(x) = f(a)</code>.</p>
+  <p>Polynomials, exponentials, sine, cosine, and rational functions are
+  continuous wherever their formulas are defined. Direct substitution
+  works for these cases.</p>
+  <p><strong>Example:</strong></p>
+  <p><code>lim(x -&gt; 2) (x^2+3x-1) = 4+6-1 = 9</code>.</p>
+  <h3 id="the-indeterminate-form-00">The indeterminate form 0/0</h3>
+  <p><code>0/0</code> is not a limit value. It means the expression
+  needs further analysis.</p>
+  <p><strong>Example:</strong></p>
+  <p><code>lim(x -&gt; 1) (x^2-1)/(x-1)</code>.</p>
+  <p>Factor first:</p>
+  <p><code>(x^2-1)/(x-1) = [(x-1)(x+1)]/(x-1) = x+1</code>, for
+  <code>x != 1</code>.</p>
+  <p>Therefore the limit is <code>2</code>. The original function may be
+  undefined at 1, but its nearby values approach 2.</p>
+  <h3 id="rationalising-radicals">Rationalising radicals</h3>
+  <p>When a square root creates 0/0, multiply by the conjugate.</p>
+  <p><strong>Example:</strong></p>
+  <p><code>lim(x -&gt; 0) [sqrt(1+x)-1]/x</code>.</p>
+  <p>Multiply by <code>[sqrt(1+x)+1]/[sqrt(1+x)+1]</code>:</p>
+  <p><code>[sqrt(1+x)-1]/x = 1/[sqrt(1+x)+1]</code>.</p>
+  <p>The limit is <code>1/2</code>.</p>
+  <h3 id="important-trigonometric-limits">Important trigonometric
+  limits</h3>
+  <p>These are fundamental in proving trig derivatives:</p>
+  <p><code>lim(x -&gt; 0) sin(x)/x = 1</code>.</p>
+  <p><code>lim(x -&gt; 0) [1-cos(x)]/x = 0</code>.</p>
+  <p>Angles must be measured in radians. The approximation
+  <code>sin x ≈ x</code> near zero depends on radians.</p>
+  <h3 id="limits-at-infinity">Limits at infinity</h3>
+  <p>For rational functions, compare the highest powers.</p>
+  <p><strong>Example:</strong></p>
+  <p><code>lim(x -&gt; infinity) (3x^2-x+1)/(x^2+4) = 3</code>.</p>
+  <p>Divide numerator and denominator by <code>x^2</code>; all
+  lower-order terms vanish.</p>
+  <h3 id="continuity">Continuity</h3>
+  <p><code>f</code> is continuous at <code>a</code> when:</p>
+  <ol type="1">
+  <li><code>f(a)</code> is defined;</li>
+  <li><code>lim(x -&gt; a) f(x)</code> exists;</li>
+  <li>the limit equals <code>f(a)</code>.</li>
+  </ol>
+  <p>For a continuous function, small changes in input produce small
+  changes in output. Continuity is needed in several calculus theorems,
+  including the Fundamental Theorem of Calculus and the Extreme Value
+  Theorem.</p>
+  <h3 id="lhopitals-rule">L'Hopital's rule</h3>
+  <p>For a genuine <code>0/0</code> or <code>infinity/infinity</code>
+  form, and under the theorem's conditions,</p>
+  <p><code>lim f(x)/g(x) = lim f'(x)/g'(x)</code>.</p>
+  <p><strong>Example:</strong></p>
+  <p><code>lim(x -&gt; 0) (e^x-1)/x = lim(x -&gt; 0) e^x/1 = 1</code>.</p>
+  <p>Do not use L'Hopital's rule before checking whether direct
+  substitution or algebra is simpler.</p>
+  <h3 id="a-limit-checklist">A limit checklist</h3>
+  <ol type="1">
+  <li>Substitute directly.</li>
+  <li>If the result is a normal number, stop.</li>
+  <li>If it is 0/0, factor, cancel, rationalise, or use a known standard
+  limit.</li>
+  <li>If it is infinity/infinity, compare dominant terms or use
+  L'Hopital's rule.</li>
+  <li>Check one-sided behaviour when a denominator, absolute value, or
+  piecewise definition is involved.</li>
+  </ol>
+  <h2 id="3-differentiation-formulas-and-reasoning">3. Differentiation:
+  formulas and reasoning</h2>
+  <h3 id="definition">Definition</h3>
+  <p><code>f'(a) = lim(h -&gt; 0) [f(a+h)-f(a)]/h</code>.</p>
+  <p>The derivative is the instantaneous rate of change. It is also the
+  slope of the tangent line.</p>
+  <h3 id="core-rules">Core rules</h3>
+  <table>
+  <thead>
+  <tr class="header">
+  <th>Function or rule</th>
+  <th>Derivative</th>
+  </tr>
+  </thead>
+  <tbody>
+  <tr class="odd">
+  <td>Constant <code>c</code></td>
+  <td><code>0</code></td>
+  </tr>
+  <tr class="even">
+  <td><code>x^n</code></td>
+  <td><code>n x^(n-1)</code></td>
+  </tr>
+  <tr class="odd">
+  <td><code>cf</code></td>
+  <td><code>cf'</code></td>
+  </tr>
+  <tr class="even">
+  <td><code>f+g</code></td>
+  <td><code>f'+g'</code></td>
+  </tr>
+  <tr class="odd">
+  <td><code>fg</code></td>
+  <td><code>f'g+fg'</code></td>
+  </tr>
+  <tr class="even">
+  <td><code>f/g</code></td>
+  <td><code>(f'g-fg')/g^2</code></td>
+  </tr>
+  <tr class="odd">
+  <td><code>f(g(x))</code></td>
+  <td><code>f'(g(x))g'(x)</code></td>
+  </tr>
+  <tr class="even">
+  <td><code>e^x</code></td>
+  <td><code>e^x</code></td>
+  </tr>
+  <tr class="odd">
+  <td><code>ln x</code></td>
+  <td><code>1/x</code></td>
+  </tr>
+  <tr class="even">
+  <td><code>sin x</code></td>
+  <td><code>cos x</code></td>
+  </tr>
+  <tr class="odd">
+  <td><code>cos x</code></td>
+  <td><code>-sin x</code></td>
+  </tr>
+  <tr class="even">
+  <td><code>tan x</code></td>
+  <td><code>sec^2 x</code></td>
+  </tr>
+  </tbody>
+  </table>
+  <h3 id="chain-rule-example">Chain rule example</h3>
+  <p>Differentiate <code>y=sin(x^2+1)</code>.</p>
+  <p>The outer function is sine; the inner function is
+  <code>x^2+1</code>:</p>
+  <p><code>dy/dx = cos(x^2+1) * 2x</code>.</p>
+  <p>The common error is to omit <code>2x</code>.</p>
+  <h3 id="product-rule-example">Product rule example</h3>
+  <p>For <code>y=x^2 e^x</code>,</p>
+  <p><code>y' = 2x e^x + x^2 e^x = e^x(2x+x^2)</code>.</p>
+  <h3 id="logarithmic-differentiation">Logarithmic differentiation</h3>
+  <p>For complicated products, quotients, or powers, take logarithms
+  first.</p>
+  <p><strong>Example:</strong> <code>y=x^x</code> for
+  <code>x&gt;0</code>.</p>
+  <p><code>ln y = x ln x</code>.</p>
+  <p>Differentiate implicitly: <code>y'/y = ln x+1</code>.</p>
+  <p>Thus <code>y'=x^x(ln x+1)</code>.</p>
+  <h3 id="implicit-differentiation">Implicit differentiation</h3>
+  <p>If <code>x</code> and <code>y</code> satisfy an equation,
+  differentiate both sides with respect to <code>x</code>, remembering
+  that <code>d(y)/dx=y'</code>.</p>
+  <p><strong>Example:</strong> <code>x^2+y^2=25</code>.</p>
+  <p><code>2x+2y y'=0</code>, so <code>y'=-x/y</code>.</p>
+  <h3 id="higher-derivatives-and-interpretation">Higher derivatives and
+  interpretation</h3>
+  <ul>
+  <li><code>f'</code>: slope or velocity.</li>
+  <li><code>f''</code>: concavity or acceleration.</li>
+  <li><code>f'''</code> and beyond: higher-order changes, useful in
+  Taylor approximations and error analysis.</li>
+  </ul>
+  <h3 id="linearisation">Linearisation</h3>
+  <p>Near <code>x=a</code>,</p>
+  <p><code>f(x) ≈ f(a)+f'(a)(x-a)</code>.</p>
+  <p><strong>Example:</strong> approximate <code>sqrt(4.1)</code> using
+  <code>f(x)=sqrt x</code> and <code>a=4</code>.</p>
+  <p><code>f(4)=2</code>, <code>f'(4)=1/4</code>, so</p>
+  <p><code>sqrt(4.1) ≈ 2+(1/4)(0.1)=2.025</code>.</p>
+  <h3 id="applications">Applications</h3>
+  <ul>
+  <li>Increasing/decreasing: <code>f'&gt;0</code> means increasing;
+  <code>f'&lt;0</code> means decreasing.</li>
+  <li>Local extrema: check critical points where <code>f'=0</code> or
+  undefined, plus endpoints.</li>
+  <li>Concavity: <code>f''&gt;0</code> means concave up;
+  <code>f''&lt;0</code> means concave down.</li>
+  <li>Newton's method: <code>x_(n+1)=x_n-f(x_n)/f'(x_n)</code>.</li>
+  <li>Mean Value Theorem: if continuous on <code>[a,b]</code> and
+  differentiable on <code>(a,b)</code>, some <code>c</code> satisfies
+  <code>f'(c)=[f(b)-f(a)]/(b-a)</code>.</li>
+  </ul>
+  <h3 id="worked-differentiation-applications">Worked differentiation
+  applications</h3>
+  <h4 id="curve-analysis">Curve analysis</h4>
+  <p>To analyse <code>f(x)</code>, use this order:</p>
+  <ol type="1">
+  <li>Find the domain and any intercepts or asymptotes.</li>
+  <li>Solve <code>f'(x)=0</code> and identify points where
+  <code>f'</code> is undefined. These are critical points.</li>
+  <li>Make a sign chart for <code>f'</code>. This tells you where the
+  function increases or decreases.</li>
+  <li>Use <code>f''</code> to determine concavity and possible
+  inflection points.</li>
+  <li>Combine the information into a graph.</li>
+  </ol>
+  <p><strong>Example:</strong> Let <code>f(x)=x^3-3x</code>.</p>
+  <p><code>f'(x)=3x^2-3=3(x-1)(x+1)</code>, so the critical points are
+  <code>x=-1</code> and <code>x=1</code>.</p>
+  <ul>
+  <li><code>f'&gt;0</code> on <code>(-infinity,-1)</code> and
+  <code>(1,infinity)</code>: increasing.</li>
+  <li><code>f'&lt;0</code> on <code>(-1,1)</code>: decreasing.</li>
+  </ul>
+  <p>Thus <code>x=-1</code> is a local maximum and <code>x=1</code> is a
+  local minimum. Also,</p>
+  <p><code>f''(x)=6x</code>, so the graph is concave down for
+  <code>x&lt;0</code> and concave up for <code>x&gt;0</code>. The
+  concavity changes at <code>x=0</code>, giving an inflection point.</p>
+  <h4 id="optimisation">Optimisation</h4>
+  <p>Suppose a rectangle has perimeter 20. If its sides are
+  <code>x</code> and <code>y</code>, then</p>
+  <p><code>2x+2y=20</code>, so <code>y=10-x</code>.</p>
+  <p>Its area is</p>
+  <p><code>A(x)=x(10-x)=10x-x^2</code>, with
+  <code>0&lt;x&lt;10</code>.</p>
+  <p>Differentiate:</p>
+  <p><code>A'(x)=10-2x</code>.</p>
+  <p>Set <code>A'(x)=0</code>: <code>x=5</code>. Since
+  <code>A''(x)=-2&lt;0</code>, this is a maximum. The maximum area is
+  <code>A(5)=25</code>.</p>
+  <p>The important reasoning is that the constraint must first reduce
+  the problem to one variable, and the domain and endpoints must be
+  considered. A derivative equation alone does not prove a global
+  maximum.</p>
+  <h4 id="related-rates">Related rates</h4>
+  <p>If a circle has radius <code>r</code> and area
+  <code>A=pi r^2</code>, then differentiating with respect to time
+  gives</p>
+  <p><code>dA/dt=2pi r dr/dt</code>.</p>
+  <p>If <code>r=3</code> and <code>dr/dt=2</code>, then</p>
+  <p><code>dA/dt=2pi(3)(2)=12pi</code> square units per unit time.</p>
+  <p>Differentiate first, then substitute the current values.
+  Substituting before differentiating can destroy the relationship
+  between the changing quantities.</p>
+  <h2 id="4-integration-the-basic-meaning">4. Integration: the basic
+  meaning</h2>
+  <h3 id="indefinite-integrals">Indefinite integrals</h3>
+  <p>An antiderivative <code>F</code> of <code>f</code> satisfies
+  <code>F'=f</code>:</p>
+  <p><code>∫ f(x) dx = F(x)+C</code>.</p>
+  <p>Key formulas:</p>
+  <ul>
+  <li><code>∫x^n dx = x^(n+1)/(n+1)+C</code>, <code>n != -1</code>;</li>
+  <li><code>∫1/x dx = ln|x|+C</code>;</li>
+  <li><code>∫e^x dx=e^x+C</code>;</li>
+  <li><code>∫cos x dx=sin x+C</code>;</li>
+  <li><code>∫sin x dx=-cos x+C</code>;</li>
+  <li><code>∫sec^2 x dx=tan x+C</code>;</li>
+  <li><code>∫1/(1+x^2) dx=arctan x+C</code>.</li>
+  </ul>
+  <p>Always differentiate your answer to check it.</p>
+  <h3 id="definite-integrals">Definite integrals</h3>
+  <p><code>∫_a^b f(x)dx</code> is the limit of sums of thin rectangles.
+  It represents signed accumulation. The Fundamental Theorem says that
+  if <code>F'=f</code>, then</p>
+  <p><code>∫_a^b f(x)dx=F(b)-F(a)</code>.</p>
+  <h2 id="5-integration-techniques-how-to-choose">5. Integration
+  techniques: how to choose</h2>
+  <h3 id="technique-1-substitution">Technique 1: substitution</h3>
+  <p>Use substitution when an expression contains an inner function and
+  its derivative.</p>
+  <p><code>∫ f(g(x))g'(x)dx = ∫ f(u)du</code>.</p>
+  <p><strong>Example:</strong></p>
+  <p><code>∫ 2x cos(x^2) dx</code>.</p>
+  <p>Let <code>u=x^2</code>, so <code>du=2x dx</code>:</p>
+  <p><code>∫ cos u du=sin u+C=sin(x^2)+C</code>.</p>
+  <p>For definite integrals, change the bounds: if <code>u=g(x)</code>,
+  replace <code>x=a,b</code> by <code>u=g(a),g(b)</code>.</p>
+  <h3 id="technique-2-integration-by-parts">Technique 2: integration by
+  parts</h3>
+  <p>Use for products where one factor becomes simpler when
+  differentiated:</p>
+  <p><code>∫u dv=uv-∫v du</code>.</p>
+  <p><strong>Example:</strong></p>
+  <p><code>∫x e^x dx</code>.</p>
+  <p>Take <code>u=x</code>, <code>dv=e^x dx</code>; then
+  <code>du=dx</code>, <code>v=e^x</code>:</p>
+  <p><code>∫x e^x dx = x e^x - ∫e^x dx = e^x(x-1)+C</code>.</p>
+  <h3 id="technique-3-trigonometric-powers">Technique 3: trigonometric
+  powers</h3>
+  <p>For <code>∫sin^m x cos^n x dx</code>:</p>
+  <ul>
+  <li>If one exponent is odd, save one factor and convert the rest using
+  <code>sin^2x+cos^2x=1</code>.</li>
+  <li>If both are even, use half-angle identities.</li>
+  </ul>
+  <p><strong>Example:</strong></p>
+  <p><code>∫sin^3 x cos^2 x dx</code>.</p>
+  <p>Save <code>sin x</code>, write <code>sin^2x=1-cos^2x</code>, and
+  let <code>u=cos x</code>, <code>du=-sin x dx</code>:</p>
+  <p><code>∫(1-u^2)u^2(-du) = -u^3/3+u^5/5+C</code>.</p>
+  <h3 id="technique-4-trigonometric-substitution--identities">Technique
+  4: trigonometric substitution / identities</h3>
+  <p>Use identities such as <code>1+tan^2x=sec^2x</code> for powers of
+  tangent and secant. For even powers, rewrite using
+  <code>sec^2x=1+tan^2x</code>; for suitable odd powers of secant, save
+  <code>sec x tan x dx</code>.</p>
+  <h3 id="technique-5-partial-fractions">Technique 5: partial
+  fractions</h3>
+  <p>Use for rational functions <code>P(x)/Q(x)</code> after factoring
+  <code>Q</code>.</p>
+  <p><strong>Example:</strong></p>
+  <p><code>∫1/(x^2-1) dx = ∫1/[(x-1)(x+1)] dx</code>.</p>
+  <p>Decompose:</p>
+  <p><code>1/(x^2-1)=1/2[1/(x-1)-1/(x+1)]</code>.</p>
+  <p>Therefore</p>
+  <p><code>∫1/(x^2-1)dx = (1/2)ln|x-1|-(1/2)ln|x+1|+C</code>.</p>
+  <h3 id="technique-6-inverse-substitution">Technique 6: inverse
+  substitution</h3>
+  <p>When an integral resembles a standard inverse-trigonometric
+  derivative, rewrite it into that form:</p>
+  <ul>
+  <li><code>∫ dx/sqrt(1-x^2)=arcsin x+C</code>;</li>
+  <li><code>∫ dx/(1+x^2)=arctan x+C</code>;</li>
+  <li><code>∫ dx/(x sqrt(x^2-1))=arcsec|x|+C</code> where defined.</li>
+  </ul>
+  <h3 id="technique-7-reduction-formulas">Technique 7: reduction
+  formulas</h3>
+  <p>For repeated families such as <code>∫sin^n x dx</code> or
+  <code>∫x^n e^x dx</code>, integration by parts produces a recurrence
+  that reduces the exponent until a base case is reached. The key idea
+  is systematic reuse, not memorising every individual formula.</p>
+  <h2 id="6-applications-of-integration-area-and-volume">6. Applications
+  of integration: area and volume</h2>
+  <p>The difficult part of an application is usually not evaluating the
+  integral. It is deciding what a thin slice looks like, which variable
+  to integrate with respect to, and what the correct bounds are.</p>
+  <h3 id="61-area-under-a-graph">6.1 Area under a graph</h3>
+  <p>For a graph <code>y=f(x)</code> between <code>x=a</code> and
+  <code>x=b</code>, the signed area is</p>
+  <p><code>A=∫_a^b f(x)dx</code>.</p>
+  <p>If the graph is below the x-axis, this integral is negative. If the
+  question asks for <strong>geometric area</strong>, split the interval
+  at x-intercepts or use <code>|f(x)|</code> conceptually.</p>
+  <p><strong>Example:</strong> Find the area between <code>y=x^2</code>,
+  the x-axis, <code>x=0</code>, and <code>x=2</code>.</p>
+  <p>The curve is above the x-axis on <code>[0,2]</code>, so</p>
+  <p><code>A=∫_0^2 x^2 dx=[x^3/3]_0^2=8/3</code>.</p>
+  <p>If a graph crosses the axis, split it. For <code>f(x)=x-1</code>
+  from <code>x=0</code> to <code>x=2</code>, the signed integral is
+  zero, but the geometric area is</p>
+  <p><code>∫_0^1(1-x)dx + ∫_1^2(x-1)dx = 1/2+1/2=1</code>.</p>
+  <h3 id="62-area-bounded-by-the-y-axis">6.2 Area bounded by the
+  y-axis</h3>
+  <p>The y-axis is <code>x=0</code>. If the region is described
+  naturally by <code>y=f(x)</code> and has vertical boundaries,
+  integrate with respect to <code>x</code>. The y-axis simply becomes
+  one bound, often <code>x=0</code>.</p>
+  <p><strong>Example:</strong> Find the area bounded by
+  <code>y=x^2</code>, the x-axis, and the y-axis from <code>x=0</code>
+  to <code>x=2</code>.</p>
+  <p>The y-axis gives the left boundary <code>x=0</code>; the x-axis and
+  curve meet at <code>x=0</code>, while the specified/right intersection
+  is <code>x=2</code>. Therefore,</p>
+  <p><code>A=∫_0^2 x^2dx=8/3</code>.</p>
+  <p>If the region is naturally described by horizontal slices, rewrite
+  the curve as <code>x=g(y)</code> and integrate with respect to
+  <code>y</code>.</p>
+  <h3 id="63-area-between-two-curves">6.3 Area between two curves</h3>
+  <p>With vertical slices,</p>
+  <p><code>A=∫_a^b [top function - bottom function] dx</code>.</p>
+  <p>The bounds <code>a,b</code> usually come from solving the
+  intersection equation <code>f(x)=g(x)</code>.</p>
+  <p><strong>Example:</strong> Find the area between <code>y=x</code>
+  and <code>y=x^2</code>.</p>
+  <p>Intersections satisfy <code>x=x^2</code>, so <code>x=0,1</code>. On
+  <code>[0,1]</code>, <code>x</code> is above <code>x^2</code>:</p>
+  <p><code>A=∫_0^1(x-x^2)dx=[x^2/2-x^3/3]_0^1=1/6</code>.</p>
+  <p>With horizontal slices,</p>
+  <p><code>A=∫_c^d [right function - left function]dy</code>.</p>
+  <p>Always sketch the region first. “Top minus bottom” applies only to
+  vertical slices; “right minus left” applies to horizontal slices.</p>
+  <h3 id="64-volumes-of-revolution-the-geometric-decision">6.4 Volumes
+  of revolution: the geometric decision</h3>
+  <p>Rotating a planar region around an axis creates a solid. The method
+  depends on the slice orientation:</p>
+  <ul>
+  <li>Slices <strong>perpendicular</strong> to the axis produce disks or
+  washers.</li>
+  <li>Slices <strong>parallel</strong> to the axis produce cylindrical
+  shells.</li>
+  </ul>
+  <p>The basic idea is always</p>
+  <p><code>volume ≈ cross-sectional area × thickness</code>.</p>
+  <p>Then take a limit, producing an integral.</p>
+  <h3 id="65-disk-method">6.5 Disk method</h3>
+  <p>Use disks when rotating a region around an axis creates solid
+  circular cross-sections with no hole.</p>
+  <p>Rotating <code>y=f(x)</code> around the x-axis gives radius
+  <code>R=f(x)</code>. A thin disk has area <code>pi R^2</code> and
+  thickness <code>dx</code>:</p>
+  <p><code>V=∫_a^b pi[f(x)]^2dx</code>.</p>
+  <p><strong>Example:</strong> Rotate the region under <code>y=x</code>
+  from <code>x=0</code> to <code>x=2</code> around the x-axis.</p>
+  <p>At position <code>x</code>, the radius is <code>R=x</code>.
+  Hence</p>
+  <p><code>V=∫_0^2 pi x^2dx=pi[x^3/3]_0^2=8pi/3</code>.</p>
+  <h3 id="66-washer-method">6.6 Washer method</h3>
+  <p>Use washers when rotation creates a hole. If the outer radius is
+  <code>R</code> and inner radius is <code>r</code>, the cross-sectional
+  area is</p>
+  <p><code>pi R^2-pi r^2=pi(R^2-r^2)</code>.</p>
+  <p>Thus</p>
+  <p><code>V=∫_a^b pi[R(x)^2-r(x)^2]dx</code>.</p>
+  <p><strong>Example:</strong> Rotate the region between
+  <code>y=x</code> and <code>y=x^2</code> on <code>[0,1]</code> around
+  the x-axis.</p>
+  <p>For <code>0&lt;=x&lt;=1</code>, the outer radius is
+  <code>R=x</code> and the inner radius is <code>r=x^2</code>.
+  Therefore,</p>
+  <p><code>V=∫_0^1 pi[x^2-x^4]dx</code></p>
+  <p><code>=pi[x^3/3-x^5/5]_0^1=2pi/15</code>.</p>
+  <p>The inner radius must be subtracted because the rotation leaves a
+  cylindrical hole.</p>
+  <h3 id="67-rotation-around-the-y-axis-using-shells">6.7 Rotation
+  around the y-axis using shells</h3>
+  <p>When vertical slices rotate around the y-axis, each slice creates a
+  cylindrical shell.</p>
+  <ul>
+  <li>Radius: distance from the y-axis, <code>x</code>.</li>
+  <li>Height: top minus bottom, <code>f(x)-g(x)</code>.</li>
+  <li>Circumference: <code>2pi x</code>.</li>
+  <li>Thickness: <code>dx</code>.</li>
+  </ul>
+  <p>Therefore,</p>
+  <p><code>V=∫_a^b 2pi(radius)(height)dx</code></p>
+  <p><code>=∫_a^b 2pi x[f(x)-g(x)]dx</code>.</p>
+  <p><strong>Example:</strong> Rotate the region under <code>y=x</code>
+  from <code>x=0</code> to <code>x=2</code> around the y-axis.</p>
+  <p>The shell radius is <code>x</code>, height is <code>x</code>,
+  so</p>
+  <p><code>V=∫_0^2 2pi x(x)dx=2pi∫_0^2x^2dx=16pi/3</code>.</p>
+  <h3 id="68-choosing-between-washers-and-shells">6.8 Choosing between
+  washers and shells</h3>
+  <p>For rotation around the y-axis:</p>
+  <ul>
+  <li>Vertical slices usually give shells using <code>dx</code>.</li>
+  <li>Horizontal slices usually give washers using <code>dy</code>.</li>
+  </ul>
+  <p>Choose the method that avoids solving for the inverse function or
+  splitting the region into multiple pieces. Both methods should give
+  the same volume when set up correctly.</p>
+  <h3 id="69-work-and-average-value">6.9 Work and average value</h3>
+  <p>If force varies with position, a small amount of work is
+  <code>dW=F(x)dx</code>, so</p>
+  <p><code>W=∫_a^bF(x)dx</code>.</p>
+  <p>The average value of <code>f</code> on <code>[a,b]</code> is</p>
+  <p><code>f_avg=(1/(b-a))∫_a^bf(x)dx</code>.</p>
+  <p>This follows because total accumulation equals average height times
+  width.</p>
+  <h3 id="610-a-reliable-areavolume-setup-checklist">6.10 A reliable
+  area/volume setup checklist</h3>
+  <ol type="1">
+  <li>Sketch the curves and shade the region.</li>
+  <li>Find intersections and identify the actual bounds.</li>
+  <li>Decide whether slices are vertical or horizontal.</li>
+  <li>For area, use top-minus-bottom or right-minus-left.</li>
+  <li>For volume, identify radius, inner radius, outer radius, height,
+  and thickness.</li>
+  <li>Check that the integrand has the correct units: area for area
+  problems and volume for volume problems.</li>
+  <li>Estimate the answer's size before evaluating.</li>
+  </ol>
+  <h2 id="7-final-strategy-map">7. Final strategy map</h2>
+  <table>
+  <thead>
+  <tr class="header">
+  <th>If you see...</th>
+  <th>First try...</th>
+  </tr>
+  </thead>
+  <tbody>
+  <tr class="odd">
+  <td>0/0 limit</td>
+  <td>Factor, cancel, rationalise, or use a standard limit</td>
+  </tr>
+  <tr class="even">
+  <td>Inner function times its derivative</td>
+  <td>Substitution</td>
+  </tr>
+  <tr class="odd">
+  <td>Product such as <code>x e^x</code> or <code>x ln x</code></td>
+  <td>Integration by parts</td>
+  </tr>
+  <tr class="even">
+  <td>Powers of sine/cosine</td>
+  <td>Parity method and identities</td>
+  </tr>
+  <tr class="odd">
+  <td>Rational function</td>
+  <td>Partial fractions</td>
+  </tr>
+  <tr class="even">
+  <td><code>1/(1+x^2)</code> or <code>1/sqrt(1-x^2)</code></td>
+  <td>Inverse-trig formula</td>
+  </tr>
+  <tr class="odd">
+  <td>Optimisation</td>
+  <td>Define quantity, domain, critical points, endpoints</td>
+  </tr>
+  <tr class="even">
+  <td>A result involving an antiderivative</td>
+  <td>Differentiate to verify</td>
+  </tr>
+  </tbody>
+  </table>
+  <h2 id="8-most-important-misconceptions-to-correct">8. Most important
+  misconceptions to correct</h2>
+  <ol type="1">
+  <li><code>0/0</code> is not zero; it is an indeterminate form.</li>
+  <li>A limit does not require the function to be defined at the target
+  point.</li>
+  <li>A critical point is only a candidate, not automatically an
+  extremum.</li>
+  <li>A definite integral is signed area, not always geometric
+  area.</li>
+  <li>The constant <code>C</code> belongs in indefinite integrals.</li>
+  <li>Integration techniques are applications of the chain, product, and
+  algebraic rules; they are not unrelated tricks.</li>
+  </ol>
+  <p><strong>Source note:</strong> This guide is a study synthesis of
+  the four uploaded MIT OpenCourseWare PDFs. Use official NUS MA1521
+  materials for course-specific notation and assessment emphasis.</p>
+  <section class="exam-box"><h2>What to remember for the exam</h2><ul><li>State the relevant conditions before applying a theorem or formula.</li><li>Choose the method from the expression or geometry before calculating.</li><li>Check domains, bounds, signs, units, and constants of integration.</li><li>Differentiate an antiderivative or substitute back to verify when possible.</li></ul></section>
   </main>
+  <footer class="site-footer">MA1521 study notes - built for revision and extended week by week.</footer>
 </body>
 </html>
