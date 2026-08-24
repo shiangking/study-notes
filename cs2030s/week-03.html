@@ -48,6 +48,23 @@ public boolean contains(double x, double y) { ... }</code></pre>
 }</code></pre>
 <p>The same expression, <code>obj.toString()</code>, may invoke <code>Point::toString()</code> for a point or <code>Circle::toString()</code> for a circle. The call is legal because the compile-time type is <code>Object</code>, which has <code>toString()</code>. The implementation selected depends on the target object's runtime type.</p>
 <p>This runtime selection of an overridden instance method is <strong>dynamic dispatch</strong> (also described in the lecture as dynamic binding and dynamic method lookup).</p>
+<h3><code>instanceof</code>, subtypes, and runtime type</h3>
+<p>Read <code>P &lt;: Q &lt;: R</code> as “<code>P</code> is a subtype of <code>Q</code>, and <code>Q</code> is a subtype of <code>R</code>”. Every <code>P</code> object is therefore also a <code>Q</code> and an <code>R</code>; every <code>Q</code> object is also an <code>R</code>. The reverse does not follow: a <code>Q</code> object is not automatically a <code>P</code> object.</p>
+<pre><code>R r = new Q();
+Q q = new P();</code></pre>
+<table><thead><tr><th>Variable</th><th>Compile-time type</th><th>Runtime type of object</th></tr></thead><tbody>
+<tr><td><code>r</code></td><td><code>R</code></td><td><code>Q</code></td></tr>
+<tr><td><code>q</code></td><td><code>Q</code></td><td><code>P</code></td></tr>
+</tbody></table>
+<p>The declaration gives a variable its <strong>compile-time type</strong>; the expression after <code>new</code> creates an object with its <strong>runtime type</strong>. The compile-time type determines what members the compiler lets us use. The runtime type determines which overridden instance-method implementation runs, and it is also what <code>instanceof</code> checks.</p>
+<pre><code>r instanceof R  // true: a Q is an R
+r instanceof Q  // true: the object is a Q
+r instanceof P  // false: a Q is not necessarily a P
+
+q instanceof P  // true: the object is a P
+q instanceof Q  // true: a P is a Q
+q instanceof R  // true: a P is an R</code></pre>
+<p>Java first checks at <strong>compile time</strong> whether an <code>instanceof</code> test is meaningful for the types involved. If it is legal, the true/false result is decided at <strong>runtime</strong> by inspecting the actual object. If the reference is <code>null</code>, every <code>instanceof</code> test is <code>false</code>.</p>
 <h3>Overriding <code>equals(Object)</code></h3>
 <p><code>Object::equals(Object)</code> tests whether two references refer to the same object. To define semantic equality for circles, override it:</p>
 <pre><code>@Override
