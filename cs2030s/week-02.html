@@ -1,23 +1,51 @@
 <!doctype html>
-<html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
-<title>CS2030S Week 2 | Study Notes</title><link rel="stylesheet" href="../site-assets/docs.css?v=docs-20260819c"></head>
-<body><header class="topbar"><a class="site-name" href="../index.html">Study Notes</a><span class="course-name">CS2030S Programming Methodology</span></header>
-<div class="shell"><aside class="sidebar"><h2>CS2030S</h2><a class="nav-link" href="index.html">Overview</a><span class="nav-link indent">Week 1 - coming soon</span><a class="nav-link current indent" href="week-02.html">Week 2: Object-oriented design</a><a class="nav-link indent" href="week-03.html">Week 3: Polymorphism and abstraction</a></aside>
-<main class="content">
-<div class="notice"><strong>CS2030S — Week 2 study notes</strong><br>Use the left sidebar to move between weeks and the right sidebar to jump within this page.</div>
-<h1 id="guide">CS2030S Guide: Information Hiding, Objects, and Inheritance</h1>
-<p><strong>Primary source:</strong> Week 2 lecture notes, Units 5–12. This guide preserves the course ideas and code patterns, while adding connective explanations for revision.</p>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <title>CS2030S Week 2 | Study Notes</title>
+  <link rel="stylesheet" href="../site-assets/docs.css?v=docs-20260819c">
+</head>
+<body>
+  <header class="topbar">
+    <a class="site-name" href="../index.html">Study Notes</a>
+    <span class="course-name">CS2030S Programming Methodology</span>
+  </header>
 
-<h2 id="central-idea">1. The central idea</h2>
-<p>Object-oriented programming is not merely putting data and methods in the same class. The aim is to give each abstraction control over its own representation and behaviour.</p>
-<ul><li><strong>Information hiding</strong> protects implementation choices.</li><li><strong>Tell, don’t ask</strong> keeps a task with the object that owns the relevant state.</li><li><strong>Composition</strong> builds a complex object from simpler ones: <em>HAS-A</em>.</li><li><strong>Inheritance</strong> models safe subtyping: <em>IS-A</em>.</li></ul>
-<p>The recurring question is: <em>what is the client allowed to assume about this object?</em></p>
+  <div class="shell">
+    <aside class="sidebar">
+      <h2>CS2030S</h2>
+      <a class="nav-link" href="index.html">Overview</a>
+      <a class="nav-link indent" href="week-01.html">Week 1: Functions, Encapsulation &amp; OOP</a>
+      <a class="nav-link current indent" href="week-02.html">Week 2: Object-oriented design</a>
+      <a class="nav-link indent" href="week-03.html">Week 3: Polymorphism and abstraction</a>
+    </aside>
 
-<h2 id="hiding">2. Information hiding and constructors</h2>
-<h3>Do not break the abstraction barrier</h3>
-<p>Suppose a client writes <code>c.r = 10;</code>. The client now assumes that a <code>Circle</code> stores its radius in a field named <code>r</code>. If the implementation changes to store diameter instead, client code breaks. The client has become a partial implementer.</p>
-<h3><code>private</code>, <code>public</code>, and valid objects</h3>
-<pre><code>class Circle {
+    <main class="content">
+      <div class="notice">
+        <strong>CS2030S — Week 2 study notes</strong><br>
+        Use the left sidebar to move between weeks and the right sidebar to jump within this page.
+      </div>
+
+      <h1 id="guide">CS2030S Guide: Information Hiding, Objects, and Inheritance</h1>
+      <p><strong>Primary source:</strong> Week 2 lecture notes, Units 5–12. This guide preserves the course ideas and code patterns, while adding connective explanations for revision.</p>
+
+      <h2 id="central-idea">1. The central idea</h2>
+      <p>Object-oriented programming is not merely putting data and methods in the same class. The aim is to give each abstraction control over its own representation and behaviour.</p>
+      <ul>
+        <li><strong>Information hiding</strong> protects implementation choices.</li>
+        <li><strong>Tell, don’t ask</strong> keeps a task with the object that owns the relevant state.</li>
+        <li><strong>Composition</strong> builds a complex object from simpler ones: <em>HAS-A</em>.</li>
+        <li><strong>Inheritance</strong> models safe subtyping: <em>IS-A</em>.</li>
+      </ul>
+      <p>The recurring question is: <em>what is the client allowed to assume about this object?</em></p>
+
+      <h2 id="hiding">2. Information hiding and constructors</h2>
+      <h3>Do not break the abstraction barrier</h3>
+      <p>Suppose a client writes <code>c.r = 10;</code>. The client now assumes that a <code>Circle</code> stores its radius in a field named <code>r</code>. If the implementation changes to store diameter instead, client code breaks. The client has become a partial implementer.</p>
+
+      <h3><code>private</code>, <code>public</code>, and valid objects</h3>
+      <pre><code>class Circle {
   private double x;
   private double y;
   private double r;
@@ -32,34 +60,60 @@
     return Math.PI * this.r * this.r;
   }
 }</code></pre>
-<p>A <code>private</code> field or method is accessible only inside its class. A <code>public</code> member is part of the client-facing interface. The compiler enforces this protection at compile time.</p>
-<p>A <strong>constructor</strong> initializes a new object. It has the same name as its class and no return type. It is invoked automatically by <code>new Circle(...)</code>; it cannot be called like an ordinary method.</p>
-<p><code>this</code> refers to the current object. In <code>this.x = x</code>, the left side is the object field and the right side is the parameter. If a class declares no constructor, Java supplies a no-argument default constructor. If it declares any constructor, Java does not supply that default one.</p>
+      <p>A <code>private</code> field or method is accessible only inside its class. A <code>public</code> member is part of the client-facing interface. The compiler enforces this protection at compile time.</p>
+      <p>A <strong>constructor</strong> initializes a new object. It has the same name as its class and no return type. It is invoked automatically by <code>new Circle(...)</code>; it cannot be called like an ordinary method.</p>
+      <p><code>this</code> refers to the current object. In <code>this.x = x</code>, the left side is the object field and the right side is the parameter. If a class declares no constructor, Java supplies a no-argument default constructor. If it declares any constructor, Java does not supply that default one.</p>
 
-<h2 id="tell">3. Tell, don’t ask</h2>
-<h3>Accessors and mutators are not a default design</h3>
-<p>Getters and setters are better than public fields because a setter can validate input. For example, a radius should not become non-positive. But providing a getter and setter for every field still leaks representation details and couples clients to the current structure.</p>
-<pre><code>public void setR(double r) {
+      <h2 id="tell">3. Tell, don’t ask</h2>
+      <h3>Accessors and mutators are not a default design</h3>
+      <p>Getters and setters are better than public fields because a setter can validate input. For example, a radius should not become non-positive. But providing a getter and setter for every field still leaks representation details and couples clients to the current structure.</p>
+      <pre><code>public void setR(double r) {
   if (r &gt; 0) {
     this.r = r;
   }
 }</code></pre>
-<p>Instead of asking a circle for its centre and radius, then calculating containment in client code, tell the circle to perform the task:</p>
-<pre><code>if (circle.contains(p)) {
+      <p>Instead of asking a circle for its centre and radius, then calculating containment in client code, tell the circle to perform the task:</p>
+      <pre><code>if (circle.contains(p)) {
   // ...
 }</code></pre>
-<p>Use this recognition rule: if client code calls two or more accessors on one object and combines the returned values to perform a meaningful computation, that computation probably belongs inside the object.</p>
-<p>Heavy getter/setter use turns objects into passive data holders and pushes logic into clients, resembling procedural programming rather than object-oriented design.</p>
+      <p>Use this recognition rule: if client code calls two or more accessors on one object and combines the returned values to perform a meaningful computation, that computation probably belongs inside the object.</p>
+      <p>Heavy getter/setter use turns objects into passive data holders and pushes logic into clients, resembling procedural programming rather than object-oriented design.</p>
 
-<h2 id="static">4. Class fields and class methods</h2>
-<h3>Instance members versus class members</h3>
-<table><thead><tr><th>Member</th><th>Belongs to</th><th>Example</th></tr></thead><tbody>
-<tr><td>Instance field</td><td>One particular object</td><td><code>private double r;</code></td></tr>
-<tr><td>Class field</td><td>The class; one shared copy</td><td><code>private static int circleCount;</code></td></tr>
-<tr><td>Instance method</td><td>One particular object</td><td><code>c.getArea()</code></td></tr>
-<tr><td>Class method</td><td>The class itself</td><td><code>Circle.getCircleCount()</code></td></tr>
-</tbody></table>
-<pre><code>class Circle {
+      <h2 id="static">4. Class fields and class methods</h2>
+      <h3>Instance members versus class members</h3>
+      <table>
+        <thead>
+          <tr>
+            <th>Member</th>
+            <th>Belongs to</th>
+            <th>Example</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td>Instance field</td>
+            <td>One particular object</td>
+            <td><code>private double r;</code></td>
+          </tr>
+          <tr>
+            <td>Class field</td>
+            <td>The class; one shared copy</td>
+            <td><code>private static int circleCount;</code></td>
+          </tr>
+          <tr>
+            <td>Instance method</td>
+            <td>One particular object</td>
+            <td><code>c.getArea()</code></td>
+          </tr>
+          <tr>
+            <td>Class method</td>
+            <td>The class itself</td>
+            <td><code>Circle.getCircleCount()</code></td>
+          </tr>
+        </tbody>
+      </table>
+
+      <pre><code>class Circle {
   private static int circleCount = 0;
   private double r;
 
@@ -72,51 +126,71 @@
     return Circle.circleCount;
   }
 }</code></pre>
-<p>A field declared <code>static</code> has one shared copy throughout program execution. Access it using the class name, such as <code>Math.PI</code> or <code>Circle.circleCount</code>; access through an instance is legal but misleading.</p>
-<p>Use <code>public static final</code> for public constants such as <code>Math.PI</code>: <code>static</code> means class-level, <code>final</code> means it cannot be reassigned, and <code>public</code> makes it accessible to clients.</p>
-<h3>Why a static method cannot use <code>this</code></h3>
-<p>A static method has no particular current object. Therefore it cannot use <code>this</code> or directly access instance fields. An instance method may access both its instance fields and class fields.</p>
-<p><code>main</code> is static because the JVM starts the program by invoking it before any instance needs to exist:</p>
-<pre><code>public static void main(String[] args) {
+      <p>A field declared <code>static</code> has one shared copy throughout program execution. Access it using the class name, such as <code>Math.PI</code> or <code>Circle.circleCount</code>; access through an instance is legal but misleading.</p>
+      <p>Use <code>public static final</code> for public constants such as <code>Math.PI</code>: <code>static</code> means class-level, <code>final</code> means it cannot be reassigned, and <code>public</code> makes it accessible to clients.</p>
+
+      <h3>Why a static method cannot use <code>this</code></h3>
+      <p>A static method has no particular current object. Therefore it cannot use <code>this</code> or directly access instance fields. An instance method may access both its instance fields and class fields.</p>
+      <p><code>main</code> is static because the JVM starts the program by invoking it before any instance needs to exist:</p>
+      <pre><code>public static void main(String[] args) {
 }</code></pre>
 
-<h2 id="composition">5. Composition and aliasing</h2>
-<h3>Composition models HAS-A</h3>
-<pre><code>class Circle {
+      <h2 id="composition">5. Composition and aliasing</h2>
+      <h3>Composition models HAS-A</h3>
+      <pre><code>class Circle {
   private Point c;   // a Circle HAS-A Point centre
   private double r;
 }</code></pre>
-<p>Using a <code>Point</code> object instead of separate <code>x</code> and <code>y</code> fields avoids making <code>Circle</code> depend on how a point is represented. A <code>Cylinder</code> can similarly have a <code>Circle</code> base and a height.</p>
-<h3>Aliasing: shared references</h3>
-<pre><code>Point p = new Point(0, 0);
+      <p>Using a <code>Point</code> object instead of separate <code>x</code> and <code>y</code> fields avoids making <code>Circle</code> depend on how a point is represented. A <code>Cylinder</code> can similarly have a <code>Circle</code> base and a height.</p>
+
+      <h3>Aliasing: shared references</h3>
+      <pre><code>Point p = new Point(0, 0);
 Circle c1 = new Circle(p, 1);
 Circle c2 = new Circle(p, 4);</code></pre>
-<p><code>c1</code> and <code>c2</code> share the same <code>Point</code> object. If that point is mutated, both circles appear to move. This is called <strong>aliasing</strong>: two reference values refer to the same object.</p>
-<p>Replacing <code>c1</code>'s centre with a new point changes only <code>c1</code>'s field:</p>
-<pre><code>c1.moveTo(new Point(1, 1));</code></pre>
-<p>However, shared mutable objects can still cause surprising effects elsewhere—for example, if two cylinders share one circle as their base. Avoid unnecessary sharing, or use immutable objects when appropriate.</p>
+      <p><code>c1</code> and <code>c2</code> share the same <code>Point</code> object. If that point is mutated, both circles appear to move. This is called <strong>aliasing</strong>: two reference values refer to the same object.</p>
+      <p>Replacing <code>c1</code>'s centre with a new point changes only <code>c1</code>'s field:</p>
+      <pre><code>c1.moveTo(new Point(1, 1));</code></pre>
+      <p>However, shared mutable objects can still cause surprising effects elsewhere—for example, if two cylinders share one circle as their base. Avoid unnecessary sharing, or use immutable objects when appropriate.</p>
 
-<h2 id="memory">6. Heap, stack, and parameter passing</h2>
-<h3>What the model represents</h3>
-<table><thead><tr><th>Region</th><th>Conceptual contents</th></tr></thead><tbody>
-<tr><td>Stack</td><td>Method call frames, local variables, primitive values, and object references</td></tr>
-<tr><td>Heap</td><td>Objects dynamically allocated by <code>new</code></td></tr>
-</tbody></table>
-<p>Each method invocation creates a <strong>stack frame</strong>. It contains parameters, local variables, and <code>this</code> for an instance method. A static method has no <code>this</code>. Frames are removed when methods return, following last-in-first-out order.</p>
-<pre><code>Point p;
+      <h2 id="memory">6. Heap, stack, and parameter passing</h2>
+      <h3>What the model represents</h3>
+      <table>
+        <thead>
+          <tr>
+            <th>Region</th>
+            <th>Conceptual contents</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td>Stack</td>
+            <td>Method call frames, local variables, primitive values, and object references</td>
+          </tr>
+          <tr>
+            <td>Heap</td>
+            <td>Objects dynamically allocated by <code>new</code></td>
+          </tr>
+        </tbody>
+      </table>
+      <p>Each method invocation creates a <strong>stack frame</strong>. It contains parameters, local variables, and <code>this</code> for an instance method. A static method has no <code>this</code>. Frames are removed when methods return, following last-in-first-out order.</p>
+      <pre><code>Point p;
 p = new Point(1, 2);</code></pre>
-<p><code>p</code> is a stack variable holding a reference. <code>new Point(1, 2)</code> creates a <code>Point</code> object on the heap, runs its constructor, and assigns its reference to <code>p</code>.</p>
-<h3>Java is always pass-by-value</h3>
-<ul><li>For a primitive argument, Java copies the primitive value. Changing a parameter does not change the caller's primitive variable.</li><li>For an object argument, Java copies the reference value. Both references can refer to the same object, so mutating that object is observable by the caller.</li></ul>
-<p>A method cannot reassign the caller's reference variable:</p>
-<pre><code>void reassign(Point p) {
+      <p><code>p</code> is a stack variable holding a reference. <code>new Point(1, 2)</code> creates a <code>Point</code> object on the heap, runs its constructor, and assigns its reference to <code>p</code>.</p>
+
+      <h3>Java is always pass-by-value</h3>
+      <ul>
+        <li>For a primitive argument, Java copies the primitive value. Changing a parameter does not change the caller's primitive variable.</li>
+        <li>For an object argument, Java copies the reference value. Both references can refer to the same object, so mutating that object is observable by the caller.</li>
+      </ul>
+      <p>A method cannot reassign the caller's reference variable:</p>
+      <pre><code>void reassign(Point p) {
   p = new Point(9, 9); // only changes this local parameter
 }</code></pre>
-<p>This is the exam-safe statement: Java is not pass-by-reference; it is pass-by-value where the copied value may be an object reference.</p>
+      <p>This is the exam-safe statement: Java is not pass-by-reference; it is pass-by-value where the copied value may be an object reference.</p>
 
-<h2 id="inheritance">7. Inheritance, subtyping, and casts</h2>
-<h3>Inheritance models IS-A</h3>
-<pre><code>class ColoredCircle extends Circle {
+      <h2 id="inheritance">7. Inheritance, subtyping, and casts</h2>
+      <h3>Inheritance models IS-A</h3>
+      <pre><code>class ColoredCircle extends Circle {
   private Color color;
 
   public ColoredCircle(Point centre, double radius, Color color) {
@@ -124,39 +198,93 @@ p = new Point(1, 2);</code></pre>
     this.color = color;
   }
 }</code></pre>
-<p><code>ColoredCircle</code> is a subclass of <code>Circle</code>; <code>Circle</code> is its superclass. <code>super(...)</code> calls the superclass constructor. A subclass can use inherited public methods but cannot directly access its superclass's private fields.</p>
-<p>Use inheritance only when the subtype can safely stand in for the supertype. A coloured circle is a circle. A circle is not a point, and a cylinder is not a circle: those are HAS-A relationships, so composition is appropriate.</p>
-<h3>Compile-time and runtime type</h3>
-<pre><code>Circle c = new ColoredCircle(p, 0, blue);</code></pre>
-<p>The compile-time type of <code>c</code> is <code>Circle</code>, because that is its declaration. The runtime type of its value is <code>ColoredCircle</code>, because that is the object created.</p>
-<p>Upcasting is safe. A downcast requires an explicit assertion and is checked at runtime:</p>
-<pre><code>Circle c = new Circle(new Point(0, 0), 1);
+      <p><code>ColoredCircle</code> is a subclass of <code>Circle</code>; <code>Circle</code> is its superclass. <code>super(...)</code> calls the superclass constructor. A subclass can use inherited public methods but cannot directly access its superclass's private fields.</p>
+      <p>Use inheritance only when the subtype can safely stand in for the supertype. A coloured circle is a circle. A circle is not a point, and a cylinder is not a circle: those are HAS-A relationships, so composition is appropriate.</p>
+
+      <h3>Compile-time and runtime type</h3>
+      <pre><code>Circle c = new ColoredCircle(p, 0, blue);</code></pre>
+      <p>The compile-time type of <code>c</code> is <code>Circle</code>, because that is its declaration. The runtime type of its value is <code>ColoredCircle</code>, because that is the object created.</p>
+      <p>Upcasting is safe. A downcast requires an explicit assertion and is checked at runtime:</p>
+      <pre><code>Circle c = new Circle(new Point(0, 0), 1);
 ColoredCircle cc = (ColoredCircle) c; // compiles, then throws ClassCastException</code></pre>
 
-<h2 id="overriding">8. Object, strings, and overriding</h2>
-<p>Every Java class ultimately inherits from <code>Object</code>. Useful inherited methods include <code>equals(Object)</code> and <code>toString()</code>. Java invokes <code>toString()</code> when an object is concatenated with a string.</p>
-<pre><code>@Override
+      <h2 id="overriding">8. Object, strings, and overriding</h2>
+      <p>Every Java class ultimately inherits from <code>Object</code>. Useful inherited methods include <code>equals(Object)</code> and <code>toString()</code>. Java invokes <code>toString()</code> when an object is concatenated with a string.</p>
+      <pre><code>@Override
 public String toString() {
   return "{ center: " + this.c + ", radius: " + this.r + " }";
 }</code></pre>
-<p>Without this override, printing a circle typically produces an unhelpful identity-like string such as <code>Circle@...</code>. This method makes the representation useful for debugging.</p>
-<p>A <strong>method signature</strong> consists of its name and ordered parameter types. A <strong>method descriptor</strong> is the signature plus its return type. An instance method in a subclass overrides an inherited instance method when it has the same descriptor.</p>
-<p>Always write <code>@Override</code> for an intended override. The compiler then reports a typo or mismatched signature instead of silently accepting a different method. Static methods with matching descriptors are hidden, not overridden.</p>
+      <p>Without this override, printing a circle typically produces an unhelpful identity-like string such as <code>Circle@...</code>. This method makes the representation useful for debugging.</p>
+      <p>A <strong>method signature</strong> consists of its name and ordered parameter types. A <strong>method descriptor</strong> is the signature plus its return type. An instance method in a subclass overrides an inherited instance method when it has the same descriptor.</p>
+      <p>Always write <code>@Override</code> for an intended override. The compiler then reports a typo or mismatched signature instead of silently accepting a different method. Static methods with matching descriptors are hidden, not overridden.</p>
 
-<h2 id="strategy">9. Final strategy map</h2>
-<table><thead><tr><th>If you see…</th><th>Ask yourself…</th></tr></thead><tbody>
-<tr><td>Direct access to a field</td><td>Does this expose a representation choice that should be private?</td></tr>
-<tr><td>Multiple getters used together</td><td>Should this calculation become a behaviour method on the object?</td></tr>
-<tr><td><code>static</code></td><td>Does this state or behaviour belong to the class rather than one instance?</td></tr>
-<tr><td>One object stored inside another</td><td>Is the relationship HAS-A? Use composition.</td></tr>
-<tr><td><code>extends</code></td><td>Is the relationship genuinely IS-A, preserving the meaning of all superclass uses?</td></tr>
-<tr><td>A method changes an object argument</td><td>It mutates the shared heap object; Java still passed the reference value by value.</td></tr>
-<tr><td>A cast</td><td>Is the actual runtime object really of the target subtype?</td></tr>
-</tbody></table>
+      <h2 id="strategy">9. Final strategy map</h2>
+      <table>
+        <thead>
+          <tr>
+            <th>If you see…</th>
+            <th>Ask yourself…</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td>Direct access to a field</td>
+            <td>Does this expose a representation choice that should be private?</td>
+          </tr>
+          <tr>
+            <td>Multiple getters used together</td>
+            <td>Should this calculation become a behaviour method on the object?</td>
+          </tr>
+          <tr>
+            <td><code>static</code></td>
+            <td>Does this state or behaviour belong to the class rather than one instance?</td>
+          </tr>
+          <tr>
+            <td>One object stored inside another</td>
+            <td>Is the relationship HAS-A? Use composition.</td>
+          </tr>
+          <tr>
+            <td><code>extends</code></td>
+            <td>Is the relationship genuinely IS-A, preserving the meaning of all superclass uses?</td>
+          </tr>
+          <tr>
+            <td>A method changes an object argument</td>
+            <td>It mutates the shared heap object; Java still passed the reference value by value.</td>
+          </tr>
+          <tr>
+            <td>A cast</td>
+            <td>Is the actual runtime object really of the target subtype?</td>
+          </tr>
+        </tbody>
+      </table>
 
-<h2 id="pitfalls">10. Most important misconceptions to correct</h2>
-<ol><li><code>private</code> is not merely style: it protects the abstraction barrier at compile time.</li><li>Getters and setters are not automatically good OO design.</li><li><code>static</code> members do not belong to any individual object and cannot use <code>this</code>.</li><li>Two reference variables can refer to the same mutable object.</li><li>Java always uses pass-by-value, including for object references.</li><li>Inheritance is for valid subtyping, not simply for convenient field or code reuse.</li><li>A cast can compile and still fail at runtime with <code>ClassCastException</code>.</li><li>Use <code>@Override</code> whenever you intend to override an inherited instance method.</li></ol>
-<p><strong>Source note:</strong> This guide is based on the supplied CS2030S Week 2 lecture notes. Course exercises and assessment conventions should take precedence where they are more specific.</p>
-</main>
-<aside class="toc"><h2>On this page</h2><a href="#central-idea">Central idea</a><a href="#hiding">Information hiding</a><a href="#tell">Tell, don’t ask</a><a href="#static">Class members</a><a href="#composition">Composition</a><a href="#memory">Heap and stack</a><a href="#inheritance">Inheritance</a><a href="#overriding">Overriding</a><a href="#strategy">Strategy map</a><a href="#pitfalls">Pitfalls</a></aside>
-</div></body></html>
+      <h2 id="pitfalls">10. Most important misconceptions to correct</h2>
+      <ol>
+        <li><code>private</code> is not merely style: it protects the abstraction barrier at compile time.</li>
+        <li>Getters and setters are not automatically good OO design.</li>
+        <li><code>static</code> members do not belong to any individual object and cannot use <code>this</code>.</li>
+        <li>Two reference variables can refer to the same mutable object.</li>
+        <li>Java always uses pass-by-value, including for object references.</li>
+        <li>Inheritance is for valid subtyping, not simply for convenient field or code reuse.</li>
+        <li>A cast can compile and still fail at runtime with <code>ClassCastException</code>.</li>
+        <li>Use <code>@Override</code> whenever you intend to override an inherited instance method.</li>
+      </ol>
+      <p><strong>Source note:</strong> This guide is based on the supplied CS2030S Week 2 lecture notes. Course exercises and assessment conventions should take precedence where they are more specific.</p>
+    </main>
+
+    <aside class="toc">
+      <h2>On this page</h2>
+      <a href="#central-idea">Central idea</a>
+      <a href="#hiding">Information hiding</a>
+      <a href="#tell">Tell, don’t ask</a>
+      <a href="#static">Class members</a>
+      <a href="#composition">Composition</a>
+      <a href="#memory">Heap and stack</a>
+      <a href="#inheritance">Inheritance</a>
+      <a href="#overriding">Overriding</a>
+      <a href="#strategy">Strategy map</a>
+      <a href="#pitfalls">Pitfalls</a>
+    </aside>
+  </div>
+</body>
+</html>
