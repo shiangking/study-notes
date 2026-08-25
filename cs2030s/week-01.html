@@ -1,0 +1,371 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>CS2030S Week 1: Functions, Encapsulation & OOP Basics</title>
+  <style>
+    :root {
+      --bg-primary: #0f172a;
+      --bg-surface: #1e293b;
+      --bg-surface-elevated: #334155;
+      --text-main: #f8fafc;
+      --text-muted: #94a3b8;
+      --accent-blue: #38bdf8;
+      --accent-emerald: #34d399;
+      --accent-amber: #fbbf24;
+      --accent-rose: #f43f5e;
+      --border-color: #334155;
+      --code-bg: #0b1120;
+    }
+
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+      background-color: var(--bg-primary);
+      color: var(--text-main);
+      line-height: 1.65;
+      padding: 2rem 1rem;
+    }
+
+    .container {
+      max-width: 880px;
+      margin: 0 auto;
+      background: var(--bg-surface);
+      border: 1px solid var(--border-color);
+      border-radius: 12px;
+      padding: 2.5rem;
+      box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.5);
+    }
+
+    .badge {
+      display: inline-block;
+      background: rgba(56, 189, 248, 0.15);
+      color: var(--accent-blue);
+      font-size: 0.85rem;
+      font-weight: 600;
+      padding: 0.25rem 0.75rem;
+      border-radius: 9999px;
+      margin-bottom: 0.75rem;
+      border: 1px solid rgba(56, 189, 248, 0.3);
+    }
+
+    h1 {
+      font-size: 2rem;
+      margin-bottom: 0.5rem;
+      color: var(--text-main);
+      line-height: 1.25;
+    }
+
+    .meta {
+      color: var(--text-muted);
+      font-size: 0.9rem;
+      margin-bottom: 2rem;
+      border-bottom: 1px solid var(--border-color);
+      padding-bottom: 1rem;
+    }
+
+    h2 {
+      font-size: 1.4rem;
+      margin: 2rem 0 1rem;
+      color: var(--accent-blue);
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+    }
+
+    h3 {
+      font-size: 1.15rem;
+      margin: 1.5rem 0 0.75rem;
+      color: var(--accent-emerald);
+    }
+
+    p { margin-bottom: 1rem; }
+
+    ul {
+      margin-bottom: 1.25rem;
+      padding-left: 1.5rem;
+    }
+
+    li { margin-bottom: 0.5rem; }
+
+    strong { color: #ffffff; }
+
+    pre {
+      background-color: var(--code-bg);
+      border: 1px solid var(--border-color);
+      border-radius: 8px;
+      padding: 1rem;
+      overflow-x: auto;
+      margin: 1rem 0 1.5rem;
+      font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
+      font-size: 0.9rem;
+      color: #e2e8f0;
+    }
+
+    code {
+      font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
+      background: var(--bg-surface-elevated);
+      padding: 0.15rem 0.4rem;
+      border-radius: 4px;
+      font-size: 0.88em;
+      color: var(--accent-blue);
+    }
+
+    pre code {
+      background: transparent;
+      padding: 0;
+      color: inherit;
+    }
+
+    .table-container {
+      overflow-x: auto;
+      margin: 1.25rem 0 2rem;
+      border-radius: 8px;
+      border: 1px solid var(--border-color);
+    }
+
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      text-align: left;
+      font-size: 0.95rem;
+    }
+
+    th {
+      background-color: var(--bg-surface-elevated);
+      color: var(--text-main);
+      padding: 0.85rem 1rem;
+      font-weight: 600;
+      border-bottom: 1px solid var(--border-color);
+    }
+
+    td {
+      padding: 0.85rem 1rem;
+      border-bottom: 1px solid var(--border-color);
+      color: #cbd5e1;
+      vertical-align: top;
+    }
+
+    tr:last-child td { border-bottom: none; }
+    tr:nth-child(even) td { background-color: rgba(255, 255, 255, 0.02); }
+
+    .callout {
+      background: rgba(251, 191, 36, 0.08);
+      border-left: 4px solid var(--accent-amber);
+      padding: 1rem 1.25rem;
+      border-radius: 0 8px 8px 0;
+      margin: 1.5rem 0;
+    }
+
+    .callout p:last-child { margin-bottom: 0; }
+
+    footer {
+      margin-top: 3rem;
+      padding-top: 1.5rem;
+      border-top: 1px solid var(--border-color);
+      text-align: center;
+      font-size: 0.85rem;
+      color: var(--text-muted);
+    }
+  </style>
+</head>
+<body>
+
+  <div class="container">
+    <div class="badge">CS2030S Revision</div>
+    <h1>Week 1: Functions, Encapsulation &amp; OOP Basics</h1>
+    <div class="meta">Module: CS2030S Programming Methodology II • Generated Study Notes</div>
+
+    <!-- Section 1 -->
+    <h2>📌 1. High-Yield Summary</h2>
+    <ul>
+      <li><strong>Functions as Abstraction:</strong> Decouples <em>what</em> a computation does from <em>how</em> it is implemented, providing a clear abstraction barrier between client and implementer.</li>
+      <li><strong>Encapsulation:</strong> Bundles state (fields/attributes) and behavior (methods) together within a class to protect internal data integrity.</li>
+      <li><strong>Primitive vs. Reference Types:</strong> Primitives hold raw binary values directly in memory; reference types store memory addresses pointing to heap-allocated objects.</li>
+      <li><strong>Aliasing:</strong> Multiple reference variables pointing to the same object on the heap can cause unintended state mutation across aliases.</li>
+      <li><strong>Initialization Rules:</strong> Local variables must be manually initialized before read (compile-time error), while object fields are auto-initialized by the JVM to default values (primitives to <code>0/false</code>, references to <code>null</code>).</li>
+    </ul>
+
+    <!-- Section 2 -->
+    <h2>🧠 2. Core Concepts &amp; Deep-Dive Breakdown</h2>
+
+    <h3>A. The Abstraction Barrier</h3>
+    <p>An abstraction barrier enforces separation of concerns between callers and implementers:</p>
+    <pre><code>+-------------------------------------------------------------+
+|                     CLIENT (Caller)                         |
+|   Concern: WHAT the function does (Contract &amp; Types)        |
++=============================================================+
+|                 [ ABSTRACTION BARRIER ]                     |
+|           (Enforced by Return &amp; Parameter Types)            |
++=============================================================+
+|                   IMPLEMENTER (Callee)                      |
+|   Concern: HOW the function executes (Algorithm &amp; State)    |
++-------------------------------------------------------------+</code></pre>
+
+    <h3>B. Encapsulation in Java</h3>
+    <pre><code>class Circle {
+    // Fields / Properties (State)
+    double x;
+    double y;
+    double r;
+
+    // Method (Behavior)
+    double getArea() {
+        return 3.14159265359 * r * r;
+    }
+}
+
+// Usage:
+Circle c = new Circle();
+c.r = 10;                // Auto-widened from int (10) to double (10.0)
+double area = c.getArea(); // Returns 314.159...</code></pre>
+
+    <div class="table-container">
+      <table>
+        <thead>
+          <tr>
+            <th>Conceptual Trigger</th>
+            <th>OOP Representation</th>
+            <th>Example</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td><strong>Noun with state/actions</strong></td>
+            <td><code>Class</code></td>
+            <td><code>User</code>, <code>Booking</code>, <code>Point</code></td>
+          </tr>
+          <tr>
+            <td><strong>Adjective / Property</strong></td>
+            <td><code>Field</code></td>
+            <td><code>double radius</code>, <code>String name</code></td>
+          </tr>
+          <tr>
+            <td><strong>Verb / Action</strong></td>
+            <td><code>Method</code></td>
+            <td><code>makeBooking()</code>, <code>getArea()</code></td>
+          </tr>
+          <tr>
+            <td><strong>Single primitive value without behavior</strong></td>
+            <td>Existing primitive type</td>
+            <td><code>int count</code></td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+
+    <h3>C. Reference Types &amp; Memory Aliasing</h3>
+    <pre><code>Circle c1 = new Circle();
+Circle c2 = c1; // Aliasing: both variables hold the exact same address
+
+c1.r = 10.0;
+System.out.println(c2.r); // Prints 10.0 (mutating c1 affects c2)</code></pre>
+
+    <div class="table-container">
+      <table>
+        <thead>
+          <tr>
+            <th>Variable Category</th>
+            <th>Initialization Rule</th>
+            <th>Uninitialized Result</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td><strong>Local Variables</strong></td>
+            <td>Must be explicitly initialized prior to read.</td>
+            <td><strong>Compile-Time Error</strong></td>
+          </tr>
+          <tr>
+            <td><strong>Primitive Fields</strong></td>
+            <td>Auto-initialized by the JVM.</td>
+            <td><code>0</code>, <code>0.0</code>, <code>false</code></td>
+          </tr>
+          <tr>
+            <td><strong>Reference Fields</strong></td>
+            <td>Auto-initialized by the JVM.</td>
+            <td><code>null</code> (Causes runtime <code>NullPointerException</code> if dereferenced)</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+
+    <!-- Section 3 -->
+    <h2>⚠️ 3. Exam Traps &amp; Common Pitfalls</h2>
+    <div class="table-container">
+      <table>
+        <thead>
+          <tr>
+            <th>#</th>
+            <th>Trap / Misconception</th>
+            <th>Root Cause</th>
+            <th>Remedy</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td>1</td>
+            <td><strong>Unintended Aliasing Mutation</strong></td>
+            <td>Assuming <code>c2 = c1</code> creates a duplicate circle object. It only copies the reference pointer.</td>
+            <td>Instantiate a new instance (e.g., <code>new Circle(...)</code>) when distinct state is required.</td>
+          </tr>
+          <tr>
+            <td>2</td>
+            <td><strong>Dereferencing <code>null</code> Fields</strong></td>
+            <td>Assuming object field references are initialized automatically upon class creation.</td>
+            <td>Always initialize reference fields inside constructors or declarations.</td>
+          </tr>
+          <tr>
+            <td>3</td>
+            <td><strong>Direct Field Exposure</strong></td>
+            <td>Exposing raw fields (<code>c.r = 10;</code>) breaks encapsulation.</td>
+            <td>Use <code>private</code> access modifiers with accessor/mutator methods.</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+
+    <!-- Section 4 -->
+    <h2>💡 4. Active Recall Flashcards</h2>
+    <div class="table-container">
+      <table>
+        <thead>
+          <tr>
+            <th style="width: 45%;">Question</th>
+            <th style="width: 55%;">Answer</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td>What primary role does a function's type signature play in OOP?</td>
+            <td>It establishes and enforces the <strong>abstraction barrier</strong> between client and implementer.</td>
+          </tr>
+          <tr>
+            <td>What is the default initial value of an uninitialized reference field in a class?</td>
+            <td><code>null</code></td>
+          </tr>
+          <tr>
+            <td>When two variables hold references to the identical object, what is this called?</td>
+            <td><strong>Aliasing</strong></td>
+          </tr>
+          <tr>
+            <td>What occurs when attempting to read an uninitialized local reference variable?</td>
+            <td><strong>Compile-Time Error</strong> (<code>variable might not have been initialized</code>)</td>
+          </tr>
+          <tr>
+            <td>What occurs when calling a method on an uninitialized reference field?</td>
+            <td>Compiles successfully, but throws a <strong><code>NullPointerException</code> at runtime</strong>.</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+
+    <footer>
+      CS2030S Study Repository • NUS School of Computing
+    </footer>
+  </div>
+
+</body>
+</html>
