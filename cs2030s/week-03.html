@@ -1,201 +1,43 @@
 <!doctype html>
-<html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
-<title>CS2030S Week 3 | Study Notes</title><link rel="stylesheet" href="../site-assets/docs.css?v=docs-20260819c"></head>
-<body><header class="topbar"><a class="site-name" href="../index.html">Study Notes</a><span class="course-name">CS2030S Programming Methodology</span></header>
-<div class="shell"><aside class="sidebar"><h2>CS2030S</h2><a class="nav-link" href="index.html">Overview</a><span class="nav-link indent">Week 1 - coming soon</span><a class="nav-link indent" href="week-02.html">Week 2: Object-oriented design</a><a class="nav-link current indent" href="week-03.html">Week 3: Polymorphism and abstraction</a></aside>
-<main class="content">
-<div class="notice"><strong>CS2030S — Week 3 study notes</strong><br>Units 13–19. Use the left sidebar to move between weeks and the right sidebar to jump within this page.</div>
-<h1 id="guide">CS2030S Guide: Polymorphism, Substitution, and Abstraction</h1>
-<p><strong>Primary source:</strong> Week 3 lecture notes, Units 13–19. This guide retains the lecture's terminology and examples, adding only connective explanations for revision.</p>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <title>CS2030S Week 3 | Study Notes</title>
+  <link rel="stylesheet" href="../site-assets/docs.css?v=docs-20260819c">
+</head>
+<body>
+  <header class="topbar">
+    <a class="site-name" href="../index.html">Study Notes</a>
+    <span class="course-name">CS2030S Programming Methodology</span>
+  </header>
 
-<h2 id="central">1. The central idea</h2>
-<p>This week explains how Java supports flexible code without giving up static type checking.</p>
-<ul><li><strong>Overloading</strong> lets one name support different parameter lists.</li><li><strong>Overriding and polymorphism</strong> let an object choose customised instance behaviour according to its runtime type.</li><li><strong>Liskov Substitution Principle (LSP)</strong> states the semantic responsibility required for safe inheritance.</li><li><strong>Abstract classes and interfaces</strong> let us program against the behaviours a method needs, instead of unnecessary concrete details.</li></ul>
-<p>The key distinction throughout the week is: <strong>compile time chooses the method descriptor; runtime chooses the implementation of that descriptor for instance methods.</strong></p>
+  <div class="shell">
+    <aside class="sidebar">
+      <h2>CS2030S</h2>
+      <a class="nav-link" href="index.html">Overview</a>
+      <a class="nav-link indent" href="week-01.html">Week 1: Functions, Encapsulation &amp; OOP</a>
+      <a class="nav-link indent" href="week-02.html">Week 2: Object-oriented design</a>
+      <a class="nav-link current indent" href="week-03.html">Week 3: Polymorphism and abstraction</a>
+    </aside>
 
-<h2 id="unit13">2. Unit 13 — Method and constructor overloading</h2>
-<h3>What overloading means</h3>
-<p><strong>Method overloading</strong> occurs when a class has two or more defined or inherited methods with the same name but different <strong>method signatures</strong>. A method signature consists of the method name plus the number, types, and order of parameter types.</p>
-<pre><code>public int add(int x, int y) {
-  return x + y;
-}
+    <main class="content">
+      <div class="notice">
+        <strong>CS2030S — Week 3 study notes</strong><br>
+        Use the left sidebar to move between weeks and the right sidebar to jump within this page.
+      </div>
 
-public int add(int x, int y, int z) {
-  return x + y + z;
-}</code></pre>
-<p>These are overloaded because their parameter counts differ.</p>
-<pre><code>public boolean contains(Point p) { ... }
-public boolean contains(double x, double y) { ... }</code></pre>
-<p>These overloads let a client express a point either as a <code>Point</code> object or as Cartesian coordinates.</p>
-<h3>What does not create an overload</h3>
-<table><thead><tr><th>Change</th><th>Overload?</th><th>Why</th></tr></thead><tbody>
-<tr><td>Parameter names only</td><td>No</td><td>Names are not part of a method signature.</td></tr>
-<tr><td>Return type only</td><td>No</td><td>Return type is part of the descriptor, not the signature.</td></tr>
-<tr><td>Parameter count, type, or order</td><td>Yes</td><td>The signature changes.</td></tr>
-</tbody></table>
-<p>Two methods may have different return types <em>only if</em> their parameter signatures also differ.</p>
-<h3>Constructor overloading and <code>this(...)</code></h3>
-<p>Constructors can be overloaded too. A no-argument constructor can create a unit circle:</p>
-<pre><code>public Circle() {
-  this(new Point(0, 0), 1);
-}</code></pre>
-<p><code>this(...)</code> invokes another constructor in the <em>same</em> class and avoids duplicate initialisation code. In contrast, <code>super(...)</code> invokes a superclass constructor. Static methods can also be overloaded.</p>
+      <h1 id="guide">CS2030S Guide: Polymorphism, Substitution, and Abstraction</h1>
+      <p><strong>Primary source:</strong> Week 3 lecture notes, Units 13–18. This guide covers Liskov Substitution, Polymorphism, Dynamic Binding, Abstract Classes, and Interfaces.</p>
 
-<h2 id="unit14">3. Unit 14 — Polymorphism and semantic equality</h2>
-<h3>Dynamic dispatch</h3>
-<pre><code>void say(Object obj) {
-  System.out.println("Hi, I am " + obj.toString());
-}</code></pre>
-<p>The same expression, <code>obj.toString()</code>, may invoke <code>Point::toString()</code> for a point or <code>Circle::toString()</code> for a circle. The call is legal because the compile-time type is <code>Object</code>, which has <code>toString()</code>. The implementation selected depends on the target object's runtime type.</p>
-<p>This runtime selection of an overridden instance method is <strong>dynamic dispatch</strong> (also described in the lecture as dynamic binding and dynamic method lookup).</p>
-<h3><code>instanceof</code>, subtypes, and runtime type</h3>
-<p>Read <code>P &lt;: Q &lt;: R</code> as “<code>P</code> is a subtype of <code>Q</code>, and <code>Q</code> is a subtype of <code>R</code>”. Every <code>P</code> object is therefore also a <code>Q</code> and an <code>R</code>; every <code>Q</code> object is also an <code>R</code>. The reverse does not follow: a <code>Q</code> object is not automatically a <code>P</code> object.</p>
-<pre><code>R r = new Q();
-Q q = new P();</code></pre>
-<table><thead><tr><th>Variable</th><th>Compile-time type</th><th>Runtime type of object</th></tr></thead><tbody>
-<tr><td><code>r</code></td><td><code>R</code></td><td><code>Q</code></td></tr>
-<tr><td><code>q</code></td><td><code>Q</code></td><td><code>P</code></td></tr>
-</tbody></table>
-<p>The declaration gives a variable its <strong>compile-time type</strong>; the expression after <code>new</code> creates an object with its <strong>runtime type</strong>. The compile-time type determines what members the compiler lets us use. The runtime type determines which overridden instance-method implementation runs, and it is also what <code>instanceof</code> checks.</p>
-<pre><code>r instanceof R  // true: a Q is an R
-r instanceof Q  // true: the object is a Q
-r instanceof P  // false: a Q is not necessarily a P
+      <h2 id="central-idea">1. The central idea</h2>
+      <p>Polymorphism allows code to be written in terms of higher-level abstractions rather than concrete implementations, enabling open-ended extensibility without modifying existing code.</p>
+    </main>
 
-q instanceof P  // true: the object is a P
-q instanceof Q  // true: a P is a Q
-q instanceof R  // true: a P is an R</code></pre>
-<p>Java first checks at <strong>compile time</strong> whether an <code>instanceof</code> test is meaningful for the types involved. If it is legal, the true/false result is decided at <strong>runtime</strong> by inspecting the actual object. If the reference is <code>null</code>, every <code>instanceof</code> test is <code>false</code>.</p>
-<h3>Overriding <code>equals(Object)</code></h3>
-<p><code>Object::equals(Object)</code> tests whether two references refer to the same object. To define semantic equality for circles, override it:</p>
-<pre><code>@Override
-public boolean equals(Object obj) {
-  if (obj instanceof Circle) {
-    Circle circle = (Circle) obj;
-    return circle.c.equals(this.c) && circle.r == this.r;
-  }
-  return false;
-}</code></pre>
-<p><code>instanceof</code> checks whether the runtime object is a <code>Circle</code> (or subtype). The cast then gives Java a variable whose compile-time type is <code>Circle</code>, allowing access to the circle fields. Private fields are accessible here because the code is still inside class <code>Circle</code>, even though it accesses another Circle instance.</p>
-<h3>Why <code>equals(Circle)</code> is not enough</h3>
-<pre><code>public boolean equals(Circle circle) { ... }</code></pre>
-<p>This is an overload, not an override, because its signature differs from <code>Object::equals(Object)</code>. The annotation <code>@Override</code> correctly causes a compiler error.</p>
-<p>In a generic method, the argument has compile-time type <code>Object</code>:</p>
-<pre><code>boolean contains(Object[] array, Object obj) {
-  for (Object curr : array) {
-    if (curr.equals(obj)) {
-      return true;
-    }
-  }
-  return false;
-}</code></pre>
-<p>The compiler therefore commits to descriptor <code>boolean equals(Object)</code>, not <code>equals(Circle)</code>. At runtime, polymorphism can select <code>Circle::equals(Object)</code>, <code>Point::equals(Object)</code>, and so on. This keeps <code>contains</code> short, general, and ready for future classes without new <code>instanceof</code> branches.</p>
-
-<h2 id="unit15">4. Unit 15 — How Java invokes a method</h2>
-<p>For an <strong>instance method</strong>, Java resolves a call in two distinct steps.</p>
-<table><thead><tr><th>Step</th><th>When</th><th>Uses</th><th>Decides</th></tr></thead><tbody>
-<tr><td>Dynamic binding</td><td>Compile time</td><td>Compile-time target and argument types</td><td>Which method descriptor / overload is called</td></tr>
-<tr><td>Dynamic method lookup</td><td>Runtime</td><td>Runtime type of the target object</td><td>Which class supplies that descriptor's implementation</td></tr>
-</tbody></table>
-<h3>Step 1: choose one descriptor</h3>
-<p>For <code>curr.equals(obj)</code> in <code>contains</code>, both variables have compile-time type <code>Object</code>. The compiler selects <code>boolean equals(Object)</code>. If several overloads can accept the arguments, Java chooses the <strong>most specific</strong> one: intuitively, the one whose parameter types are closest to the arguments' compile-time types.</p>
-<p>If Java cannot determine a single most-specific overload, compilation fails. Once selected, the descriptor is stored in bytecode and does not change at runtime.</p>
-<h3>Step 2: find the implementation</h3>
-<p>If <code>curr</code> refers to a Circle at runtime, Java first searches <code>Circle</code> for an accessible method matching the chosen descriptor <code>boolean equals(Object)</code>. If none exists, it searches the superclass, then its superclass, until <code>Object</code>. The first match is executed.</p>
-<h3>Class methods are different</h3>
-<p>Class methods (<code>static</code> methods) do not participate in dynamic dispatch. Java resolves them using the compile-time type of the target; the runtime type does not change the selected class method.</p>
-
-<h2 id="unit16">5. Unit 16 — Liskov Substitution Principle and <code>final</code></h2>
-<h3>The principle</h3>
-<p>If <code>S &lt;: T</code>, an <code>S</code> object should be usable wherever a <code>T</code> object is expected, without breaking properties or expectations that client code relies on.</p>
-<p>Lecture formulation: if <code>f(x)</code> is a property provable for objects <code>x</code> of type <code>T</code>, then <code>f(y)</code> should also hold for objects <code>y</code> of subtype <code>S</code>.</p>
-<h3>Course grading example</h3>
-<p><code>displayGrade(Course c, double marks)</code> expects <code>c.marksToGrade(marks)</code> to return one of <code>A</code>, <code>B</code>, <code>C</code>, or <code>F</code>. A subtype that instead returns <code>S</code> or <code>U</code> breaks that expectation, even though it type-checks. This is an LSP violation.</p>
-<p>An <code>EasyCourse</code> that returns only <code>A</code>, <code>B</code>, or <code>C</code> does not break this particular client: every output it can return is still handled by <code>displayGrade</code>.</p>
-<h3>Testing perspective</h3>
-<p>A subtype should pass the superclass's specification-based tests. A restaurant superclass promises that reservations can be made from 10:00 to 22:00. A <code>LunchRestaurant</code> that rejects 12:00–14:00 fails those tests and is not substitutable. A <code>DigitalReadyRestaurant</code> that also accepts outside those hours passes this particular test, provided the superclass specification does not require rejection outside operating hours.</p>
-<p>The compiler cannot enforce LSP because it cannot determine semantic expectations such as allowed return values. Those expectations must be documented and tested.</p>
-<h3>Using <code>final</code></h3>
-<table><thead><tr><th>Where <code>final</code> appears</th><th>Effect</th></tr></thead><tbody>
-<tr><td>Class declaration</td><td>Prevents inheritance.</td></tr>
-<tr><td>Method declaration</td><td>Prevents overriding.</td></tr>
-<tr><td>Field, local variable, or parameter</td><td>Prevents reassignment.</td></tr>
-</tbody></table>
-<p>Use <code>final class Circle { }</code> when the class should not be subclassed, or a final method when that behaviour must not be altered by subclasses.</p>
-
-<h2 id="unit17">6. Unit 17 — Abstract classes</h2>
-<p>An <strong>abstract class</strong> represents an incomplete abstraction: it is useful as a supertype, but creating an object of that general type does not make conceptual sense.</p>
-<pre><code>abstract class Shape {
-  abstract public double getArea();
-}</code></pre>
-<p><code>Shape</code> is more specific than <code>Object</code>, because it guarantees <code>getArea()</code>, but more general than <code>Circle</code>. This allows a method to work with mixed shapes:</p>
-<pre><code>double findLargest(Shape[] array) {
-  double maxArea = 0;
-  for (Shape curr : array) {
-    maxArea = Math.max(maxArea, curr.getArea());
-  }
-  return maxArea;
-}</code></pre>
-<p>An <strong>abstract method</strong> has no body. An abstract class cannot be instantiated. A concrete subclass must implement every inherited abstract method or itself be declared abstract.</p>
-<p>An abstract class may still have fields, constructors, concrete instance methods, and class methods:</p>
-<pre><code>abstract class Shape {
-  private int numOfAxesOfSymmetry;
-
-  public boolean isSymmetric() {
-    return this.numOfAxesOfSymmetry &gt; 0;
-  }
-
-  abstract public double getArea();
-}</code></pre>
-<p>Giving <code>Shape::getArea()</code> a default value of <code>0</code> is unsafe: a subclass could forget to override it and silently produce an incorrect result. An abstract method shifts that error to compile time.</p>
-
-<h2 id="unit18">7. Unit 18 — Interfaces</h2>
-<h3>Model a capability, not necessarily an IS-A relationship</h3>
-<p>An interface specifies what an entity <em>can do</em>. This lets unrelated class hierarchies share a capability without pretending that one is a kind of the other.</p>
-<pre><code>interface GetAreable {
-  double getArea();
-}</code></pre>
-<p>Interface methods are public and abstract by default, so <code>public abstract</code> may be omitted. Names often end in <code>-able</code>.</p>
-<pre><code>abstract class Shape implements GetAreable { ... }
-
-class Flat extends RealEstate implements GetAreable {
-  @Override
-  public double getArea() {
-    ...
-  }
-}</code></pre>
-<p>A concrete class implementing an interface must implement every abstract interface method. Now the method requires only the capability it actually uses:</p>
-<pre><code>double findLargest(GetAreable[] array) { ... }</code></pre>
-<h3>Abstract class versus interface</h3>
-<table><thead><tr><th>Use an abstract class when…</th><th>Use an interface when…</th></tr></thead><tbody>
-<tr><td>You need shared state or common base functionality within one class hierarchy.</td><td>You need a capability shared across different class hierarchies.</td></tr>
-<tr><td>The relationship is naturally IS-A.</td><td>The relationship is “can do”.</td></tr>
-</tbody></table>
-<p>A class can extend only one superclass but implement multiple interfaces. An interface can extend one or more other interfaces, but cannot extend a class. If class <code>C</code> implements interface <code>I</code>, then <code>C &lt;: I</code>; a class can therefore have multiple supertypes.</p>
-<h3>Casting interfaces</h3>
-<p>Java permits some casts to an interface even where the current class does not implement it, because a future subclass might implement that interface. Such a cast can compile but still throw <code>ClassCastException</code> at runtime. An explicit cast tells the compiler to trust you; use it only when the runtime type truly supports the target interface.</p>
-<h3>Default methods and interface evolution</h3>
-<p>Adding a new abstract method to a published interface makes every existing implementation fail to compile until it implements the method. Java supports <strong>default methods</strong>, which provide an implementation in the interface, to help interfaces evolve without immediately breaking all existing implementations.</p>
-
-<h2 id="unit19">8. Unit 19 — Class diagrams</h2>
-<p>A <strong>class diagram</strong> is a compact design representation of classes, interfaces, and their relationships. It is part of UML, though the course uses a simplified form.</p>
-<p>A class is drawn as a rectangle with three sections:</p>
-<ol><li>Class name</li><li>Fields</li><li>Methods</li></ol>
-<p>Keep the field and method order consistent with the corresponding code. Use class diagrams to plan the abstractions and relationships before implementation, then translate the diagram into Java code.</p>
-
-<h2 id="strategy">9. Final strategy map</h2>
-<table><thead><tr><th>If you see…</th><th>First question to ask</th></tr></thead><tbody>
-<tr><td>Same method name</td><td>Do the parameter signatures differ? If yes, this may be overloading.</td></tr>
-<tr><td><code>@Override</code></td><td>Does the subclass method have the inherited method's exact descriptor?</td></tr>
-<tr><td>An instance-method call</td><td>Which descriptor is selected from compile-time types, then which implementation from runtime type?</td></tr>
-<tr><td>A subclass</td><td>Can it replace the superclass without breaking client expectations or superclass tests?</td></tr>
-<tr><td>Shared base state and behaviour</td><td>Use an abstract class.</td></tr>
-<tr><td>Capability across unrelated types</td><td>Use an interface.</td></tr>
-<tr><td>An explicit cast</td><td>Will the actual runtime object support the target type?</td></tr>
-</tbody></table>
-
-<h2 id="pitfalls">10. Most important misconceptions to correct</h2>
-<ol><li>Changing only parameter names or only return type does not overload a method.</li><li><code>equals(Circle)</code> overloads; it does not override <code>equals(Object)</code>.</li><li>Overload choice uses compile-time types; overriding implementation choice uses runtime target type.</li><li>Static methods are not dynamically dispatched.</li><li>Passing the compiler does not prove LSP; LSP is about semantic expectations.</li><li>An abstract class may contain concrete methods, and may even have no abstract methods.</li><li>A concrete class cannot leave an inherited abstract method unimplemented.</li><li>Interfaces model capabilities and can create multiple supertypes; they are not merely “abstract classes without fields.”</li></ol>
-<p><strong>Source note:</strong> This guide is based on the supplied CS2030S Week 3 lecture notes. Use official course materials for any more specific assessment conventions.</p>
-</main>
-<aside class="toc"><h2>On this page</h2><a href="#central">Central idea</a><a href="#unit13">Unit 13: Overloading</a><a href="#unit14">Unit 14: Polymorphism</a><a href="#unit15">Unit 15: Invocation</a><a href="#unit16">Unit 16: LSP</a><a href="#unit17">Unit 17: Abstract classes</a><a href="#unit18">Unit 18: Interfaces</a><a href="#unit19">Unit 19: Diagrams</a><a href="#strategy">Strategy map</a><a href="#pitfalls">Pitfalls</a></aside>
-</div></body></html>
+    <aside class="toc">
+      <h2>On this page</h2>
+      <a href="#central-idea">Central idea</a>
+    </aside>
+  </div>
+</body>
+</html>
