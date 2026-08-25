@@ -1,3 +1,9 @@
+
+---
+
+# Deliverable 2: Complete HTML File (`cs2030s/week-03.html`) [source: 1]
+
+```html
 <!doctype html>
 <html lang="en">
 <head>
@@ -24,19 +30,192 @@
     <main class="content">
       <div class="notice">
         <strong>CS2030S — Week 3 study notes</strong><br>
-        Use the left sidebar to move between weeks and the right sidebar to jump within this page.
+        Units 13–19. Use the left sidebar to move between weeks and the right sidebar to jump within this page.
       </div>
 
       <h1 id="guide">CS2030S Guide: Polymorphism, Substitution, and Abstraction</h1>
-      <p><strong>Primary source:</strong> Week 3 lecture notes, Units 13–18. This guide covers Liskov Substitution, Polymorphism, Dynamic Binding, Abstract Classes, and Interfaces.</p>
+      <p><strong>Primary source:</strong> Week 3 lecture notes, Units 13–19. This guide preserves course concepts, terminology, and code patterns for exam revision.</p>
 
-      <h2 id="central-idea">1. The central idea</h2>
-      <p>Polymorphism allows code to be written in terms of higher-level abstractions rather than concrete implementations, enabling open-ended extensibility without modifying existing code.</p>
+      <!-- SECTION 1 -->
+      <h2 id="central">1. In-depth summary &amp; concept fundamentals</h2>
+      <p>Polymorphism allows programs to be written in terms of high-level abstractions rather than concrete types, enabling extensibility without sacrificing static type checking.</p>
+      <p><strong>Method Overloading</strong> allows multiple methods in the same class to share a name with differing parameter lists, resolved statically at compile time. In contrast, <strong>Method Overriding and Polymorphism</strong> allow an instantiated object to execute customized behavior based on its runtime type via dynamic dispatch.</p>
+      <p>The <strong>Liskov Substitution Principle (LSP)</strong> dictates that any subtype must safely substitute for its supertype without violating client assumptions. <strong>Abstract classes</strong> model shared state and incomplete hierarchies (<code>IS-A</code>), while <strong>Interfaces</strong> define shared capabilities (<code>Can-Do</code>) across unrelated class trees.</p>
+      <p>The golden rule of Java method invocation: <strong>Compile time chooses the method descriptor; Runtime chooses the implementation of that descriptor for instance methods.</strong></p>
+
+      <!-- SECTION 2 -->
+      <h2 id="overloading">2. Method overloading &amp; constructor chaining</h2>
+      <p>An overload occurs when methods share a name but differ in parameter count, type, or order (their method signature). Changing only the return type or parameter names does not create an overload.</p>
+      <pre><code>public Circle() {
+  this(new Point(0, 0), 1); // Invokes another constructor in the SAME class
+}</code></pre>
+      <p><code>this(...)</code> delegates to another constructor in the same class to eliminate redundant code, whereas <code>super(...)</code> invokes the constructor of the immediate superclass.</p>
+
+      <!-- SECTION 3 -->
+      <h2 id="invocation">3. Two-step method invocation &amp; equals(Object)</h2>
+      <table>
+        <thead>
+          <tr>
+            <th>Step</th>
+            <th>When</th>
+            <th>Determining Factor</th>
+            <th>Outcome</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td><strong>Dynamic Binding</strong></td>
+            <td>Compile-Time</td>
+            <td>Compile-time type of target and argument variables</td>
+            <td>Selects the single most-specific method descriptor</td>
+          </tr>
+          <tr>
+            <td><strong>Dynamic Method Lookup</strong></td>
+            <td>Runtime</td>
+            <td>Actual runtime type of the target object</td>
+            <td>Finds and executes the matching implementation</td>
+          </tr>
+        </tbody>
+      </table>
+
+      <h3>Properly Overriding <code>equals(Object)</code></h3>
+      <pre><code>@Override
+public boolean equals(Object obj) {
+  if (obj instanceof Circle) {
+    Circle circle = (Circle) obj;
+    return circle.c.equals(this.c) &amp;&amp; circle.r == this.r;
+  }
+  return false;
+}</code></pre>
+      <p>Defining <code>equals(Circle c)</code> is an overload, not an override. When passed to generic collections or methods typed as <code>Object</code>, Java selects <code>equals(Object)</code>, which bypasses the overloaded method completely.</p>
+
+      <!-- SECTION 4 -->
+      <h2 id="lsp-final">4. Liskov Substitution Principle &amp; the <code>final</code> keyword</h2>
+      <p>If $S &lt;: T$, then any property provable for objects of type $T$ must hold for objects of subtype $S$. Compiling cleanly does not prove LSP compliance; semantic contracts and expected behaviors must be preserved.</p>
+      <table>
+        <thead>
+          <tr>
+            <th>Placement of <code>final</code></th>
+            <th>Enforced Constraint</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td><code>final class</code></td>
+            <td>Prevents class extension / inheritance entirely</td>
+          </tr>
+          <tr>
+            <td><code>final method</code></td>
+            <td>Prevents subclasses from overriding the method</td>
+          </tr>
+          <tr>
+            <td><code>final field / variable</code></td>
+            <td>Prevents variable reassignment after initialization</td>
+          </tr>
+        </tbody>
+      </table>
+
+      <!-- SECTION 5 -->
+      <h2 id="abstract-interfaces">5. Abstract classes vs. interfaces</h2>
+      <table>
+        <thead>
+          <tr>
+            <th>Feature</th>
+            <th>Abstract Class</th>
+            <th>Interface</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td><strong>Relationship</strong></td>
+            <td><code>IS-A</code> relationship</td>
+            <td><code>Can-Do</code> (Capability)</td>
+          </tr>
+          <tr>
+            <td><strong>State</strong></td>
+            <td>Can maintain instance fields and state</td>
+            <td>Stateless (constants only)</td>
+          </tr>
+          <tr>
+            <td><strong>Inheritance</strong></td>
+            <td>Single inheritance (<code>extends</code>)</td>
+            <td>Multiple implementations (<code>implements</code>)</td>
+          </tr>
+        </tbody>
+      </table>
+
+      <!-- SECTION 6 -->
+      <h2 id="pitfalls">6. Exam traps &amp; common pitfalls</h2>
+      <table>
+        <thead>
+          <tr>
+            <th>#</th>
+            <th>Exam Trap</th>
+            <th>Root Cause</th>
+            <th>Remedy</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td>1</td>
+            <td><strong>Accidental Overloading</strong></td>
+            <td>Writing <code>equals(Circle)</code> instead of <code>equals(Object)</code>.</td>
+            <td>Always annotate with <code>@Override</code> so compiler catches signature mismatches.</td>
+          </tr>
+          <tr>
+            <td>2</td>
+            <td><strong>Static Method Invocation</strong></td>
+            <td>Expecting static methods to dispatch dynamically.</td>
+            <td>Static methods resolve strictly by compile-time type; they are hidden, not overridden.</td>
+          </tr>
+          <tr>
+            <td>3</td>
+            <td><strong>Interface Casting Bugs</strong></td>
+            <td>Assuming interface casts are verified fully at compile-time.</td>
+            <td>Java allows interface casts if any subtype could implement it; verify runtime compatibility to avoid <code>ClassCastException</code>.</td>
+          </tr>
+        </tbody>
+      </table>
+
+      <!-- SECTION 7 -->
+      <h2 id="flashcards">7. Active recall flashcards</h2>
+      <table>
+        <thead>
+          <tr>
+            <th style="width: 45%;">Question</th>
+            <th style="width: 55%;">Answer</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td>Does changing only a method's return type create an overload?</td>
+            <td>No. The return type is not part of the method signature and results in a compile error.</td>
+          </tr>
+          <tr>
+            <td>What is the difference between dynamic binding and dynamic method lookup?</td>
+            <td>Dynamic binding occurs at compile time to pick the descriptor; dynamic method lookup occurs at runtime to pick the implementation.</td>
+          </tr>
+          <tr>
+            <td>Can an abstract class have zero abstract methods?</td>
+            <td>Yes. An abstract class can have only concrete methods while still preventing direct instantiation.</td>
+          </tr>
+          <tr>
+            <td>What occurs if an object reference is <code>null</code> during an <code>instanceof</code> check?</td>
+            <td>The expression safely evaluates to <code>false</code> without throwing an exception.</td>
+          </tr>
+        </tbody>
+      </table>
     </main>
 
     <aside class="toc">
       <h2>On this page</h2>
-      <a href="#central-idea">Central idea</a>
+      <a href="#central">1. Central idea</a>
+      <a href="#overloading">2. Overloading</a>
+      <a href="#invocation">3. Method invocation</a>
+      <a href="#lsp-final">4. LSP &amp; final</a>
+      <a href="#abstract-interfaces">5. Abstraction</a>
+      <a href="#pitfalls">6. Exam traps</a>
+      <a href="#flashcards">7. Flashcards</a>
     </aside>
   </div>
 </body>
