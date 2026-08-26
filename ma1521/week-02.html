@@ -1,0 +1,242 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <title>MA1521 Week 2 | Study Notes</title>
+  <link rel="stylesheet" href="../site-assets/docs.css?v=docs-20260826a">
+</head>
+<body>
+  <header class="topbar">
+    <a class="site-name" href="../index.html">Study Notes</a>
+    <span class="course-name">MA1521 Calculus</span>
+  </header>
+  <div class="shell">
+    <aside class="sidebar">
+      <h2>MA1521</h2>
+      <a class="nav-link" href="index.html">Overview</a>
+      <a class="nav-link" href="week-01.html">Week 1: Calculus foundations</a>
+      <a class="nav-link current" href="week-02.html">Week 2: Vectors, planes &amp; curves</a>
+      <span class="nav-link indent">Week 3 - coming soon</span>
+    </aside>
+
+    <main class="content">
+      <div class="notice"><strong>MA1521 - Week 2 exam-ready notes</strong><br>Lectures 3-5: cross products, planes, matrices, linear systems, lines and parametric curves. A short Week 1 vector refresher is included where Week 2 depends on it.</div>
+
+      <h1 id="top">Vectors, Planes, Matrices and Parametric Curves</h1>
+      <p><strong>Sources:</strong> MIT 18.02 Lecture Notes - Week 1, PDF pages 2-3; MIT 18.02 Lecture Notes - Week 2, PDF pages 2-5.</p>
+
+      <h2 id="decision-map">1. Exam decision map</h2>
+      <table>
+        <thead><tr><th>If the problem asks for...</th><th>Main object</th><th>Method to start with</th></tr></thead>
+        <tbody>
+          <tr><td>Angle or perpendicularity</td><td>Two vectors</td><td>Dot product</td></tr>
+          <tr><td>A normal or a plane through three points</td><td>Two in-plane directions</td><td>Cross product</td></tr>
+          <tr><td>Plane through a point</td><td>Point and normal</td><td><code>N · (P-P₀)=0</code></td></tr>
+          <tr><td>Output of a linear transformation</td><td>Matrix and vector</td><td>Row-by-column multiplication</td></tr>
+          <tr><td>Unique solution of <code>AX=B</code></td><td>Square matrix</td><td>Check <code>det(A) ≠ 0</code>, then use <code>A⁻¹</code></td></tr>
+          <tr><td>Line through two points</td><td>Point and direction</td><td><code>Q(t)=Q₀+t(Q₁-Q₀)</code></td></tr>
+          <tr><td>Line-plane intersection</td><td>Parametric line and plane</td><td>Substitute coordinates and solve for <code>t</code></td></tr>
+          <tr><td>Tangent at a singular parametric point</td><td>Leading coordinate behaviour</td><td>Taylor expansion or leading-order ratios</td></tr>
+        </tbody>
+      </table>
+
+      <h2 id="vectors">2. Prerequisite vector toolkit</h2>
+      <h3>Vectors and displacement</h3>
+      <p>Write a vector as <code>A=&lt;a₁,a₂,a₃&gt;</code>. Its magnitude is</p>
+      <p><code>|A| = √(a₁²+a₂²+a₃²)</code>.</p>
+      <p>For points <code>P=(p₁,p₂,p₃)</code> and <code>Q=(q₁,q₂,q₃)</code>,</p>
+      <p><code>PQ = Q-P = &lt;q₁-p₁,q₂-p₂,q₃-p₃&gt;</code>.</p>
+      <p>The subtraction order matters. If you reverse it, the direction reverses.</p>
+
+      <h3>Dot product</h3>
+      <p><code>A·B=a₁b₁+a₂b₂+a₃b₃=|A||B|cos θ</code>.</p>
+      <ul>
+        <li><strong>Angle:</strong> <code>cos θ=(A·B)/(|A||B|)</code>. Form both vectors from the angle's vertex.</li>
+        <li><strong>Perpendicularity:</strong> nonzero vectors are perpendicular exactly when <code>A·B=0</code>.</li>
+        <li><strong>Component along a unit vector û:</strong> <code>A·û</code>.</li>
+        <li><strong>Sign:</strong> positive means acute, zero means right angle, and negative means obtuse.</li>
+      </ul>
+
+      <h3>Cross product</h3>
+      <p>For <code>A=&lt;a₁,a₂,a₃&gt;</code> and <code>B=&lt;b₁,b₂,b₃&gt;</code>,</p>
+      <p><code>A×B=&lt;a₂b₃-a₃b₂, a₃b₁-a₁b₃, a₁b₂-a₂b₁&gt;</code>.</p>
+      <ul>
+        <li><code>A×B</code> is perpendicular to both <code>A</code> and <code>B</code>.</li>
+        <li><code>|A×B|=|A||B|sin θ</code>, the parallelogram area.</li>
+        <li>The direction follows the right-hand rule.</li>
+        <li><code>A×B=-(B×A)</code> and <code>A×A=0</code>.</li>
+      </ul>
+      <p><strong>Common trap:</strong> the dot product returns a scalar; the cross product returns a vector.</p>
+      <p><small>Source: MIT 18.02 Lecture Notes - Week 1, PDF pages 2-3.</small></p>
+
+      <h2 id="planes">3. Planes from cross products and normals</h2>
+      <h3>Plane through three points</h3>
+      <p>Three non-collinear points <code>P₁,P₂,P₃</code> determine a plane. Use:</p>
+      <ol>
+        <li>Build two directions in the plane: <code>u=P₂-P₁</code> and <code>v=P₃-P₁</code>.</li>
+        <li>Find a normal: <code>N=u×v</code>.</li>
+        <li>Use point-normal form: <code>N·(P-P₁)=0</code>.</li>
+        <li>Expand and simplify to <code>ax+by+cz=d</code> if required.</li>
+      </ol>
+      <p>The equivalent determinant condition is</p>
+      <p><code>det(P-P₁, P₂-P₁, P₃-P₁)=0</code>,</p>
+      <p>because the three vectors must be coplanar.</p>
+
+      <h3>Point-normal form</h3>
+      <p>If <code>N=&lt;a,b,c&gt;</code> is normal to the plane and <code>P₀=(x₀,y₀,z₀)</code> lies on it, then</p>
+      <p><code>a(x-x₀)+b(y-y₀)+c(z-z₀)=0</code>.</p>
+      <p>After expansion, the coefficients of <code>x,y,z</code> are the components of a normal vector. Multiplying the complete equation by a nonzero constant gives the same plane.</p>
+
+      <h3>Parallel and perpendicular tests</h3>
+      <ul>
+        <li>A direction <code>v</code> is <strong>parallel to a plane</strong> when <code>v·N=0</code>.</li>
+        <li>A direction <code>v</code> is <strong>perpendicular to a plane</strong> when <code>v</code> is a scalar multiple of <code>N</code>.</li>
+        <li>Two planes are parallel when their normals are scalar multiples.</li>
+      </ul>
+      <p><strong>Lecture check:</strong> for <code>v=&lt;1,2,-1&gt;</code> and plane <code>x+y+3z=5</code>, the normal is <code>N=&lt;1,1,3&gt;</code>. Since <code>v·N=1+2-3=0</code>, <code>v</code> is parallel to the plane.</p>
+      <p><strong>Common trap:</strong> being perpendicular to the normal means being parallel to the plane.</p>
+      <p><small>Source: MIT 18.02 Lecture Notes - Week 2, PDF pages 2-3.</small></p>
+
+      <h2 id="matrices">4. Matrices as transformations</h2>
+      <p>A matrix represents a linear transformation. In <code>AX=U</code>, each entry of <code>U</code> is the dot product of one row of <code>A</code> with the column vector <code>X</code>.</p>
+
+      <h3>Dimension rule</h3>
+      <p><code>(m×n)(n×p) → (m×p)</code>.</p>
+      <p>The inner dimensions must match. The outer dimensions give the result size.</p>
+
+      <h3>Entry rule</h3>
+      <p><code>(AB)ᵢⱼ = (row i of A) · (column j of B)</code>.</p>
+      <p>Matrix multiplication is generally not commutative: <code>AB</code> need not equal <code>BA</code>, and one of them may not even be defined.</p>
+
+      <h3>Composition order</h3>
+      <p><code>(AB)X=A(BX)</code>. Therefore <code>B</code> acts first and <code>A</code> acts second. Read a product of transformations from right to left.</p>
+
+      <h3>Identity and rotation</h3>
+      <p>The identity matrix satisfies <code>IX=X</code>. The matrix</p>
+      <p><code>R=[[0,-1],[1,0]]</code></p>
+      <p>rotates the plane by 90° counterclockwise: <code>Rî=ĵ</code>, <code>Rĵ=-î</code>, and <code>R²=-I</code>.</p>
+      <p><strong>Common trap:</strong> ordinary matrix multiplication is row-by-column, not entry-by-entry.</p>
+      <p><small>Source: MIT 18.02 Lecture Notes - Week 2, PDF page 2.</small></p>
+
+      <h2 id="inverse">5. Inverse matrices and cofactors</h2>
+      <p>An inverse exists for a square matrix <code>A</code> when there is a matrix <code>A⁻¹</code> such that</p>
+      <p><code>AA⁻¹=A⁻¹A=I</code>.</p>
+      <p>If <code>AX=U</code> and <code>A</code> is invertible, then <code>X=A⁻¹U</code>. The central theorem is</p>
+      <p><code>A is invertible ⇔ det(A) ≠ 0</code>.</p>
+
+      <h3>Cofactor method</h3>
+      <p>For a small matrix,</p>
+      <p><code>A⁻¹ = adj(A)/det(A)</code>.</p>
+      <ol>
+        <li><strong>Determinant:</strong> calculate <code>det(A)</code>. If it is zero, stop: no inverse exists.</li>
+        <li><strong>Minors:</strong> <code>Mᵢⱼ</code> is the determinant left after deleting row <code>i</code> and column <code>j</code>.</li>
+        <li><strong>Cofactors:</strong> <code>Cᵢⱼ=(-1)^(i+j)Mᵢⱼ</code>, using the sign pattern <code>+ - + / - + - / + - +</code>.</li>
+        <li><strong>Transpose:</strong> <code>adj(A)=Cᵀ</code>.</li>
+        <li><strong>Divide:</strong> multiply the adjugate by <code>1/det(A)</code>.</li>
+        <li><strong>Verify:</strong> check that <code>AA⁻¹=I</code>.</li>
+      </ol>
+      <p><strong>Frequent errors:</strong> forgetting the checkerboard signs, forgetting to transpose the cofactor matrix, or dividing by the wrong determinant.</p>
+      <p><small>Source: MIT 18.02 Lecture Notes - Week 2, PDF pages 2-3.</small></p>
+
+      <h2 id="systems">6. Linear systems as plane intersections</h2>
+      <p>A 3×3 system <code>AX=B</code> represents the intersection of three planes.</p>
+      <table>
+        <thead><tr><th>Condition</th><th>Homogeneous <code>AX=0</code></th><th>General <code>AX=B</code></th></tr></thead>
+        <tbody>
+          <tr><td><code>det(A) ≠ 0</code></td><td>Only the trivial solution <code>X=0</code></td><td>Exactly one solution, <code>X=A⁻¹B</code></td></tr>
+          <tr><td><code>det(A) = 0</code></td><td>Infinitely many solutions</td><td>No solution or infinitely many solutions</td></tr>
+        </tbody>
+      </table>
+
+      <h3>Homogeneous systems</h3>
+      <p>For <code>AX=0</code>, every plane passes through the origin, so <code>X=0</code> is always a solution. If <code>det(A)≠0</code>, it is the unique solution. If <code>det(A)=0</code>, there are infinitely many solutions forming a line or a plane.</p>
+
+      <h3>Geometric meaning of a zero determinant</h3>
+      <p>If the rows of <code>A</code> are the plane normals <code>N₁,N₂,N₃</code>, then <code>det(A)=0</code> means the normals are coplanar. The parallelepiped they form has zero volume. A direction along the intersection of two nonparallel planes is <code>N₁×N₂</code>.</p>
+      <p><strong>Important limitation:</strong> for a nonhomogeneous system, <code>det(A)=0</code> does not tell you whether there are no solutions or infinitely many. Use elimination or another consistency test.</p>
+      <p><small>Source: MIT 18.02 Lecture Notes - Week 2, PDF pages 3-4.</small></p>
+
+      <h2 id="lines">7. Parametric lines and planes</h2>
+      <h3>Line through a point</h3>
+      <p>A line through <code>Q₀</code> with direction <code>v</code> is</p>
+      <p><code>Q(t)=Q₀+tv</code>.</p>
+      <p>Through two distinct points <code>Q₀,Q₁</code>, use <code>v=Q₁-Q₀</code>. Then <code>t=0</code> gives <code>Q₀</code> and <code>t=1</code> gives <code>Q₁</code>.</p>
+
+      <h3>Line-plane intersection algorithm</h3>
+      <ol>
+        <li>Write the line as <code>x=x(t)</code>, <code>y=y(t)</code>, <code>z=z(t)</code>.</li>
+        <li>Substitute all three into <code>ax+by+cz=d</code>.</li>
+        <li>Solve the resulting scalar equation for <code>t</code>.</li>
+        <li>Substitute <code>t</code> back into every coordinate.</li>
+      </ol>
+      <table>
+        <thead><tr><th>Equation after substitution</th><th>Geometric conclusion</th></tr></thead>
+        <tbody>
+          <tr><td>One value of <code>t</code></td><td>One intersection point</td></tr>
+          <tr><td>An identity, such as <code>7=7</code></td><td>The entire line lies in the plane</td></tr>
+          <tr><td>A contradiction, such as <code>11=7</code></td><td>The line is parallel to and outside the plane</td></tr>
+        </tbody>
+      </table>
+
+      <h3>Worked lecture example</h3>
+      <p>Given <code>Q₀=(-1,2,2)</code> and <code>Q₁=(1,3,-1)</code>,</p>
+      <p><code>v=Q₁-Q₀=&lt;2,1,-3&gt;</code>,</p>
+      <p>so <code>Q(t)=(-1+2t, 2+t, 2-3t)</code>.</p>
+      <p>For the plane <code>x+2y+4z=7</code>, substitution gives</p>
+      <p><code>(-1+2t)+2(2+t)+4(2-3t)=11-8t=7</code>.</p>
+      <p>Thus <code>t=1/2</code>, and the intersection is <code>Q(1/2)=(0,5/2,1/2)</code>.</p>
+      <p><small>Source: MIT 18.02 Lecture Notes - Week 2, PDF page 4.</small></p>
+
+      <h2 id="curves">8. Parametric curves and the cycloid cusp</h2>
+      <p>A parametric curve specifies coordinates as functions of a parameter: <code>x=x(t)</code>, <code>y=y(t)</code>, and possibly <code>z=z(t)</code>. The parameter can represent time, angle, or another convenient geometric quantity.</p>
+
+      <h3>Cycloid derivation</h3>
+      <p>For a wheel of radius <code>a</code> rolling without slipping, let <code>θ</code> be the angle turned. The wheel travels horizontal distance <code>aθ</code>. Decomposing the position of a point on the rim gives</p>
+      <p><code>x(θ)=a(θ-sin θ)</code>,</p>
+      <p><code>y(θ)=a(1-cos θ)</code>.</p>
+
+      <h3>Behaviour near the bottom point</h3>
+      <p>Near <code>θ=0</code>,</p>
+      <p><code>sin θ ≈ θ-θ³/6</code>, &nbsp; <code>cos θ ≈ 1-θ²/2</code>.</p>
+      <p>Hence</p>
+      <p><code>x(θ) ≈ aθ³/6</code>, &nbsp; <code>y(θ) ≈ aθ²/2</code>.</p>
+      <p>Therefore <code>y/x ≈ 3/θ</code>, whose magnitude grows without bound as <code>θ→0</code>. The curve has a vertical tangent and a cusp at the bottom point.</p>
+
+      <h3>General tangent method</h3>
+      <p>For a regular point,</p>
+      <p><code>dy/dx = (dy/dt)/(dx/dt)</code>, provided <code>dx/dt≠0</code>.</p>
+      <p>If both coordinate derivatives vanish, the quotient gives <code>0/0</code> and is inconclusive. Compare the leading Taylor terms of <code>x(t)-x(t₀)</code> and <code>y(t)-y(t₀)</code> instead.</p>
+      <p><small>Source: MIT 18.02 Lecture Notes - Week 2, PDF page 5.</small></p>
+
+      <h2 id="mistakes">9. High-yield mistakes checklist</h2>
+      <ul>
+        <li>Form point-to-point vectors in a consistent order.</li>
+        <li>Do not confuse <code>A·B</code> with <code>A×B</code>.</li>
+        <li>Reversing a cross product reverses the normal direction.</li>
+        <li>A direction orthogonal to a plane's normal is parallel to the plane.</li>
+        <li>Check matrix dimensions before multiplying.</li>
+        <li>Read transformation composition from right to left.</li>
+        <li>Do not compute <code>A⁻¹</code> before confirming <code>det(A)≠0</code>.</li>
+        <li>Transpose the cofactor matrix when forming the adjugate.</li>
+        <li><code>det(A)=0</code> does not automatically mean “no solution.”</li>
+        <li>After solving for a line parameter, substitute it back into all coordinates.</li>
+        <li>When <code>dx/dt=dy/dt=0</code>, use leading-order analysis rather than declaring that no tangent exists.</li>
+      </ul>
+    </main>
+
+    <aside class="toc">
+      <h2>On this page</h2>
+      <a href="#decision-map">Exam decision map</a>
+      <a href="#vectors">Vector toolkit</a>
+      <a href="#planes">Planes and normals</a>
+      <a href="#matrices">Matrices</a>
+      <a href="#inverse">Inverse matrices</a>
+      <a href="#systems">Linear systems</a>
+      <a href="#lines">Lines and planes</a>
+      <a href="#curves">Parametric curves</a>
+      <a href="#mistakes">Mistakes checklist</a>
+    </aside>
+  </div>
+</body>
+</html>
