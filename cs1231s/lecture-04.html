@@ -1,0 +1,247 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <title>CS1231S Lecture 04 | Methods of Proof</title>
+  <link rel="stylesheet" href="../site-assets/docs.css?v=docs-20260826a">
+</head>
+<body>
+<header class="topbar"><a class="site-name" href="../index.html">Study Notes</a><span class="course-name">CS1231S Discrete Structures</span></header>
+<div class="shell">
+<aside class="sidebar">
+  <h2>CS1231S</h2>
+  <a class="nav-link" href="index.html">Overview</a>
+  <a class="nav-link" href="lecture-02.html">Lecture 02: Propositional logic</a>
+  <a class="nav-link" href="lecture-03.html">Lecture 03: Predicate logic</a>
+  <a class="nav-link current" href="lecture-04.html">Lecture 04: Methods of proof</a>
+</aside>
+<main class="content">
+<div class="notice"><strong>Lecture 04 — Methods of Proof</strong><br>Instructor: Ashish Dandekar · Credits: Aaron Tan · Reference: Epp, Chapter 4</div>
+<h1 id="lecture-04">Elementary Number Theory and Methods of Proof</h1>
+<p>A proof is a logically valid argument showing that a mathematical statement follows from definitions, axioms, and previously established results. Good proofs make every chosen object, assumption, and inference explicit.</p>
+
+<h2 id="direct">4.1 Direct proof and counterexample</h2>
+<h3 id="foundations">4.1.1 Core definitions and axiomatic assumptions</h3>
+<p>We assume the standard algebraic laws and the following properties of equality for all objects A, B, and C:</p>
+<ul>
+  <li><strong>Reflexive:</strong> <code>A = A</code>.</li>
+  <li><strong>Symmetric:</strong> if <code>A = B</code>, then <code>B = A</code>.</li>
+  <li><strong>Transitive:</strong> if <code>A = B</code> and <code>B = C</code>, then <code>A = C</code>.</li>
+</ul>
+<p>We also use these integer facts:</p>
+<ul>
+  <li>There is no integer strictly between 0 and 1.</li>
+  <li>ℤ is closed under addition, subtraction, and multiplication.</li>
+  <li>ℤ is not closed under division: <code>3/2 ∉ ℤ</code>, and division by zero is undefined.</li>
+</ul>
+
+<h3 id="even-odd">Even and odd integers</h3>
+<ul>
+  <li><code>n</code> is even iff <code>∃k ∈ ℤ, n = 2k</code>.</li>
+  <li><code>n</code> is odd iff <code>∃k ∈ ℤ, n = 2k + 1</code>.</li>
+</ul>
+<p>These definitions are proof tools. To prove an expression E is even, rewrite it as <code>2 × (an integer)</code>. To prove it is odd, rewrite it as <code>2 × (an integer) + 1</code>.</p>
+
+<h3 id="prime-composite">Prime and composite integers</h3>
+<p>An integer n is <strong>prime</strong> iff <code>n &gt; 1</code> and every positive factorization <code>n = rs</code> is trivial:</p>
+<p><code>(r = 1 ∧ s = n) ∨ (r = n ∧ s = 1)</code>.</p>
+<p>Formally:</p>
+<p><code>(n &gt; 1) ∧ ∀r,s ∈ ℤ⁺ [n = rs → ((r = 1 ∧ s = n) ∨ (r = n ∧ s = 1))]</code>.</p>
+<p>An equivalent formulation forbids a factorization by integers both greater than 1:</p>
+<p><code>(n &gt; 1) ∧ ∀r,s ∈ ℤ [(r &gt; 1 ∧ s &gt; 1) → rs ≠ n]</code>.</p>
+<p>An integer n is <strong>composite</strong> iff <code>n &gt; 1</code> and</p>
+<p><code>∃r,s ∈ ℤ⁺ [n = rs ∧ 1 &lt; r &lt; n ∧ 1 &lt; s &lt; n]</code>.</p>
+<div class="notice"><strong>Important:</strong> 1 is neither prime nor composite because both definitions require <code>n &gt; 1</code>.</div>
+
+<h3 id="existence">4.1.2 Proving existential statements</h3>
+<p>To constructively prove <code>∃x ∈ D, Q(x)</code>, either:</p>
+<ol>
+  <li>exhibit a concrete witness x in D and verify Q(x); or</li>
+  <li>give an explicit algorithm that always produces a valid witness.</li>
+</ol>
+<p><strong>Example 1:</strong> prove there exists an even integer expressible in two ways as a sum of two primes. Choose 10:</p>
+<p><code>10 = 5 + 5 = 3 + 7</code>, and 3, 5, 7 are prime.</p>
+<p><strong>Example 2:</strong> let <code>r,s ∈ ℤ</code>. Prove there is <code>k ∈ ℤ</code> with <code>22r + 18s = 2k</code>.</p>
+<p>Choose <code>k = 11r + 9s</code>. Closure under multiplication and addition gives <code>k ∈ ℤ</code>, and</p>
+<p><code>2k = 2(11r + 9s) = 22r + 18s</code>.</p>
+<p>A witness alone is not enough; explicitly check both domain membership and the required property.</p>
+
+<h3 id="counterexample">4.1.3 Disproving universal statements</h3>
+<p>To disprove <code>∀x ∈ D (P(x) → Q(x))</code>, prove its negation:</p>
+<p><code>∃x ∈ D (P(x) ∧ ¬Q(x))</code>.</p>
+<p>Thus a counterexample must satisfy the hypothesis and violate the conclusion.</p>
+<p><strong>Example:</strong> disprove “for all real a,b, if <code>a² = b²</code>, then <code>a = b</code>”. Choose <code>a = 1</code> and <code>b = −1</code>. Both are real and <code>a² = b² = 1</code>, but <code>a ≠ b</code>.</p>
+<div class="notice"><strong>Common mistake:</strong> choosing an x for which P(x) is false does not refute <code>P(x) → Q(x)</code>; that conditional is vacuously true.</div>
+
+<h3 id="exhaustion">4.1.4 Proof by exhaustion</h3>
+<p>If D is finite—or only finitely many members satisfy the hypothesis—check every relevant case.</p>
+<p><strong>Example:</strong> every even integer n with <code>4 ≤ n ≤ 26</code> is the sum of two primes:</p>
+<table>
+  <tbody>
+    <tr><td><code>4 = 2 + 2</code></td><td><code>6 = 3 + 3</code></td><td><code>8 = 3 + 5</code></td></tr>
+    <tr><td><code>10 = 5 + 5</code></td><td><code>12 = 5 + 7</code></td><td><code>14 = 11 + 3</code></td></tr>
+    <tr><td><code>16 = 5 + 11</code></td><td><code>18 = 7 + 11</code></td><td><code>20 = 7 + 13</code></td></tr>
+    <tr><td><code>22 = 5 + 17</code></td><td><code>24 = 5 + 19</code></td><td><code>26 = 7 + 19</code></td></tr>
+  </tbody>
+</table>
+<p>The interval and evenness hypothesis reduce the proof to exactly these twelve cases.</p>
+
+<h3 id="generic">4.1.5 Generalizing from the generic particular</h3>
+<p>To directly prove <code>∀x ∈ D(P(x) → Q(x))</code>:</p>
+<ol>
+  <li>Let x be an arbitrary element of D.</li>
+  <li>Assume P(x).</li>
+  <li>Use definitions and established facts to derive Q(x).</li>
+  <li>Because x was arbitrary, universally generalize.</li>
+</ol>
+<p><strong>Example: the sum of two even integers is even.</strong></p>
+<p>Let m and n be arbitrary even integers. By definition, <code>m = 2a</code> and <code>n = 2b</code> for some <code>a,b ∈ ℤ</code>. Then</p>
+<p><code>m + n = 2a + 2b = 2(a + b)</code>.</p>
+<p>Since <code>a + b ∈ ℤ</code> by closure, <code>m + n</code> is even.</p>
+
+<h3 id="uniqueness">Uniqueness proofs</h3>
+<p>To prove <code>∃!x ∈ X, P(x)</code>, prove both:</p>
+<ol>
+  <li><strong>Existence:</strong> <code>∃x ∈ X, P(x)</code>.</li>
+  <li><strong>Uniqueness:</strong> <code>∀x,y ∈ X ((P(x) ∧ P(y)) → x = y)</code>.</li>
+</ol>
+<p><strong>Example: every integer has a unique additive inverse.</strong></p>
+<p>Let <code>x ∈ ℤ</code>.</p>
+<ul>
+  <li><strong>Existence:</strong> choose <code>y = −x</code>. Since integers are closed under subtraction, <code>y ∈ ℤ</code>, and <code>x + y = x − x = 0</code>.</li>
+  <li><strong>Uniqueness:</strong> suppose y and z are additive inverses of x. Then <code>x + y = 0</code> and <code>x + z = 0</code>. Hence <code>x + y = x + z</code>; subtracting x from both sides gives <code>y = z</code>.</li>
+</ul>
+
+<h2 id="rationals">4.2 Proofs about rational numbers</h2>
+<h3 id="rational-definition">4.2.1 Definition</h3>
+<p>A real number r is <strong>rational</strong> iff there exist integers a,b such that</p>
+<p><code>r = a/b</code> and <code>b ≠ 0</code>.</p>
+<p>A real number that is not rational is <strong>irrational</strong>. The representation need not be in lowest terms unless a theorem explicitly requires it.</p>
+
+<h3 id="rational-theorems">4.2.2–4.2.3 Basic theorems</h3>
+<p><strong>Theorem: every integer is rational.</strong> Let <code>n ∈ ℤ</code>. Then <code>n = n/1</code>, where numerator and denominator are integers and the denominator is nonzero.</p>
+<p><strong>Theorem: the sum of two rational numbers is rational.</strong></p>
+<p>Let r and s be arbitrary rational numbers. Then <code>r = a/b</code> and <code>s = c/d</code> for integers a,b,c,d with <code>b,d ≠ 0</code>. Therefore</p>
+<p><code>r + s = a/b + c/d = (ad + bc)/(bd)</code>.</p>
+<p>By integer closure, <code>ad + bc ∈ ℤ</code> and <code>bd ∈ ℤ</code>. Because <code>b,d ≠ 0</code>, <code>bd ≠ 0</code>. Thus r + s has the required rational form.</p>
+<p><strong>Corollary:</strong> the double of a rational number is rational. A <strong>corollary</strong> is a result that follows simply from a theorem. Since <code>2r = r + r</code>, the sum theorem proves the corollary.</p>
+
+<h2 id="divisibility">4.3 Proofs about divisibility</h2>
+<h3 id="divides">4.3.1 Definition</h3>
+<p>For integers n and d, with <code>d ≠ 0</code>, d divides n, written <code>d | n</code>, iff</p>
+<p><code>∃k ∈ ℤ, n = dk</code>.</p>
+<p><strong>Examples:</strong> <code>3 | 12</code> because <code>12 = 3·4</code>; <code>5 ∤ 12</code> because no integer k satisfies <code>12 = 5k</code>. Under this lecture's convention, the divisor d is nonzero.</p>
+
+<h3 id="positive-divisor">4.3.2 Theorem 4.3.1: a positive divisor is no larger</h3>
+<p><strong>Theorem:</strong> for positive integers a and b, if <code>a | b</code>, then <code>a ≤ b</code>.</p>
+<ol>
+  <li>Let a,b be arbitrary positive integers and suppose <code>a | b</code>.</li>
+  <li>By divisibility, <code>b = ak</code> for some <code>k ∈ ℤ</code>.</li>
+  <li>Because a and b are positive, k is positive, so <code>k ≥ 1</code>.</li>
+  <li>Multiplying <code>1 ≤ k</code> by positive a gives <code>a ≤ ak = b</code>.</li>
+</ol>
+<p>Therefore <code>a | b → a ≤ b</code> for positive integers a,b. ∎</p>
+
+<h3 id="divisors-one">Theorem 4.3.2: divisors of 1</h3>
+<p><strong>Theorem:</strong> the only integer divisors of 1 are 1 and −1.</p>
+<ol>
+  <li>Let <code>m ∈ ℤ</code> and suppose <code>m | 1</code>. Then <code>1 = mk</code> for some <code>k ∈ ℤ</code>.</li>
+  <li>Since <code>mk = 1 &gt; 0</code>, m and k have the same sign.</li>
+  <li><strong>Case 1:</strong> m,k are positive. The previous theorem gives <code>m ≤ 1</code>, while positivity gives <code>m ≥ 1</code>. Hence <code>m = 1</code>.</li>
+  <li><strong>Case 2:</strong> m,k are negative. Then <code>−m</code> and <code>−k</code> are positive and <code>1 = (−m)(−k)</code>. Case 1 gives <code>−m = 1</code>, so <code>m = −1</code>.</li>
+</ol>
+<p>Conversely, <code>1 | 1</code> and <code>−1 | 1</code>, so the set of divisors is exactly <code>{−1,1}</code>. ∎</p>
+
+<h3 id="transitivity">Theorem 4.3.3: transitivity of divisibility</h3>
+<p><strong>Theorem:</strong> for all integers a,b,c, if <code>a | b</code> and <code>b | c</code>, then <code>a | c</code>.</p>
+<ol>
+  <li>Let a,b,c be arbitrary integers satisfying <code>a | b</code> and <code>b | c</code>.</li>
+  <li>Then <code>b = ar</code> and <code>c = bs</code> for some integers r,s.</li>
+  <li>Substitute: <code>c = bs = (ar)s = a(rs)</code>.</li>
+  <li>Let <code>k = rs</code>. Closure gives <code>k ∈ ℤ</code>, and <code>c = ak</code>.</li>
+</ol>
+<p>By definition, <code>a | c</code>. ∎</p>
+<p><strong>Proof-writing lesson:</strong> whenever the goal is <code>a | c</code>, work toward the exact definition <code>c = a × (some integer)</code>, then name and verify that integer.</p>
+
+<h2 id="indirect">4.4 Indirect proof</h2>
+<h3 id="contradiction">4.4.1 Proof by contradiction</h3>
+<p>To prove S by contradiction:</p>
+<ol>
+  <li>Assume the negation <code>¬S</code>.</li>
+  <li>Derive a contradiction, such as <code>R ∧ ¬R</code>, a violation of a known theorem, or an impossible equation.</li>
+  <li>Conclude that <code>¬S</code> is false, so S is true.</li>
+</ol>
+<p><strong>Theorem: there is no greatest integer.</strong></p>
+<ol>
+  <li>Suppose for contradiction that there is a greatest integer g, so <code>g ≥ n</code> for every integer n.</li>
+  <li>Let <code>G = g + 1</code>. Closure under addition gives <code>G ∈ ℤ</code>.</li>
+  <li>But <code>G &gt; g</code>, contradicting the claim that g is greatest.</li>
+</ol>
+<p>Therefore there is no greatest integer. ∎</p>
+<p>The lecture also cites the classic contradiction proof that <code>√2</code> is irrational: assume <code>√2 = a/b</code> in lowest terms, derive that both a and b are even, and contradict lowest terms.</p>
+
+<h3 id="sqrt2">Expanded example: √2 is irrational</h3>
+<ol>
+  <li>Assume <code>√2 = a/b</code> for integers a,b in lowest terms, with <code>b ≠ 0</code>.</li>
+  <li>Squaring gives <code>2 = a²/b²</code>, hence <code>a² = 2b²</code>. Thus a² is even.</li>
+  <li>Using the proposition below, a is even, so <code>a = 2k</code>.</li>
+  <li>Substitute: <code>(2k)² = 2b²</code>, so <code>b² = 2k²</code>. Hence b², and therefore b, is even.</li>
+  <li>Both a and b are divisible by 2, contradicting that <code>a/b</code> was in lowest terms.</li>
+</ol>
+<p>Therefore <code>√2</code> is irrational. ∎</p>
+
+<h3 id="contraposition">4.4.2 Proof by contraposition</h3>
+<p>To prove <code>∀x ∈ D(P(x) → Q(x))</code>, it is equivalent to prove the contrapositive <code>∀x ∈ D(¬Q(x) → ¬P(x))</code>:</p>
+<ol>
+  <li>Let x be arbitrary in D and assume <code>¬Q(x)</code>.</li>
+  <li>Derive <code>¬P(x)</code>.</li>
+  <li>Conclude the contrapositive, hence the original statement.</li>
+</ol>
+<p><strong>Proposition:</strong> for every integer n, if n² is even, then n is even.</p>
+<p>Prove the contrapositive: if n is odd, then n² is odd.</p>
+<ol>
+  <li>Let n be an arbitrary odd integer. Then <code>n = 2k + 1</code> for some <code>k ∈ ℤ</code>.</li>
+  <li><code>n² = (2k + 1)² = 4k² + 4k + 1 = 2(2k² + 2k) + 1</code>.</li>
+  <li>Let <code>m = 2k² + 2k</code>. Closure gives <code>m ∈ ℤ</code>.</li>
+  <li>Thus <code>n² = 2m + 1</code>, so n² is odd.</li>
+</ol>
+<p>The contrapositive is true, hence if n² is even, n is even. ∎</p>
+
+<h3 id="method-choice">Choosing a proof method</h3>
+<table>
+  <thead><tr><th>Goal shape</th><th>Good first approach</th></tr></thead>
+  <tbody>
+    <tr><td><code>∃x, P(x)</code></td><td>Construct and verify a witness.</td></tr>
+    <tr><td><code>∀x(P(x) → Q(x))</code></td><td>Direct proof from an arbitrary x satisfying P.</td></tr>
+    <tr><td>Universal claim seems false</td><td>Search for one counterexample satisfying P and violating Q.</td></tr>
+    <tr><td>Finite relevant domain</td><td>Exhaustion.</td></tr>
+    <tr><td><code>∃!x, P(x)</code></td><td>Separate existence and uniqueness.</td></tr>
+    <tr><td>¬Q gives more usable information than P</td><td>Contraposition.</td></tr>
+    <tr><td>Negation creates an impossible/extremal situation</td><td>Contradiction.</td></tr>
+  </tbody>
+</table>
+<p>Contraposition proves a conditional by directly proving an equivalent conditional. Contradiction assumes the negation of the entire target and derives impossibility. They may look similar, but their starting assumptions differ.</p>
+
+<h2 id="proof-checklist">Lecture 04 proof checklist</h2>
+<ol>
+  <li>Write the domain and quantify objects correctly: arbitrary for universal claims, specific for existential claims.</li>
+  <li>Unpack definitions immediately—especially even, odd, rational, prime, composite, and divides.</li>
+  <li>When introducing an integer expression, justify that it is an integer using closure.</li>
+  <li>For division, verify the denominator is nonzero.</li>
+  <li>A counterexample must make the hypothesis true and conclusion false.</li>
+  <li>For uniqueness, prove existence and “any two solutions are equal”.</li>
+  <li>End by explicitly linking the derived form back to the definition or theorem being proved.</li>
+</ol>
+</main>
+<aside class="toc">
+  <h2>On this page</h2>
+  <a href="#direct">4.1 Direct proof</a>
+  <a href="#rationals">4.2 Rational numbers</a>
+  <a href="#divisibility">4.3 Divisibility</a>
+  <a href="#indirect">4.4 Indirect proof</a>
+  <a href="#proof-checklist">Proof checklist</a>
+</aside>
+</div>
+</body>
+</html>
