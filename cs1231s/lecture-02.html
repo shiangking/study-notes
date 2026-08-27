@@ -1,0 +1,263 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <title>CS1231S Lecture 02 | Propositional Logic</title>
+  <link rel="stylesheet" href="../site-assets/docs.css?v=docs-20260826a">
+</head>
+<body>
+<header class="topbar"><a class="site-name" href="../index.html">Study Notes</a><span class="course-name">CS1231S Discrete Structures</span></header>
+<div class="shell">
+<aside class="sidebar">
+  <h2>CS1231S</h2>
+  <a class="nav-link" href="index.html">Overview</a>
+  <a class="nav-link current" href="lecture-02.html">Lecture 02: Propositional logic</a>
+  <a class="nav-link" href="lecture-03.html">Lecture 03: Predicate logic</a>
+  <a class="nav-link" href="lecture-04.html">Lecture 04: Methods of proof</a>
+</aside>
+<main class="content">
+<div class="notice"><strong>Lecture 02 — The Logic of Compound Statements</strong><br>Instructor: Ashish Dandekar · Credits: Aaron Tan · Reference: Epp, Chapter 2</div>
+<h1 id="lecture-02">Propositional Logic</h1>
+<p>Propositional logic studies how truth values combine. It gives us a precise language for statements, implications, equivalences, and valid deductions.</p>
+
+<h2 id="overview">2.0 Logic and the opening puzzles</h2>
+<h3>What is logic?</h3>
+<p>Alfred Tarski described logic as the discipline that analyses concepts common to all sciences and establishes the general laws governing them. More practically, logic is the study of the principles of <strong>correct reasoning</strong>.</p>
+<ul>
+  <li><strong>Not a psychology of reasoning:</strong> logic specifies correct inference; it does not study whether people actually reason that way.</li>
+  <li><strong>Non-empirical:</strong> logic manipulates truth according to formal rules. How the truth of an atomic claim is established is external to the logical system.</li>
+  <li><strong>Syntax:</strong> rules defining acceptable objects, called well-formed formulae (wff).</li>
+  <li><strong>Semantics:</strong> assigns meanings or truth values to formulae.</li>
+  <li><strong>Proof theory:</strong> rules for manipulating formulae while preserving valid reasoning.</li>
+</ul>
+
+<h3>Opening puzzle 1: CSI murder mystery</h3>
+<p>Let A, B, C, and D mean that Alice, Bob, Cara, and Dan are guilty. Translating the clues:</p>
+<ul>
+  <li>If Bob is innocent, Cara is innocent: <code>¬B → ¬C</code>.</li>
+  <li>If Alice is innocent, Dan is guilty: <code>¬A → D</code>.</li>
+  <li>If Alice is guilty, Bob is innocent: <code>A → ¬B</code>.</li>
+  <li>Bob may or may not be guilty: no restriction; <code>B ∨ ¬B</code> is a tautology.</li>
+  <li>Either Cara or Dan is guilty: <code>C ∨ D</code>. In standard logic, “or” is inclusive unless stated otherwise.</li>
+</ul>
+<p><strong>Conclusion:</strong> Dan must be guilty. If Alice is innocent, clue (b) gives D immediately. If Alice is guilty, clue (c) gives ¬B, then clue (a) gives ¬C, and clue (e) forces D. This is a proof by cases. The clues do <em>not</em> uniquely determine whether anyone else is guilty.</p>
+
+<h3>Opening puzzle 2: who is looking at whom?</h3>
+<p>X looks at Y, Y looks at Z, X is married, and Z is unmarried. Is a married person looking at an unmarried person?</p>
+<p><strong>Answer: Yes.</strong> Split into cases on Y:</p>
+<ul>
+  <li>If Y is unmarried, married X is looking at unmarried Y.</li>
+  <li>If Y is married, married Y is looking at unmarried Z.</li>
+</ul>
+<p>We do not need to know Y's status because every possible case proves the same conclusion.</p>
+
+<h2 id="statements">2.1 Logical form and logical equivalence</h2>
+<h3 id="propositions">2.1.1 Statements and statement forms</h3>
+<p>A <strong>statement</strong> or <strong>proposition</strong> is a sentence that is true or false, but not both.</p>
+<table>
+  <thead><tr><th>Sentence</th><th>Statement?</th><th>Reason</th></tr></thead>
+  <tbody>
+    <tr><td><code>2 + 3 = 9</code></td><td>Yes (false)</td><td>It has a definite truth value.</td></tr>
+    <tr><td>The sky is blue.</td><td>Yes</td><td>It asserts a claim.</td></tr>
+    <tr><td>Can you do it?</td><td>No</td><td>Question.</td></tr>
+    <tr><td>Stand quiet!</td><td>No</td><td>Command.</td></tr>
+    <tr><td>Walao eh, so difficult!</td><td>No</td><td>Exclamation.</td></tr>
+    <tr><td><code>2x = x²</code></td><td>No</td><td>Open sentence; truth depends on x and its domain.</td></tr>
+  </tbody>
+</table>
+<p>A <strong>statement form</strong> (propositional form) is an expression made from statement variables and logical connectives that becomes a statement once actual statements replace the variables. Examples include <code>¬p ∨ q</code>, <code>(p ∨ q) ∧ ¬(p ∧ q)</code>, and <code>(p ∧ q) ∨ r</code>.</p>
+<p><strong>Abstraction example:</strong> “If Jane is a mathematics major or a computer science major, then she takes MA1101R. Jane is a computer science major. Therefore she takes MA1101R.” has form <code>(p ∨ q) → r, q ⊢ r</code>.</p>
+
+<h3 id="connectives">2.1.2 Compound statements and connectives</h3>
+<table>
+  <thead><tr><th>Operation</th><th>Notation</th><th>Meaning</th><th>When true</th></tr></thead>
+  <tbody>
+    <tr><td>Negation</td><td><code>¬p</code> or <code>~p</code></td><td>not p</td><td>p is false</td></tr>
+    <tr><td>Conjunction</td><td><code>p ∧ q</code></td><td>p and q</td><td>both are true</td></tr>
+    <tr><td>Disjunction</td><td><code>p ∨ q</code></td><td>p or q</td><td>at least one is true</td></tr>
+  </tbody>
+</table>
+<table>
+  <thead><tr><th>p</th><th>q</th><th>¬p</th><th>p ∧ q</th><th>p ∨ q</th></tr></thead>
+  <tbody>
+    <tr><td>T</td><td>T</td><td>F</td><td>T</td><td>T</td></tr>
+    <tr><td>T</td><td>F</td><td>F</td><td>F</td><td>T</td></tr>
+    <tr><td>F</td><td>T</td><td>T</td><td>F</td><td>T</td></tr>
+    <tr><td>F</td><td>F</td><td>T</td><td>F</td><td>F</td></tr>
+  </tbody>
+</table>
+<p><strong>Translation example:</strong> let h = “it is hot” and s = “it is sunny”. “It is not hot but sunny” is <code>¬h ∧ s</code>. “It is neither hot nor sunny” is <code>¬h ∧ ¬s</code>, equivalently <code>¬(h ∨ s)</code>.</p>
+<p><strong>Exclusive or (XOR):</strong> exactly one of p and q is true:</p>
+<p><code>p ⊕ q ≡ (p ∨ q) ∧ ¬(p ∧ q)</code>.</p>
+<p>CS1231S rarely uses <code>⊕</code>; expand it when proving equivalences.</p>
+
+<h3 id="precedence">Order of operations</h3>
+<ol>
+  <li><code>¬</code> first.</li>
+  <li><code>∧</code> and <code>∨</code> are coequal; use parentheses if both appear.</li>
+  <li><code>→</code> and <code>↔</code> are coequal and performed last.</li>
+</ol>
+<p>Thus <code>¬p ∧ q</code> means <code>(¬p) ∧ q</code>, while <code>p ∧ q ∨ r</code> is ambiguous and must be written as <code>(p ∧ q) ∨ r</code> or <code>p ∧ (q ∨ r)</code>.</p>
+<div class="notice"><strong>CS2100 convention differs:</strong> Boolean algebra often writes conjunction as multiplication, disjunction as <code>+</code>, and negation as an overbar or <code>¬</code>, with conjunction having higher precedence than disjunction. In CS1231S, use explicit parentheses and the stated logic convention.</div>
+
+<h3 id="equivalence">2.1.4 Logical equivalence</h3>
+<p>Statement forms P and Q are <strong>logically equivalent</strong>, written <code>P ≡ Q</code>, iff they have identical truth values under every assignment to their variables.</p>
+<ul>
+  <li>To <strong>prove equivalence</strong>, compare every row of a truth table or transform one form using known equivalence laws.</li>
+  <li>To <strong>disprove equivalence</strong>, one differing truth-table row is enough. Equivalently, give concrete component statements that make one form true and the other false.</li>
+</ul>
+<p><strong>Counterexample:</strong> <code>¬(p ∧ q)</code> is not equivalent to <code>¬p ∧ ¬q</code>. Let p be <code>0 &lt; 1</code> (true) and q be <code>1 &lt; 0</code> (false). Then <code>¬(p ∧ q)</code> is true but <code>¬p ∧ ¬q</code> is false.</p>
+<p><strong>De Morgan's laws:</strong></p>
+<ul>
+  <li><code>¬(p ∧ q) ≡ ¬p ∨ ¬q</code>.</li>
+  <li><code>¬(p ∨ q) ≡ ¬p ∧ ¬q</code>.</li>
+</ul>
+<p>They extend to any finite number of variables: negate the connective and negate every component.</p>
+
+<h3 id="tautologies">2.1.5 Tautologies and contradictions</h3>
+<p>A <strong>tautology</strong> is always true, regardless of variable values; it is denoted <code>true</code> or <code>t</code>. A <strong>contradiction</strong> is always false; it is denoted <code>false</code> or <code>c</code>.</p>
+<p>Examples: <code>p ∨ ¬p</code> is a tautology and <code>p ∧ ¬p</code> is a contradiction. Consequently, <code>p ∧ true ≡ p</code> and <code>p ∧ false ≡ false</code>.</p>
+
+<h3 id="laws">2.1.6 Complete equivalence-law summary</h3>
+<table>
+  <thead><tr><th>Law</th><th>Conjunction form</th><th>Disjunction form</th></tr></thead>
+  <tbody>
+    <tr><td>Commutative</td><td><code>p ∧ q ≡ q ∧ p</code></td><td><code>p ∨ q ≡ q ∨ p</code></td></tr>
+    <tr><td>Associative</td><td><code>(p ∧ q) ∧ r ≡ p ∧ (q ∧ r)</code></td><td><code>(p ∨ q) ∨ r ≡ p ∨ (q ∨ r)</code></td></tr>
+    <tr><td>Distributive</td><td><code>p ∧ (q ∨ r) ≡ (p ∧ q) ∨ (p ∧ r)</code></td><td><code>p ∨ (q ∧ r) ≡ (p ∨ q) ∧ (p ∨ r)</code></td></tr>
+    <tr><td>Identity</td><td><code>p ∧ true ≡ p</code></td><td><code>p ∨ false ≡ p</code></td></tr>
+    <tr><td>Negation</td><td><code>p ∧ ¬p ≡ false</code></td><td><code>p ∨ ¬p ≡ true</code></td></tr>
+    <tr><td>Idempotent</td><td><code>p ∧ p ≡ p</code></td><td><code>p ∨ p ≡ p</code></td></tr>
+    <tr><td>Universal bound</td><td><code>p ∧ false ≡ false</code></td><td><code>p ∨ true ≡ true</code></td></tr>
+    <tr><td>De Morgan</td><td><code>¬(p ∧ q) ≡ ¬p ∨ ¬q</code></td><td><code>¬(p ∨ q) ≡ ¬p ∧ ¬q</code></td></tr>
+    <tr><td>Absorption</td><td><code>p ∧ (p ∨ q) ≡ p</code></td><td><code>p ∨ (p ∧ q) ≡ p</code></td></tr>
+  </tbody>
+</table>
+<p>Also remember double negation <code>¬¬p ≡ p</code>, <code>¬true ≡ false</code>, and <code>¬false ≡ true</code>.</p>
+<p><strong>Worked simplification:</strong></p>
+<p><code>(p ∧ q) ∨ (p ∧ ¬q) ≡ p ∧ (q ∨ ¬q) ≡ p ∧ true ≡ p</code>.</p>
+
+<h2 id="conditionals">2.2 Conditional statements</h2>
+<h3 id="conditional">2.2.1 The conditional</h3>
+<p>“If p, then q” or “p implies q” is written <code>p → q</code>. Here p is the <strong>hypothesis/antecedent</strong> and q is the <strong>conclusion/consequent</strong>.</p>
+<table>
+  <thead><tr><th>p</th><th>q</th><th>p → q</th><th>Interpretation</th></tr></thead>
+  <tbody>
+    <tr><td>T</td><td>T</td><td>T</td><td>Promise fulfilled.</td></tr>
+    <tr><td>T</td><td>F</td><td>F</td><td>The only failure: p occurs but q does not.</td></tr>
+    <tr><td>F</td><td>T</td><td>T</td><td>Vacuously true.</td></tr>
+    <tr><td>F</td><td>F</td><td>T</td><td>Vacuously true.</td></tr>
+  </tbody>
+</table>
+<p>If p is false, <code>p → q</code> is <strong>vacuously true</strong>, regardless of q. Example: “If <code>0 = 1</code>, then <code>1 = 2</code>” is logically true because its hypothesis is false. This does not claim that <code>1 = 2</code>.</p>
+
+<h3 id="implication-law">2.2.2–2.2.3 Implication and its negation</h3>
+<p><strong>Implication law:</strong> <code>p → q ≡ ¬p ∨ q</code>.</p>
+<p><strong>Negation:</strong></p>
+<p><code>¬(p → q) ≡ ¬(¬p ∨ q) ≡ ¬¬p ∧ ¬q ≡ p ∧ ¬q</code>.</p>
+<p>In words, to refute “if p then q”, you must show that p actually holds while q fails.</p>
+<p><strong>Example:</strong> the negation of “If a program compiles, then it is correct” is “The program compiles and is not correct”, not “If it compiles, it is incorrect”.</p>
+
+<h3 id="variants">2.2.4–2.2.5 Contrapositive, converse, and inverse</h3>
+<table>
+  <thead><tr><th>Name</th><th>Form from p → q</th><th>Equivalent to</th></tr></thead>
+  <tbody>
+    <tr><td>Original</td><td><code>p → q</code></td><td>Contrapositive</td></tr>
+    <tr><td>Contrapositive</td><td><code>¬q → ¬p</code></td><td>Original</td></tr>
+    <tr><td>Converse</td><td><code>q → p</code></td><td>Inverse</td></tr>
+    <tr><td>Inverse</td><td><code>¬p → ¬q</code></td><td>Converse</td></tr>
+  </tbody>
+</table>
+<p>The original is generally <strong>not</strong> equivalent to its converse. Example: “If n is divisible by 4, then n is even” is true, but “If n is even, then n is divisible by 4” is false (counterexample: n = 6).</p>
+
+<h3 id="only-if">2.2.6 “Only if” and the biconditional</h3>
+<p>“p only if q” means p can occur only when q occurs. It translates to <code>p → q</code>, equivalently <code>¬q → ¬p</code>. A useful reading is: <strong>the phrase after “only if” is necessary</strong>.</p>
+<p>A <strong>biconditional</strong>, “p if and only if q” (p iff q), is written <code>p ↔ q</code>. It is true exactly when p and q have the same truth value:</p>
+<p><code>p ↔ q ≡ (p → q) ∧ (q → p)</code>.</p>
+<div class="notice"><strong>Do not confuse these symbols:</strong> <code>P ≡ Q</code> is a meta-level assertion that two forms agree under every valuation; it is not itself assigned a truth value in the object language. <code>P ↔ Q</code> is a compound statement. When <code>P ≡ Q</code>, the biconditional <code>P ↔ Q</code> is a tautology.</div>
+
+<h3 id="necessary-sufficient">2.2.7 Necessary and sufficient conditions</h3>
+<table>
+  <thead><tr><th>English</th><th>Logic</th></tr></thead>
+  <tbody>
+    <tr><td>r is sufficient for s</td><td><code>r → s</code></td></tr>
+    <tr><td>r is necessary for s</td><td><code>s → r</code>, equivalently <code>¬r → ¬s</code></td></tr>
+    <tr><td>r is necessary and sufficient for s</td><td><code>r ↔ s</code></td></tr>
+  </tbody>
+</table>
+<p>For <code>p → q</code>: p is sufficient for q; q is necessary for p; “if p then q” and “p only if q” say the same thing.</p>
+<p><strong>Memory check:</strong> “Being divisible by 4 is sufficient for being even.” Divisibility by 4 goes on the left of the arrow. “Being even is necessary for being divisible by 4.” Evenness goes on the right.</p>
+
+<h2 id="arguments">2.3 Valid and invalid arguments</h2>
+<h3 id="validity">2.3.1–2.3.2 Arguments and truth-table testing</h3>
+<p>An <strong>argument</strong> is a sequence of statements ending in a conclusion. All earlier statements are <strong>premises</strong>; the final statement, marked <code>∴</code>, is the conclusion.</p>
+<p>An argument form is <strong>valid</strong> iff every substitution that makes all premises true also makes the conclusion true. Notation: <code>p → q, p ⊢ q</code>.</p>
+<p><strong>Truth-table validity test:</strong></p>
+<ol>
+  <li>Identify every premise and the conclusion.</li>
+  <li>Build their truth-table columns.</li>
+  <li>Look only at <strong>critical rows</strong>, where all premises are true.</li>
+  <li>If any critical row has a false conclusion, the argument is invalid. If every critical row has a true conclusion, it is valid.</li>
+</ol>
+<p>If there are no critical rows, the premises cannot all be true together, so the argument is valid vacuously—although it may be useless.</p>
+
+<h3 id="mp-mt">2.3.3 Modus ponens and modus tollens</h3>
+<table>
+  <thead><tr><th>Rule</th><th>Form</th><th>Example</th></tr></thead>
+  <tbody>
+    <tr><td>Modus ponens (affirming the hypothesis)</td><td><code>p → q, p ⊢ q</code></td><td>If I submit, I receive a timestamp. I submitted. Therefore I received a timestamp.</td></tr>
+    <tr><td>Modus tollens (denying the consequence)</td><td><code>p → q, ¬q ⊢ ¬p</code></td><td>If n is divisible by 4, n is even. n is not even. Therefore n is not divisible by 4.</td></tr>
+  </tbody>
+</table>
+
+<h3 id="inference-rules">2.3.4 Rules of inference</h3>
+<table>
+  <thead><tr><th>Name</th><th>Valid form</th></tr></thead>
+  <tbody>
+    <tr><td>Modus ponens</td><td><code>p → q, p ⊢ q</code></td></tr>
+    <tr><td>Modus tollens</td><td><code>p → q, ¬q ⊢ ¬p</code></td></tr>
+    <tr><td>Generalization (addition)</td><td><code>p ⊢ p ∨ q</code>; <code>q ⊢ p ∨ q</code></td></tr>
+    <tr><td>Specialization (simplification)</td><td><code>p ∧ q ⊢ p</code>; <code>p ∧ q ⊢ q</code></td></tr>
+    <tr><td>Conjunction</td><td><code>p, q ⊢ p ∧ q</code></td></tr>
+    <tr><td>Elimination (disjunctive syllogism)</td><td><code>p ∨ q, ¬q ⊢ p</code>; <code>p ∨ q, ¬p ⊢ q</code></td></tr>
+    <tr><td>Transitivity (hypothetical syllogism)</td><td><code>p → q, q → r ⊢ p → r</code></td></tr>
+    <tr><td>Division into cases</td><td><code>p ∨ q, p → r, q → r ⊢ r</code></td></tr>
+    <tr><td>Contradiction rule</td><td><code>¬p → false ⊢ p</code></td></tr>
+  </tbody>
+</table>
+<p><strong>Worked chain:</strong> Given <code>p → q</code>, <code>q → r</code>, and p, transitivity gives <code>p → r</code>, then modus ponens gives r.</p>
+
+<h3 id="fallacies">2.3.5 Fallacies and soundness</h3>
+<p>A <strong>fallacy</strong> is an error in reasoning that produces an invalid argument. Common informal problems include ambiguous premises treated as unambiguous, circular reasoning (begging the question), and jumping to conclusions.</p>
+<table>
+  <thead><tr><th>Fallacy</th><th>Invalid form</th><th>Why it fails</th></tr></thead>
+  <tbody>
+    <tr><td>Converse error / affirming the consequent</td><td><code>p → q, q ∴ p</code></td><td>q may have another cause.</td></tr>
+    <tr><td>Inverse error / denying the antecedent</td><td><code>p → q, ¬p ∴ ¬q</code></td><td>q may still hold without p.</td></tr>
+  </tbody>
+</table>
+<p><strong>Single counterexample to both:</strong> If a number is divisible by 4, it is even. The number 6 is even but not divisible by 4, defeating the converse error. The number 6 is not divisible by 4 but is still even, defeating the inverse error.</p>
+<p>An argument is <strong>sound</strong> iff it is valid and every premise is actually true. Otherwise it is unsound. Validity concerns the argument's form; soundness adds factual truth.</p>
+
+<h2 id="exam-checklist">Lecture 02 exam checklist</h2>
+<ol>
+  <li>Translate English carefully, especially “only if”, necessary, and sufficient.</li>
+  <li>Use <code>p → q ≡ ¬p ∨ q</code> and <code>¬(p → q) ≡ p ∧ ¬q</code>.</li>
+  <li>Remember: original ≡ contrapositive; converse ≡ inverse.</li>
+  <li>One differing valuation disproves equivalence.</li>
+  <li>For validity, inspect only rows where every premise is true.</li>
+  <li>Never infer the converse or inverse unless separately justified.</li>
+</ol>
+</main>
+<aside class="toc">
+  <h2>On this page</h2>
+  <a href="#overview">2.0 Logic &amp; puzzles</a>
+  <a href="#statements">2.1 Logical form</a>
+  <a href="#conditionals">2.2 Conditionals</a>
+  <a href="#arguments">2.3 Arguments</a>
+  <a href="#exam-checklist">Exam checklist</a>
+</aside>
+</div>
+</body>
+</html>
