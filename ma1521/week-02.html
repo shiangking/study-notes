@@ -274,9 +274,95 @@
       </table>
       <p>A homogeneous system always has the trivial solution $\mathbf0$. For a nonhomogeneous system, $\det A=0$ alone cannot distinguish “none” from “infinitely many”; elimination is needed to test consistency.</p>
 
-      <h2 id="lines">11. Parametric lines and plane intersections</h2>
-      <div class="formula">$\displaystyle \mathbf r(t)=\mathbf r_0+t\mathbf v$</div>
-      <p>Through distinct points $Q_0,Q_1$, take $\mathbf v=Q_1-Q_0$. For a line-plane intersection, substitute $x(t),y(t),z(t)$ into the plane equation and solve for $t$.</p>
+      <h2 id="lines">11. Parametric lines, planes and geometric conditions</h2>
+
+      <h3 id="line-foundation">11.1 The foundation: a point and a direction</h3>
+      <p>A line in $\mathbb R^3$ is completely determined by a point $P=(x_0,y_0,z_0)$ on the line and a nonzero direction vector $\mathbf d=\langle a,b,c\rangle$. Its <strong>vector equation</strong> is</p>
+      <div class="formula">$\displaystyle \mathbf r(t)=\mathbf P+t\mathbf d,\qquad t\in\mathbb R.$</div>
+      <p>Equating coordinates gives its <strong>parametric equations</strong>:</p>
+      <div class="formula">$\displaystyle x=x_0+at,\qquad y=y_0+bt,\qquad z=z_0+ct.$</div>
+      <p>The parameter $t$ describes motion along the line: $t=0$ gives $P$, positive and negative values move in opposite directions, and every real value produces one point on the line. A nonzero scalar multiple of $\mathbf d$ gives the same geometric line.</p>
+      <div class="intuition">
+        <h4>How to read an existing parametric line</h4>
+        <p>In $x=x_0+at$, $y=y_0+bt$, $z=z_0+ct$, the constants form the point $(x_0,y_0,z_0)$ and the coefficients of the same parameter form the direction $\langle a,b,c\rangle$. Parameters belonging to different lines are independent even when both are called $t$; rename them $s$ and $t$ when comparing the lines.</p>
+      </div>
+      <p>Through two distinct points $Q_0$ and $Q_1$, build the direction</p>
+      <div class="formula">$\displaystyle \mathbf d=Q_1-Q_0,\qquad \mathbf r(t)=Q_0+t(Q_1-Q_0).$</div>
+
+      <h3 id="line-language">11.2 Translate the geometry before calculating</h3>
+      <table>
+        <thead><tr><th>Phrase in the question</th><th>Algebraic condition</th><th>Typical tool</th></tr></thead>
+        <tbody>
+          <tr><td>Line through $P$ parallel to $\mathbf d$</td><td>Use $P$ and direction $\mathbf d$</td><td>$\mathbf r=P+t\mathbf d$</td></tr>
+          <tr><td>Two lines are parallel</td><td>Their directions are scalar multiples</td><td>$\mathbf d_1=\lambda\mathbf d_2$</td></tr>
+          <tr><td>Directions are perpendicular</td><td>Their dot product is zero</td><td>$\mathbf d_1\cdot\mathbf d_2=0$</td></tr>
+          <tr><td>Direction perpendicular to two vectors</td><td>It is orthogonal to both</td><td>$\mathbf d_1\times\mathbf d_2$</td></tr>
+          <tr><td>Line parallel to plane $ax+by+cz=k$</td><td>Line direction is perpendicular to $\mathbf n=\langle a,b,c\rangle$</td><td>$\mathbf d\cdot\mathbf n=0$</td></tr>
+          <tr><td>Line perpendicular to a plane</td><td>Line direction is parallel to the plane normal</td><td>$\mathbf d=\lambda\mathbf n$</td></tr>
+          <tr><td>Point lies in a plane</td><td>Its coordinates satisfy the plane equation</td><td>Substitution</td></tr>
+          <tr><td>Three directions are coplanar</td><td>The scalar triple product is zero</td><td>$\det(\mathbf a,\mathbf b,\mathbf c)=0$</td></tr>
+        </tbody>
+      </table>
+
+      <h3 id="q051">11.3 Q05.1 pattern: through a point and parallel to a vector</h3>
+      <p>This is the direct line-construction pattern. Read the supplied point as $P$ and the supplied parallel vector as $\mathbf d$, then insert them into $\mathbf r(t)=P+t\mathbf d$. Expand the three components to obtain $x(t)$, $y(t)$ and $z(t)$.</p>
+      <ol>
+        <li>Copy the given point carefully.</li>
+        <li>Read the coefficients of $\mathbf i$, $\mathbf j$ and $\mathbf k$ as the direction components.</li>
+        <li>Write the vector equation first.</li>
+        <li>Equate components to obtain the parametric equations.</li>
+      </ol>
+      <div class="warning"><h4>Common mistake</h4><p>Writing only $\mathbf r=t\mathbf d$ forces the line through the origin. The supplied point must appear as the starting position.</p></div>
+
+      <h3 id="q052">11.4 Q05.2 pattern: a line perpendicular to two lines</h3>
+      <p>Extract the two original direction vectors $\mathbf d_1$ and $\mathbf d_2$ from their parameter coefficients. A direction perpendicular to both is</p>
+      <div class="formula">$\displaystyle \mathbf v=\mathbf d_1\times\mathbf d_2.$</div>
+      <p>Use the required point $P$ to form $\mathbf r(s)=P+s\mathbf v$. It is helpful to use $s$ for the new line so it is not confused with either original parameter.</p>
+      <ol>
+        <li>Extract $\mathbf d_1$ and $\mathbf d_2$.</li>
+        <li>Calculate $\mathbf d_1\times\mathbf d_2$ without using the constant terms.</li>
+        <li>Combine the result with the supplied point.</li>
+        <li>Verify $\mathbf v\cdot\mathbf d_1=0$ and $\mathbf v\cdot\mathbf d_2=0$.</li>
+      </ol>
+      <p>If $\mathbf d_1\times\mathbf d_2=\mathbf0$, the original directions are parallel and the cross product does not select one unique perpendicular direction.</p>
+
+      <h3 id="plane-line">11.5 A plane containing a point and an entire line</h3>
+      <p>Let $Q$ be a point on the line and $\mathbf d$ its direction. If the plane also contains a point $A$, then both $\mathbf d$ and $A-Q$ lie parallel to the plane. Their cross product gives a plane normal:</p>
+      <div class="formula">$\displaystyle \mathbf n=\mathbf d\times(A-Q).$</div>
+      <p>Use point-normal form to obtain the plane:</p>
+      <div class="formula">$\displaystyle \mathbf n\cdot(\mathbf r-A)=0.$</div>
+      <p>This plane is unique provided that $A$ is not already on the line. If $A$ lies on the line, infinitely many planes can rotate around that line.</p>
+
+      <div class="worked" id="q053">
+        <h4>Q05.3 worked solution</h4>
+        <p>The line has point $Q=(1,1,2)$ and direction $\mathbf d=\langle3,1,-1\rangle$. With $A=(2,-1,3)$,</p>
+        <p>$A-Q=\langle1,-2,1\rangle$.</p>
+        <p>A normal vector is</p>
+        <p>$\mathbf n=\mathbf d\times(A-Q)=\langle-1,-4,-7\rangle$.</p>
+        <p>Using the opposite normal $\langle1,4,7\rangle$ and point $A$:</p>
+        <p>$(x-2)+4(y+1)+7(z-3)=0$.</p>
+        <p>Therefore the required plane is</p>
+        <div class="formula">$\displaystyle \boxed{x+4y+7z=19}.$</div>
+        <p>To test $B=(4,1,2)$, substitute it into the left side:</p>
+        <p>$4+4(1)+7(2)=22\ne19$.</p>
+        <p>Thus $B$ is outside the unique plane determined by $A$ and the line. Hence no plane contains $A$, $B$ and the entire line.</p>
+      </div>
+
+      <h3 id="coplanarity">11.6 Proving that no common plane exists</h3>
+      <p>There are two standard methods. If you already found the plane containing a line and a point, substitute the extra point into that equation. Alternatively, choose a point $Q$ on the line and test</p>
+      <div class="formula">$\displaystyle \det\big(\mathbf d,A-Q,B-Q\big)=\mathbf d\cdot\big((A-Q)\times(B-Q)\big).$</div>
+      <p>A zero result means the three directions are coplanar. A nonzero result represents nonzero signed volume, so they cannot all lie in one plane.</p>
+
+      <h3 id="q054">11.7 Q05.4 pattern: parallel to a plane and perpendicular to a line</h3>
+      <p>First extract the plane normal $\mathbf n$ from the coefficients of $x,y,z$. Next extract the given line direction $\mathbf d$ from the coefficients of its parameter. The required direction $\mathbf v$ must satisfy both</p>
+      <div class="formula">$\displaystyle \mathbf v\cdot\mathbf n=0,\qquad \mathbf v\cdot\mathbf d=0.$</div>
+      <p>A vector satisfying both conditions is</p>
+      <div class="formula">$\displaystyle \mathbf v=\mathbf n\times\mathbf d.$</div>
+      <p>Combine $\mathbf v$ with the required point using $\mathbf r(s)=P+s\mathbf v$, then expand into coordinate equations. Finally, verify both dot products. If the problem uses “perpendicular lines” strictly, also confirm that the new line intersects the given line by equating their coordinates and solving for their independent parameters.</p>
+      <div class="warning"><h4>High-frequency confusion</h4><p>A line parallel to a plane is perpendicular to the plane's <em>normal vector</em>. The line direction is not generally parallel to the normal.</p></div>
+
+      <h3 id="line-plane-intersection">11.8 Line-plane intersections</h3>
+      <p>For a line-plane intersection, substitute the complete parametric expressions $x(t)$, $y(t)$ and $z(t)$ into the plane equation, solve for $t$, then put that value back into every coordinate of the line.</p>
       <div class="worked">
         <h4>Worked lecture example</h4>
         <p>For $Q_0=(-1,2,2)$ and $Q_1=(1,3,-1)$, $\mathbf v=\langle2,1,-3\rangle$, so $\mathbf r(t)=\langle-1+2t,2+t,2-3t\rangle$.</p>
@@ -290,6 +376,17 @@
           <tr><td>Contradiction such as $11=7$</td><td>Line is parallel to, but outside, the plane</td></tr>
         </tbody>
       </table>
+
+      <div class="exam-box">
+        <h3>Parametric-equation checklist</h3>
+        <ol>
+          <li>Identify the point and every relevant direction or normal vector.</li>
+          <li>Translate “parallel,” “perpendicular” and “contained” into dot or cross-product conditions.</li>
+          <li>Construct the direction before writing the line.</li>
+          <li>Write $\mathbf r=P+t\mathbf d$, then expand its coordinates.</li>
+          <li>Verify the required dot products, plane substitution or intersection condition.</li>
+        </ol>
+      </div>
 
       <h2 id="curves">12. Parametric curves and the cycloid</h2>
       <p>A parametric curve gives coordinates as functions of a parameter. For a wheel of radius $a$ rolling without slipping, a point on the rim follows</p>
@@ -306,7 +403,9 @@
           <li>Matrix product: row-by-column; $(AB)\mathbf x=A(B\mathbf x)$, so $B$ acts first.</li>
           <li>Inverse: exists exactly when $\det A\ne0$; verify by multiplication.</li>
           <li>$\det A=0$ means a nonhomogeneous system has no solution or infinitely many, not automatically “no solution.”</li>
-          <li>Always state whether your answer is a scalar, vector, area or volume.</li>
+          <li>For a parametric line, identify its point and direction before doing any calculation.</li>
+          <li>Translate geometric wording into dot-product, cross-product or coplanarity conditions.</li>
+          <li>Always state whether your answer is a scalar, vector, area, volume, line or plane.</li>
         </ul>
       </div>
 
@@ -327,7 +426,7 @@
           <li>$\mathbf x=\langle2,1\rangle$.</li>
         </ol>
       </details>
-      <p class="source-note"><strong>Source note:</strong> Sections 2-12 follow the uploaded MIT 18.02 lecture sequence. Added worked examples and interpretations are supplementary explanations based on MIT OCW's official vectors/matrices unit.</p>
+      <p class="source-note"><strong>Source note:</strong> Sections 2-12 follow the uploaded MIT 18.02 lecture sequence. The expanded Section 11 also uses the MA1521 Q05.1-Q05.4 questions supplied in chat. Added worked examples and interpretations are supplementary explanations based on MIT OCW's official vectors/matrices unit and standard vector geometry.</p>
     </main>
 
     <aside class="toc">
@@ -342,7 +441,10 @@
       <a href="#matrix-determinant">Matrix determinant</a>
       <a href="#inverse">Inverse matrices</a>
       <a href="#systems">Linear systems</a>
-      <a href="#lines">Lines</a>
+      <a href="#lines">Parametric lines</a>
+      <a href="#line-language">Geometry translation</a>
+      <a href="#q053">Q05.3 worked solution</a>
+      <a href="#line-plane-intersection">Line-plane intersections</a>
       <a href="#curves">Curves</a>
       <a href="#exam">Exam checklist</a>
       <a href="#practice">Practice</a>
