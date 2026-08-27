@@ -88,9 +88,16 @@ code {
   color: #a9b1d6;
   border-radius: 4px;
   padding: .12em .32em;
-  font: .9em Verdana, Geneva, sans-serif;
+  font: .9em "JetBrains Mono", "SFMono-Regular", Consolas, monospace;
 }
-pre { background: var(--code); border: 1px solid var(--line); border-radius: 6px; padding: 14px; overflow: auto; }
+pre {
+  background: var(--code);
+  border: 1px solid var(--line);
+  border-radius: 6px;
+  padding: 14px;
+  overflow: auto;
+  font-family: "JetBrains Mono", "SFMono-Regular", Consolas, monospace;
+}
 table { width: 100%; border-collapse: collapse; margin: 1.35rem 0; font-size: .95rem; }
 th, td { border: 1px solid var(--line); padding: 10px 12px; text-align: left; vertical-align: top; }
 th { background: var(--surface-2); }
