@@ -4,7 +4,9 @@
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width,initial-scale=1">
   <title>MA1521 Week 2 | Study Notes</title>
-  <link rel="stylesheet" href="../site-assets/docs.css?v=docs-20260826a">
+  <link rel="stylesheet" href="../site-assets/docs.css?v=20260827a">
+  <script>MathJax={tex:{inlineMath:[["$","$"],["\\(","\\)"]]},svg:{fontCache:"global"}};</script>
+  <script defer src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-svg.js"></script>
 </head>
 <body>
   <header class="topbar">
@@ -16,226 +18,334 @@
       <h2>MA1521</h2>
       <a class="nav-link" href="index.html">Overview</a>
       <a class="nav-link" href="week-01.html">Week 1: Calculus foundations</a>
-      <a class="nav-link current" href="week-02.html">Week 2: Vectors, planes &amp; curves</a>
+      <a class="nav-link current" href="week-02.html">Week 2: Vectors, matrices &amp; curves</a>
       <span class="nav-link indent">Week 3 - coming soon</span>
     </aside>
 
     <main class="content">
-      <div class="notice"><strong>MA1521 - Week 2 exam-ready notes</strong><br>Lectures 3-5: cross products, planes, matrices, linear systems, lines and parametric curves. A short Week 1 vector refresher is included where Week 2 depends on it.</div>
+      <div class="notice"><strong>MA1521 - Week 2 detailed notes</strong><br>Vectors and matrices are explained from intuition to formulas, followed by planes, systems, lines and parametric curves. Worked examples are fully shown, not just stated.</div>
 
-      <h1 id="top">Vectors, Planes, Matrices and Parametric Curves</h1>
-      <p><strong>Sources:</strong> MIT 18.02 Lecture Notes - Week 1, PDF pages 2-3; MIT 18.02 Lecture Notes - Week 2, PDF pages 2-5.</p>
+      <h1 id="top">Vectors, Matrices, Planes and Parametric Curves</h1>
+      <p><strong>Primary course source:</strong> your uploaded MIT 18.02 Week 1 notes, PDF pp. 2-3, and Week 2 notes, PDF pp. 2-5. <strong>Supplementary explanations:</strong> MIT OCW 18.02SC, Unit 1A-1B. The supplementary parts deepen intuition without changing the lecture's scope.</p>
 
-      <h2 id="decision-map">1. Exam decision map</h2>
+      <h2 id="map">1. What operation should I use?</h2>
       <table>
-        <thead><tr><th>If the problem asks for...</th><th>Main object</th><th>Method to start with</th></tr></thead>
+        <thead><tr><th>If you need...</th><th>Use...</th><th>Output</th></tr></thead>
         <tbody>
-          <tr><td>Angle or perpendicularity</td><td>Two vectors</td><td>Dot product</td></tr>
-          <tr><td>A normal or a plane through three points</td><td>Two in-plane directions</td><td>Cross product</td></tr>
-          <tr><td>Plane through a point</td><td>Point and normal</td><td><code>N · (P-P₀)=0</code></td></tr>
-          <tr><td>Output of a linear transformation</td><td>Matrix and vector</td><td>Row-by-column multiplication</td></tr>
-          <tr><td>Unique solution of <code>AX=B</code></td><td>Square matrix</td><td>Check <code>det(A) ≠ 0</code>, then use <code>A⁻¹</code></td></tr>
-          <tr><td>Line through two points</td><td>Point and direction</td><td><code>Q(t)=Q₀+t(Q₁-Q₀)</code></td></tr>
-          <tr><td>Line-plane intersection</td><td>Parametric line and plane</td><td>Substitute coordinates and solve for <code>t</code></td></tr>
-          <tr><td>Tangent at a singular parametric point</td><td>Leading coordinate behaviour</td><td>Taylor expansion or leading-order ratios</td></tr>
+          <tr><td>Length of a vector</td><td>$\lVert\mathbf a\rVert$</td><td>Nonnegative scalar</td></tr>
+          <tr><td>Angle, perpendicularity or a component</td><td>$\mathbf a\cdot\mathbf b$</td><td>Scalar</td></tr>
+          <tr><td>A perpendicular direction or parallelogram area</td><td>$\mathbf a\times\mathbf b$</td><td>Vector</td></tr>
+          <tr><td>Signed area in 2D</td><td>$\det(\mathbf a,\mathbf b)$</td><td>Scalar</td></tr>
+          <tr><td>Signed volume in 3D</td><td>$\det(\mathbf a,\mathbf b,\mathbf c)$</td><td>Scalar</td></tr>
+          <tr><td>Apply a linear transformation</td><td>$A\mathbf x$</td><td>Vector</td></tr>
+          <tr><td>Undo a transformation / solve $A\mathbf x=\mathbf b$</td><td>$A^{-1}$, only if $\det A\ne0$</td><td>Matrix / solution vector</td></tr>
         </tbody>
       </table>
 
-      <h2 id="vectors">2. Prerequisite vector toolkit</h2>
-      <h3>Vectors and displacement</h3>
-      <p>Write a vector as <code>A=&lt;a₁,a₂,a₃&gt;</code>. Its magnitude is</p>
-      <p><code>|A| = √(a₁²+a₂²+a₃²)</code>.</p>
-      <p>For points <code>P=(p₁,p₂,p₃)</code> and <code>Q=(q₁,q₂,q₃)</code>,</p>
-      <p><code>PQ = Q-P = &lt;q₁-p₁,q₂-p₂,q₃-p₃&gt;</code>.</p>
-      <p>The subtraction order matters. If you reverse it, the direction reverses.</p>
+      <h2 id="vector-basics">2. Vectors: the foundations</h2>
+      <h3>2.1 What is a vector?</h3>
+      <p>A vector records <strong>magnitude and direction</strong>. In coordinates, $\mathbf a=\langle a_1,a_2,a_3\rangle$ means move $a_1$ units along $x$, $a_2$ along $y$, and $a_3$ along $z$. A point describes a location; a vector describes a displacement. They may use the same tuple notation, so use the context carefully.</p>
+      <div class="formula">$\displaystyle \overrightarrow{PQ}=Q-P=\langle q_1-p_1,q_2-p_2,q_3-p_3\rangle$</div>
+      <p>The order matters: $\overrightarrow{QP}=-\overrightarrow{PQ}$.</p>
 
-      <h3>Dot product</h3>
-      <p><code>A·B=a₁b₁+a₂b₂+a₃b₃=|A||B|cos θ</code>.</p>
-      <ul>
-        <li><strong>Angle:</strong> <code>cos θ=(A·B)/(|A||B|)</code>. Form both vectors from the angle's vertex.</li>
-        <li><strong>Perpendicularity:</strong> nonzero vectors are perpendicular exactly when <code>A·B=0</code>.</li>
-        <li><strong>Component along a unit vector û:</strong> <code>A·û</code>.</li>
-        <li><strong>Sign:</strong> positive means acute, zero means right angle, and negative means obtuse.</li>
-      </ul>
+      <h3>2.2 Magnitude and unit vectors</h3>
+      <div class="formula">$\displaystyle \lVert\mathbf a\rVert=\sqrt{a_1^2+a_2^2+a_3^2}$</div>
+      <p>A <strong>unit vector</strong> has length $1$. To keep the direction of a nonzero vector but change its length to $1$, normalise it:</p>
+      <div class="formula">$\displaystyle \widehat{\mathbf a}=\frac{\mathbf a}{\lVert\mathbf a\rVert},\qquad \mathbf a\ne\mathbf0$</div>
+      <div class="worked">
+        <h4>Worked example: displacement and direction</h4>
+        <p>Let $P=(1,-2,3)$ and $Q=(4,2,3)$. Then</p>
+        <p>$\overrightarrow{PQ}=\langle4-1,2-(-2),3-3\rangle=\langle3,4,0\rangle$.</p>
+        <p>Its length is $\sqrt{3^2+4^2}=5$, so the unit direction from $P$ to $Q$ is $\langle3/5,4/5,0\rangle$.</p>
+      </div>
 
-      <h3>Cross product</h3>
-      <p>For <code>A=&lt;a₁,a₂,a₃&gt;</code> and <code>B=&lt;b₁,b₂,b₃&gt;</code>,</p>
-      <p><code>A×B=&lt;a₂b₃-a₃b₂, a₃b₁-a₁b₃, a₁b₂-a₂b₁&gt;</code>.</p>
-      <ul>
-        <li><code>A×B</code> is perpendicular to both <code>A</code> and <code>B</code>.</li>
-        <li><code>|A×B|=|A||B|sin θ</code>, the parallelogram area.</li>
-        <li>The direction follows the right-hand rule.</li>
-        <li><code>A×B=-(B×A)</code> and <code>A×A=0</code>.</li>
-      </ul>
-      <p><strong>Common trap:</strong> the dot product returns a scalar; the cross product returns a vector.</p>
-      <p><small>Source: MIT 18.02 Lecture Notes - Week 1, PDF pages 2-3.</small></p>
-
-      <h2 id="planes">3. Planes from cross products and normals</h2>
-      <h3>Plane through three points</h3>
-      <p>Three non-collinear points <code>P₁,P₂,P₃</code> determine a plane. Use:</p>
-      <ol>
-        <li>Build two directions in the plane: <code>u=P₂-P₁</code> and <code>v=P₃-P₁</code>.</li>
-        <li>Find a normal: <code>N=u×v</code>.</li>
-        <li>Use point-normal form: <code>N·(P-P₁)=0</code>.</li>
-        <li>Expand and simplify to <code>ax+by+cz=d</code> if required.</li>
-      </ol>
-      <p>The equivalent determinant condition is</p>
-      <p><code>det(P-P₁, P₂-P₁, P₃-P₁)=0</code>,</p>
-      <p>because the three vectors must be coplanar.</p>
-
-      <h3>Point-normal form</h3>
-      <p>If <code>N=&lt;a,b,c&gt;</code> is normal to the plane and <code>P₀=(x₀,y₀,z₀)</code> lies on it, then</p>
-      <p><code>a(x-x₀)+b(y-y₀)+c(z-z₀)=0</code>.</p>
-      <p>After expansion, the coefficients of <code>x,y,z</code> are the components of a normal vector. Multiplying the complete equation by a nonzero constant gives the same plane.</p>
-
-      <h3>Parallel and perpendicular tests</h3>
-      <ul>
-        <li>A direction <code>v</code> is <strong>parallel to a plane</strong> when <code>v·N=0</code>.</li>
-        <li>A direction <code>v</code> is <strong>perpendicular to a plane</strong> when <code>v</code> is a scalar multiple of <code>N</code>.</li>
-        <li>Two planes are parallel when their normals are scalar multiples.</li>
-      </ul>
-      <p><strong>Lecture check:</strong> for <code>v=&lt;1,2,-1&gt;</code> and plane <code>x+y+3z=5</code>, the normal is <code>N=&lt;1,1,3&gt;</code>. Since <code>v·N=1+2-3=0</code>, <code>v</code> is parallel to the plane.</p>
-      <p><strong>Common trap:</strong> being perpendicular to the normal means being parallel to the plane.</p>
-      <p><small>Source: MIT 18.02 Lecture Notes - Week 2, PDF pages 2-3.</small></p>
-
-      <h2 id="matrices">4. Matrices as transformations</h2>
-      <p>A matrix represents a linear transformation. In <code>AX=U</code>, each entry of <code>U</code> is the dot product of one row of <code>A</code> with the column vector <code>X</code>.</p>
-
-      <h3>Dimension rule</h3>
-      <p><code>(m×n)(n×p) → (m×p)</code>.</p>
-      <p>The inner dimensions must match. The outer dimensions give the result size.</p>
-
-      <h3>Entry rule</h3>
-      <p><code>(AB)ᵢⱼ = (row i of A) · (column j of B)</code>.</p>
-      <p>Matrix multiplication is generally not commutative: <code>AB</code> need not equal <code>BA</code>, and one of them may not even be defined.</p>
-
-      <h3>Composition order</h3>
-      <p><code>(AB)X=A(BX)</code>. Therefore <code>B</code> acts first and <code>A</code> acts second. Read a product of transformations from right to left.</p>
-
-      <h3>Identity and rotation</h3>
-      <p>The identity matrix satisfies <code>IX=X</code>. The matrix</p>
-      <p><code>R=[[0,-1],[1,0]]</code></p>
-      <p>rotates the plane by 90° counterclockwise: <code>Rî=ĵ</code>, <code>Rĵ=-î</code>, and <code>R²=-I</code>.</p>
-      <p><strong>Common trap:</strong> ordinary matrix multiplication is row-by-column, not entry-by-entry.</p>
-      <p><small>Source: MIT 18.02 Lecture Notes - Week 2, PDF page 2.</small></p>
-
-      <h2 id="inverse">5. Inverse matrices and cofactors</h2>
-      <p>An inverse exists for a square matrix <code>A</code> when there is a matrix <code>A⁻¹</code> such that</p>
-      <p><code>AA⁻¹=A⁻¹A=I</code>.</p>
-      <p>If <code>AX=U</code> and <code>A</code> is invertible, then <code>X=A⁻¹U</code>. The central theorem is</p>
-      <p><code>A is invertible ⇔ det(A) ≠ 0</code>.</p>
-
-      <h3>Cofactor method</h3>
-      <p>For a small matrix,</p>
-      <p><code>A⁻¹ = adj(A)/det(A)</code>.</p>
-      <ol>
-        <li><strong>Determinant:</strong> calculate <code>det(A)</code>. If it is zero, stop: no inverse exists.</li>
-        <li><strong>Minors:</strong> <code>Mᵢⱼ</code> is the determinant left after deleting row <code>i</code> and column <code>j</code>.</li>
-        <li><strong>Cofactors:</strong> <code>Cᵢⱼ=(-1)^(i+j)Mᵢⱼ</code>, using the sign pattern <code>+ - + / - + - / + - +</code>.</li>
-        <li><strong>Transpose:</strong> <code>adj(A)=Cᵀ</code>.</li>
-        <li><strong>Divide:</strong> multiply the adjugate by <code>1/det(A)</code>.</li>
-        <li><strong>Verify:</strong> check that <code>AA⁻¹=I</code>.</li>
-      </ol>
-      <p><strong>Frequent errors:</strong> forgetting the checkerboard signs, forgetting to transpose the cofactor matrix, or dividing by the wrong determinant.</p>
-      <p><small>Source: MIT 18.02 Lecture Notes - Week 2, PDF pages 2-3.</small></p>
-
-      <h2 id="systems">6. Linear systems as plane intersections</h2>
-      <p>A 3×3 system <code>AX=B</code> represents the intersection of three planes.</p>
+      <h2 id="dot-product">3. Dot product, angles and projections</h2>
+      <h3>3.1 Formula and geometric meaning</h3>
+      <div class="formula">$\displaystyle \mathbf a\cdot\mathbf b=a_1b_1+a_2b_2+a_3b_3=\lVert\mathbf a\rVert\lVert\mathbf b\rVert\cos\theta$</div>
+      <p>The coordinate formula computes the number; the geometric formula explains it. It measures how strongly one vector points along the other.</p>
       <table>
-        <thead><tr><th>Condition</th><th>Homogeneous <code>AX=0</code></th><th>General <code>AX=B</code></th></tr></thead>
+        <thead><tr><th>Dot product</th><th>Angle</th><th>Meaning</th></tr></thead>
         <tbody>
-          <tr><td><code>det(A) ≠ 0</code></td><td>Only the trivial solution <code>X=0</code></td><td>Exactly one solution, <code>X=A⁻¹B</code></td></tr>
-          <tr><td><code>det(A) = 0</code></td><td>Infinitely many solutions</td><td>No solution or infinitely many solutions</td></tr>
+          <tr><td>$\mathbf a\cdot\mathbf b&gt;0$</td><td>Acute</td><td>Mostly the same direction</td></tr>
+          <tr><td>$\mathbf a\cdot\mathbf b=0$</td><td>$90^\circ$</td><td>Orthogonal (perpendicular), if both are nonzero</td></tr>
+          <tr><td>$\mathbf a\cdot\mathbf b&lt;0$</td><td>Obtuse</td><td>Mostly opposite directions</td></tr>
+        </tbody>
+      </table>
+      <p>For nonzero vectors,</p>
+      <div class="formula">$\displaystyle \theta=\cos^{-1}\!\left(\frac{\mathbf a\cdot\mathbf b}{\lVert\mathbf a\rVert\lVert\mathbf b\rVert}\right)$</div>
+      <div class="worked">
+        <h4>Worked example: find an angle</h4>
+        <p>Let $\mathbf a=\langle1,1,0\rangle$ and $\mathbf b=\langle1,0,1\rangle$.</p>
+        <p>$\mathbf a\cdot\mathbf b=1$, while $\lVert\mathbf a\rVert=\lVert\mathbf b\rVert=\sqrt2$.</p>
+        <p>Therefore $\cos\theta=1/(\sqrt2\sqrt2)=1/2$, so $\boxed{\theta=60^\circ}$.</p>
+      </div>
+
+      <h3>3.2 Scalar component versus vector projection</h3>
+      <p>These are related but not identical:</p>
+      <table>
+        <thead><tr><th>Quantity</th><th>Formula</th><th>What it gives</th></tr></thead>
+        <tbody>
+          <tr><td>Scalar component of $\mathbf A$ along $\mathbf u$</td><td>$\displaystyle \operatorname{comp}_{\mathbf u}\mathbf A=\frac{\mathbf A\cdot\mathbf u}{\lVert\mathbf u\rVert}$</td><td>Signed length</td></tr>
+          <tr><td>Vector projection of $\mathbf A$ onto $\mathbf u$</td><td>$\displaystyle \operatorname{proj}_{\mathbf u}\mathbf A=\frac{\mathbf A\cdot\mathbf u}{\lVert\mathbf u\rVert^2}\mathbf u$</td><td>The actual vector along $\mathbf u$</td></tr>
+        </tbody>
+      </table>
+      <p>If $\mathbf u$ is already a unit vector, the scalar component simplifies to $\mathbf A\cdot\mathbf u$, and the projection becomes $(\mathbf A\cdot\mathbf u)\mathbf u$.</p>
+      <div class="worked">
+        <h4>Worked example: component, projection and orthogonal remainder</h4>
+        <p>Let $\mathbf u=\frac1{\sqrt6}\langle1,-1,2\rangle$ and $\mathbf A=\langle3,5,7\rangle$. First check that $\lVert\mathbf u\rVert=1$.</p>
+        <p>The scalar component is $\mathbf A\cdot\mathbf u=\frac{3-5+14}{\sqrt6}=\frac{12}{\sqrt6}=2\sqrt6$.</p>
+        <p>The vector projection is $(2\sqrt6)\frac1{\sqrt6}\langle1,-1,2\rangle=\boxed{\langle2,-2,4\rangle}$.</p>
+        <p>The perpendicular remainder is $\mathbf A_\perp=\mathbf A-\operatorname{proj}_{\mathbf u}\mathbf A=\langle1,7,3\rangle$. Check: $\mathbf A_\perp\cdot\mathbf u=(1-7+6)/\sqrt6=0$.</p>
+      </div>
+      <div class="warning">
+        <h4>Common mistake</h4>
+        <p>“Component” usually means a signed scalar, not an always-positive length. A negative answer says the projected part points opposite to the chosen direction. If the question asks for the projection vector, include the direction vector.</p>
+      </div>
+
+      <h2 id="determinants">4. Determinants: signed area and volume</h2>
+      <h3>4.1 Determinant of two 2D vectors</h3>
+      <div class="formula">$\displaystyle \det(\mathbf a,\mathbf b)=\begin{vmatrix}a_1&amp;b_1\\a_2&amp;b_2\end{vmatrix}=a_1b_2-a_2b_1$</div>
+      <p>The absolute value is the parallelogram's geometric area. The sign records orientation:</p>
+      <ul>
+        <li>positive: turning from $\mathbf a$ to $\mathbf b$ is counterclockwise;</li>
+        <li>negative: the turn is clockwise;</li>
+        <li>zero: the vectors are parallel, so the parallelogram collapses to zero area.</li>
+      </ul>
+      <div class="formula">$\displaystyle \text{parallelogram area}=|\det(\mathbf a,\mathbf b)|,\qquad \text{triangle area}=\frac12|\det(\mathbf a,\mathbf b)|$</div>
+      <div class="worked">
+        <h4>Worked example: signed area</h4>
+        <p>For $\mathbf a=\langle3,1\rangle$ and $\mathbf b=\langle1,2\rangle$, $\det(\mathbf a,\mathbf b)=3(2)-1(1)=5$.</p>
+        <p>The parallelogram area is $5$ and the corresponding triangle area is $5/2$. Reversing the order gives $-5$: same physical area, opposite orientation.</p>
+      </div>
+
+      <h3>4.2 Why determinant is connected to the cross product</h3>
+      <p>Embed 2D vectors in 3D by giving them zero $z$-components:</p>
+      <div class="formula">$\displaystyle \langle a_1,a_2,0\rangle\times\langle b_1,b_2,0\rangle=\langle0,0,\det(\mathbf a,\mathbf b)\rangle$</div>
+      <p>So the 2D determinant is exactly the signed $z$-component of the cross product.</p>
+
+      <h3>4.3 Determinant in 3D: scalar triple product</h3>
+      <div class="formula">$\displaystyle \det(\mathbf a,\mathbf b,\mathbf c)=\mathbf a\cdot(\mathbf b\times\mathbf c)$</div>
+      <p>Its absolute value is the volume of the parallelepiped. A zero determinant means the three vectors are coplanar and create no 3D volume.</p>
+      <div class="worked">
+        <h4>Worked example: your Q04.6</h4>
+        <p>$\mathbf A=\langle1,2,3\rangle$, $\mathbf B=\langle-1,-1,2\rangle$, $\mathbf C=\langle0,1,-1\rangle$.</p>
+        <p>First, $\mathbf B\times\mathbf C=\langle-1,-1,-1\rangle$.</p>
+        <p>Then $\det(\mathbf A,\mathbf B,\mathbf C)=\mathbf A\cdot(\mathbf B\times\mathbf C)=-1-2-3=\boxed{-6}$.</p>
+        <p>The physical volume is $|-6|=6$. The minus sign records orientation only.</p>
+      </div>
+
+      <h2 id="cross-product">5. Cross product and planes</h2>
+      <h3>5.1 Formula and properties</h3>
+      <div class="formula">$\displaystyle \mathbf a\times\mathbf b=\langle a_2b_3-a_3b_2,\ a_3b_1-a_1b_3,\ a_1b_2-a_2b_1\rangle$</div>
+      <ul>
+        <li>$\mathbf a\times\mathbf b$ is perpendicular to both input vectors.</li>
+        <li>$\lVert\mathbf a\times\mathbf b\rVert=\lVert\mathbf a\rVert\lVert\mathbf b\rVert\sin\theta$ is the parallelogram area.</li>
+        <li>Direction follows the right-hand rule.</li>
+        <li>$\mathbf a\times\mathbf b=-(\mathbf b\times\mathbf a)$, so order matters.</li>
+        <li>$\mathbf a\times\mathbf b=\mathbf0$ exactly when the vectors are parallel or one is zero.</li>
+      </ul>
+      <div class="worked">
+        <h4>Worked example: compute and verify a cross product</h4>
+        <p>For $\mathbf a=\langle1,2,3\rangle$ and $\mathbf b=\langle-1,-1,2\rangle$,</p>
+        <p>$\mathbf a\times\mathbf b=\langle2(2)-3(-1),\ 3(-1)-1(2),\ 1(-1)-2(-1)\rangle=\langle7,-5,1\rangle$.</p>
+        <p>Verification: $\langle7,-5,1\rangle\cdot\mathbf a=7-10+3=0$ and $\langle7,-5,1\rangle\cdot\mathbf b=-7+5+2=0$.</p>
+      </div>
+
+      <h3>5.2 Equation of a plane</h3>
+      <p>A plane is determined by a point $P_0=(x_0,y_0,z_0)$ and a nonzero normal $\mathbf n=\langle a,b,c\rangle$:</p>
+      <div class="formula">$\displaystyle \mathbf n\cdot(\mathbf r-\mathbf r_0)=0\quad\Longleftrightarrow\quad a(x-x_0)+b(y-y_0)+c(z-z_0)=0$</div>
+      <p>For a plane through three non-collinear points $P_1,P_2,P_3$, form $\mathbf u=P_2-P_1$ and $\mathbf v=P_3-P_1$, then use $\mathbf n=\mathbf u\times\mathbf v$.</p>
+      <div class="worked">
+        <h4>Worked example: plane through three points</h4>
+        <p>Let $P_1=(1,0,0)$, $P_2=(0,1,0)$ and $P_3=(0,0,1)$.</p>
+        <p>$\mathbf u=\langle-1,1,0\rangle$, $\mathbf v=\langle-1,0,1\rangle$, and $\mathbf n=\mathbf u\times\mathbf v=\langle1,1,1\rangle$.</p>
+        <p>Using $P_1$, $(x-1)+y+z=0$, so the plane is $\boxed{x+y+z=1}$.</p>
+      </div>
+      <table>
+        <thead><tr><th>Question</th><th>Test</th></tr></thead>
+        <tbody>
+          <tr><td>Is vector $\mathbf v$ parallel to the plane?</td><td>$\mathbf v\cdot\mathbf n=0$</td></tr>
+          <tr><td>Is vector $\mathbf v$ perpendicular to the plane?</td><td>$\mathbf v$ is a scalar multiple of $\mathbf n$</td></tr>
+          <tr><td>Are two planes parallel?</td><td>Their normals are scalar multiples</td></tr>
         </tbody>
       </table>
 
-      <h3>Homogeneous systems</h3>
-      <p>For <code>AX=0</code>, every plane passes through the origin, so <code>X=0</code> is always a solution. If <code>det(A)≠0</code>, it is the unique solution. If <code>det(A)=0</code>, there are infinitely many solutions forming a line or a plane.</p>
+      <h2 id="matrix-basics">6. Matrices: what they actually do</h2>
+      <h3>6.1 Terminology and dimensions</h3>
+      <p>An $m\times n$ matrix has $m$ rows and $n$ columns. Its entry $a_{ij}$ is in row $i$, column $j$. A matrix can store coefficients, but the more useful viewpoint here is that it represents a <strong>linear transformation</strong> that moves vectors while preserving addition and scalar multiplication.</p>
+      <div class="formula">$\displaystyle A(\mathbf x+\mathbf y)=A\mathbf x+A\mathbf y,\qquad A(c\mathbf x)=cA\mathbf x$</div>
 
-      <h3>Geometric meaning of a zero determinant</h3>
-      <p>If the rows of <code>A</code> are the plane normals <code>N₁,N₂,N₃</code>, then <code>det(A)=0</code> means the normals are coplanar. The parallelepiped they form has zero volume. A direction along the intersection of two nonparallel planes is <code>N₁×N₂</code>.</p>
-      <p><strong>Important limitation:</strong> for a nonhomogeneous system, <code>det(A)=0</code> does not tell you whether there are no solutions or infinitely many. Use elimination or another consistency test.</p>
-      <p><small>Source: MIT 18.02 Lecture Notes - Week 2, PDF pages 3-4.</small></p>
+      <h3>6.2 Matrix-vector multiplication</h3>
+      <p>If $A$ is $m\times n$, then it accepts an $n$-component vector and returns an $m$-component vector. Each output entry is one row dotted with the input:</p>
+      <div class="formula">$\displaystyle A\mathbf x=\begin{bmatrix}\text{row 1}\cdot\mathbf x\\\text{row 2}\cdot\mathbf x\\\vdots\\\text{row }m\cdot\mathbf x\end{bmatrix}$</div>
+      <div class="worked">
+        <h4>Worked example: applying a transformation</h4>
+        <p>Let $A=\begin{bmatrix}2&amp;1\\-1&amp;3\end{bmatrix}$ and $\mathbf x=\begin{bmatrix}4\\2\end{bmatrix}$.</p>
+        <p>$A\mathbf x=\begin{bmatrix}2(4)+1(2)\\-1(4)+3(2)\end{bmatrix}=\boxed{\begin{bmatrix}10\\2\end{bmatrix}}$.</p>
+        <p>The first row asks for $2x+y$; the second asks for $-x+3y$.</p>
+      </div>
 
-      <h2 id="lines">7. Parametric lines and planes</h2>
-      <h3>Line through a point</h3>
-      <p>A line through <code>Q₀</code> with direction <code>v</code> is</p>
-      <p><code>Q(t)=Q₀+tv</code>.</p>
-      <p>Through two distinct points <code>Q₀,Q₁</code>, use <code>v=Q₁-Q₀</code>. Then <code>t=0</code> gives <code>Q₀</code> and <code>t=1</code> gives <code>Q₁</code>.</p>
+      <h3>6.3 The columns tell you where basis vectors go</h3>
+      <p>For $A=\begin{bmatrix}a&amp;b\\c&amp;d\end{bmatrix}$,</p>
+      <div class="formula">$\displaystyle A\mathbf e_1=\begin{bmatrix}a\\c\end{bmatrix},\qquad A\mathbf e_2=\begin{bmatrix}b\\d\end{bmatrix}$</div>
+      <p>Therefore $A\begin{bmatrix}x\\y\end{bmatrix}=x(A\mathbf e_1)+y(A\mathbf e_2)$. Once you know where the basis vectors go, linearity determines where every vector goes.</p>
+      <div class="intuition">
+        <h4>Rotation example from the lecture</h4>
+        <p>$R=\begin{bmatrix}0&amp;-1\\1&amp;0\end{bmatrix}$ sends $\mathbf e_1$ right-to-up and $\mathbf e_2$ up-to-left: a $90^\circ$ counterclockwise rotation. Applying it twice gives $R^2=-I$, a $180^\circ$ rotation.</p>
+      </div>
 
-      <h3>Line-plane intersection algorithm</h3>
+      <h2 id="matrix-multiplication">7. Matrix multiplication and composition</h2>
+      <h3>7.1 Dimension rule</h3>
+      <div class="formula">$\displaystyle (m\times n)(n\times p)\longrightarrow(m\times p)$</div>
+      <p>The inner dimensions must match; the outer dimensions give the result. Entry $(i,j)$ is</p>
+      <div class="formula">$\displaystyle (AB)_{ij}=\sum_{k=1}^{n}a_{ik}b_{kj}$</div>
+      <p>In plain language: take row $i$ of $A$ dotted with column $j$ of $B$.</p>
+      <div class="worked">
+        <h4>Worked example: multiply two matrices</h4>
+        <p>Let $A=\begin{bmatrix}1&amp;2\\3&amp;4\end{bmatrix}$ and $B=\begin{bmatrix}2&amp;0\\1&amp;-1\end{bmatrix}$.</p>
+        <p>$AB=\begin{bmatrix}1(2)+2(1)&amp;1(0)+2(-1)\\3(2)+4(1)&amp;3(0)+4(-1)\end{bmatrix}=\boxed{\begin{bmatrix}4&amp;-2\\10&amp;-4\end{bmatrix}}$.</p>
+        <p>But $BA=\begin{bmatrix}2&amp;4\\-2&amp;-2\end{bmatrix}\ne AB$. Matrix multiplication is generally not commutative.</p>
+      </div>
+
+      <h3>7.2 Why order is reversed for transformations</h3>
+      <div class="formula">$\displaystyle (AB)\mathbf x=A(B\mathbf x)$</div>
+      <p>$B$ touches the vector first, then $A$. So read a product of transformations from right to left. Changing the order can change the final geometry.</p>
+      <div class="warning">
+        <h4>Common mistakes</h4>
+        <ul>
+          <li>Multiplying corresponding entries instead of row-by-column.</li>
+          <li>Checking the outer dimensions instead of the inner dimensions.</li>
+          <li>Assuming $AB=BA$.</li>
+          <li>Reading $AB$ as “do $A$, then $B$”; it is the reverse when acting on vectors.</li>
+        </ul>
+      </div>
+
+      <h2 id="matrix-determinant">8. Matrix determinant and invertibility</h2>
+      <h3>8.1 Formulas</h3>
+      <p>For a $2\times2$ matrix,</p>
+      <div class="formula">$\displaystyle \det\begin{bmatrix}a&amp;b\\c&amp;d\end{bmatrix}=ad-bc$</div>
+      <p>For a $3\times3$ matrix, expand along any row or column. Expanding along the first row:</p>
+      <div class="formula">$\displaystyle \det A=a_{11}M_{11}-a_{12}M_{12}+a_{13}M_{13}$</div>
+      <p>Here $M_{ij}$ is the $2\times2$ determinant left after deleting row $i$ and column $j$. The signs follow the checkerboard $\begin{bmatrix}+&amp;-&amp;+\\-&amp;+&amp;-\\+&amp;-&amp;+\end{bmatrix}$.</p>
+
+      <h3>8.2 Geometric meaning</h3>
+      <p>$|\det A|$ is the factor by which the transformation scales area in 2D or volume in 3D. The sign tells whether orientation is preserved or reversed. If $\det A=0$, the transformation squashes space into a lower dimension, so information is lost and the transformation cannot be undone.</p>
+      <div class="formula">$\displaystyle A\text{ is invertible}\quad\Longleftrightarrow\quad\det A\ne0$</div>
+
+      <h2 id="inverse">9. Inverse matrices</h2>
+      <h3>9.1 Definition</h3>
+      <p>The inverse $A^{-1}$ undoes $A$:</p>
+      <div class="formula">$\displaystyle AA^{-1}=A^{-1}A=I$</div>
+      <p>Only square matrices with nonzero determinant have a two-sided inverse. For a $2\times2$ matrix,</p>
+      <div class="formula">$\displaystyle \begin{bmatrix}a&amp;b\\c&amp;d\end{bmatrix}^{-1}=\frac1{ad-bc}\begin{bmatrix}d&amp;-b\\-c&amp;a\end{bmatrix},\qquad ad-bc\ne0$</div>
+      <div class="worked">
+        <h4>Worked example: inverse and solving a system</h4>
+        <p>Let $A=\begin{bmatrix}2&amp;1\\5&amp;3\end{bmatrix}$. Since $\det A=2(3)-1(5)=1$, $A^{-1}=\begin{bmatrix}3&amp;-1\\-5&amp;2\end{bmatrix}$.</p>
+        <p>To solve $A\mathbf x=\begin{bmatrix}1\\4\end{bmatrix}$, multiply by $A^{-1}$:</p>
+        <p>$\mathbf x=A^{-1}\mathbf b=\begin{bmatrix}3(1)-1(4)\\-5(1)+2(4)\end{bmatrix}=\boxed{\begin{bmatrix}-1\\3\end{bmatrix}}$.</p>
+        <p>Check: $A\begin{bmatrix}-1\\3\end{bmatrix}=\begin{bmatrix}1\\4\end{bmatrix}$.</p>
+      </div>
+
+      <h3>9.2 Cofactor method for $3\times3$ matrices</h3>
+      <div class="formula">$\displaystyle A^{-1}=\frac1{\det A}\operatorname{adj}(A)$</div>
       <ol>
-        <li>Write the line as <code>x=x(t)</code>, <code>y=y(t)</code>, <code>z=z(t)</code>.</li>
-        <li>Substitute all three into <code>ax+by+cz=d</code>.</li>
-        <li>Solve the resulting scalar equation for <code>t</code>.</li>
-        <li>Substitute <code>t</code> back into every coordinate.</li>
+        <li>Compute $\det A$. If it is zero, stop.</li>
+        <li>Compute each minor $M_{ij}$.</li>
+        <li>Apply $C_{ij}=(-1)^{i+j}M_{ij}$ to form the cofactor matrix $C$.</li>
+        <li>Transpose: $\operatorname{adj}(A)=C^T$.</li>
+        <li>Divide every entry by $\det A$.</li>
+        <li>Verify with $AA^{-1}=I$.</li>
       </ol>
+      <div class="worked">
+        <h4>Lecture matrix</h4>
+        <p>For $A=\begin{bmatrix}2&amp;3&amp;3\\2&amp;4&amp;5\\1&amp;1&amp;2\end{bmatrix}$, the notes obtain $\det A=3$ and</p>
+        <p>$A^{-1}=\frac13\begin{bmatrix}3&amp;-3&amp;3\\1&amp;1&amp;-4\\-2&amp;1&amp;2\end{bmatrix}$.</p>
+        <p>The high-risk steps are the checkerboard signs and the transpose. “Cofactor matrix” and “adjugate” are not the same matrix unless the cofactor matrix happens to be symmetric.</p>
+      </div>
+
+      <h2 id="systems">10. Linear systems as geometry</h2>
+      <p>Each equation in a three-variable linear system describes a plane. Solving $A\mathbf x=\mathbf b$ means finding the common intersection.</p>
       <table>
-        <thead><tr><th>Equation after substitution</th><th>Geometric conclusion</th></tr></thead>
+        <thead><tr><th>Condition</th><th>$A\mathbf x=\mathbf0$</th><th>$A\mathbf x=\mathbf b$</th></tr></thead>
         <tbody>
-          <tr><td>One value of <code>t</code></td><td>One intersection point</td></tr>
-          <tr><td>An identity, such as <code>7=7</code></td><td>The entire line lies in the plane</td></tr>
-          <tr><td>A contradiction, such as <code>11=7</code></td><td>The line is parallel to and outside the plane</td></tr>
+          <tr><td>$\det A\ne0$</td><td>Only $\mathbf x=\mathbf0$</td><td>Exactly one solution, $\mathbf x=A^{-1}\mathbf b$</td></tr>
+          <tr><td>$\det A=0$</td><td>Infinitely many solutions</td><td>No solution or infinitely many solutions</td></tr>
+        </tbody>
+      </table>
+      <p>A homogeneous system always has the trivial solution $\mathbf0$. For a nonhomogeneous system, $\det A=0$ alone cannot distinguish “none” from “infinitely many”; elimination is needed to test consistency.</p>
+
+      <h2 id="lines">11. Parametric lines and plane intersections</h2>
+      <div class="formula">$\displaystyle \mathbf r(t)=\mathbf r_0+t\mathbf v$</div>
+      <p>Through distinct points $Q_0,Q_1$, take $\mathbf v=Q_1-Q_0$. For a line-plane intersection, substitute $x(t),y(t),z(t)$ into the plane equation and solve for $t$.</p>
+      <div class="worked">
+        <h4>Worked lecture example</h4>
+        <p>For $Q_0=(-1,2,2)$ and $Q_1=(1,3,-1)$, $\mathbf v=\langle2,1,-3\rangle$, so $\mathbf r(t)=\langle-1+2t,2+t,2-3t\rangle$.</p>
+        <p>Substitute into $x+2y+4z=7$: $11-8t=7$, hence $t=1/2$ and the intersection is $\boxed{(0,5/2,1/2)}$.</p>
+      </div>
+      <table>
+        <thead><tr><th>After substitution</th><th>Meaning</th></tr></thead>
+        <tbody>
+          <tr><td>One value of $t$</td><td>One intersection point</td></tr>
+          <tr><td>Identity such as $7=7$</td><td>Entire line lies in the plane</td></tr>
+          <tr><td>Contradiction such as $11=7$</td><td>Line is parallel to, but outside, the plane</td></tr>
         </tbody>
       </table>
 
-      <h3>Worked lecture example</h3>
-      <p>Given <code>Q₀=(-1,2,2)</code> and <code>Q₁=(1,3,-1)</code>,</p>
-      <p><code>v=Q₁-Q₀=&lt;2,1,-3&gt;</code>,</p>
-      <p>so <code>Q(t)=(-1+2t, 2+t, 2-3t)</code>.</p>
-      <p>For the plane <code>x+2y+4z=7</code>, substitution gives</p>
-      <p><code>(-1+2t)+2(2+t)+4(2-3t)=11-8t=7</code>.</p>
-      <p>Thus <code>t=1/2</code>, and the intersection is <code>Q(1/2)=(0,5/2,1/2)</code>.</p>
-      <p><small>Source: MIT 18.02 Lecture Notes - Week 2, PDF page 4.</small></p>
+      <h2 id="curves">12. Parametric curves and the cycloid</h2>
+      <p>A parametric curve gives coordinates as functions of a parameter. For a wheel of radius $a$ rolling without slipping, a point on the rim follows</p>
+      <div class="formula">$\displaystyle x(\theta)=a(\theta-\sin\theta),\qquad y(\theta)=a(1-\cos\theta)$</div>
+      <p>At a regular point, $\displaystyle \frac{dy}{dx}=\frac{dy/dt}{dx/dt}$ when $dx/dt\ne0$. Near $\theta=0$, $x\sim a\theta^3/6$ and $y\sim a\theta^2/2$, so the cycloid has a vertical tangent and a cusp.</p>
 
-      <h2 id="curves">8. Parametric curves and the cycloid cusp</h2>
-      <p>A parametric curve specifies coordinates as functions of a parameter: <code>x=x(t)</code>, <code>y=y(t)</code>, and possibly <code>z=z(t)</code>. The parameter can represent time, angle, or another convenient geometric quantity.</p>
+      <h2 id="exam">13. What to remember for the exam</h2>
+      <div class="exam-box">
+        <ul>
+          <li>Dot product: angle, orthogonality, component and projection.</li>
+          <li>Cross product: perpendicular vector and parallelogram area; reversing order flips the sign.</li>
+          <li>Determinant: signed area/volume; absolute value gives physical size.</li>
+          <li>Plane: find a normal, then use $\mathbf n\cdot(\mathbf r-\mathbf r_0)=0$.</li>
+          <li>Matrix product: row-by-column; $(AB)\mathbf x=A(B\mathbf x)$, so $B$ acts first.</li>
+          <li>Inverse: exists exactly when $\det A\ne0$; verify by multiplication.</li>
+          <li>$\det A=0$ means a nonhomogeneous system has no solution or infinitely many, not automatically “no solution.”</li>
+          <li>Always state whether your answer is a scalar, vector, area or volume.</li>
+        </ul>
+      </div>
 
-      <h3>Cycloid derivation</h3>
-      <p>For a wheel of radius <code>a</code> rolling without slipping, let <code>θ</code> be the angle turned. The wheel travels horizontal distance <code>aθ</code>. Decomposing the position of a point on the rim gives</p>
-      <p><code>x(θ)=a(θ-sin θ)</code>,</p>
-      <p><code>y(θ)=a(1-cos θ)</code>.</p>
-
-      <h3>Behaviour near the bottom point</h3>
-      <p>Near <code>θ=0</code>,</p>
-      <p><code>sin θ ≈ θ-θ³/6</code>, &nbsp; <code>cos θ ≈ 1-θ²/2</code>.</p>
-      <p>Hence</p>
-      <p><code>x(θ) ≈ aθ³/6</code>, &nbsp; <code>y(θ) ≈ aθ²/2</code>.</p>
-      <p>Therefore <code>y/x ≈ 3/θ</code>, whose magnitude grows without bound as <code>θ→0</code>. The curve has a vertical tangent and a cusp at the bottom point.</p>
-
-      <h3>General tangent method</h3>
-      <p>For a regular point,</p>
-      <p><code>dy/dx = (dy/dt)/(dx/dt)</code>, provided <code>dx/dt≠0</code>.</p>
-      <p>If both coordinate derivatives vanish, the quotient gives <code>0/0</code> and is inconclusive. Compare the leading Taylor terms of <code>x(t)-x(t₀)</code> and <code>y(t)-y(t₀)</code> instead.</p>
-      <p><small>Source: MIT 18.02 Lecture Notes - Week 2, PDF page 5.</small></p>
-
-      <h2 id="mistakes">9. High-yield mistakes checklist</h2>
-      <ul>
-        <li>Form point-to-point vectors in a consistent order.</li>
-        <li>Do not confuse <code>A·B</code> with <code>A×B</code>.</li>
-        <li>Reversing a cross product reverses the normal direction.</li>
-        <li>A direction orthogonal to a plane's normal is parallel to the plane.</li>
-        <li>Check matrix dimensions before multiplying.</li>
-        <li>Read transformation composition from right to left.</li>
-        <li>Do not compute <code>A⁻¹</code> before confirming <code>det(A)≠0</code>.</li>
-        <li>Transpose the cofactor matrix when forming the adjugate.</li>
-        <li><code>det(A)=0</code> does not automatically mean “no solution.”</li>
-        <li>After solving for a line parameter, substitute it back into all coordinates.</li>
-        <li>When <code>dx/dt=dy/dt=0</code>, use leading-order analysis rather than declaring that no tangent exists.</li>
-      </ul>
+      <h2 id="practice">14. Quick practice</h2>
+      <ol>
+        <li>Find the scalar component and vector projection of $\mathbf a=\langle2,-1,3\rangle$ along $\mathbf u=\langle1,2,2\rangle$.</li>
+        <li>Find the area of the triangle with vertices $(0,0)$, $(4,1)$ and $(1,3)$.</li>
+        <li>Find a plane through $(1,1,0)$, $(0,2,1)$ and $(2,0,1)$.</li>
+        <li>Compute $AB$ and $BA$ for $A=\begin{bmatrix}1&amp;1\\0&amp;1\end{bmatrix}$ and $B=\begin{bmatrix}2&amp;0\\0&amp;3\end{bmatrix}$.</li>
+        <li>Solve $\begin{bmatrix}3&amp;1\\2&amp;1\end{bmatrix}\mathbf x=\begin{bmatrix}7\\5\end{bmatrix}$ using an inverse.</li>
+      </ol>
+      <details class="worked"><summary><strong>Practice answers</strong></summary>
+        <ol>
+          <li>$\lVert\mathbf u\rVert=3$, $\mathbf a\cdot\mathbf u=6$. Component $=2$; projection $=\frac23\langle1,2,2\rangle=\langle2/3,4/3,4/3\rangle$.</li>
+          <li>$\frac12|4(3)-1(1)|=11/2$.</li>
+          <li>A normal is $\langle1,1,0\rangle$, so $x+y=2$.</li>
+          <li>$AB=\begin{bmatrix}2&amp;3\\0&amp;3\end{bmatrix}$, $BA=\begin{bmatrix}2&amp;2\\0&amp;3\end{bmatrix}$.</li>
+          <li>$\mathbf x=\langle2,1\rangle$.</li>
+        </ol>
+      </details>
+      <p class="source-note"><strong>Source note:</strong> Sections 2-12 follow the uploaded MIT 18.02 lecture sequence. Added worked examples and interpretations are supplementary explanations based on MIT OCW's official vectors/matrices unit.</p>
     </main>
 
     <aside class="toc">
       <h2>On this page</h2>
-      <a href="#decision-map">Exam decision map</a>
-      <a href="#vectors">Vector toolkit</a>
-      <a href="#planes">Planes and normals</a>
-      <a href="#matrices">Matrices</a>
+      <a href="#map">Operation map</a>
+      <a href="#vector-basics">Vector basics</a>
+      <a href="#dot-product">Dot product &amp; projection</a>
+      <a href="#determinants">Determinants</a>
+      <a href="#cross-product">Cross product &amp; planes</a>
+      <a href="#matrix-basics">Matrix basics</a>
+      <a href="#matrix-multiplication">Matrix multiplication</a>
+      <a href="#matrix-determinant">Matrix determinant</a>
       <a href="#inverse">Inverse matrices</a>
       <a href="#systems">Linear systems</a>
-      <a href="#lines">Lines and planes</a>
-      <a href="#curves">Parametric curves</a>
-      <a href="#mistakes">Mistakes checklist</a>
+      <a href="#lines">Lines</a>
+      <a href="#curves">Curves</a>
+      <a href="#exam">Exam checklist</a>
+      <a href="#practice">Practice</a>
     </aside>
   </div>
 </body>
