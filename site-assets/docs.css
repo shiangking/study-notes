@@ -1,5 +1,3 @@
-@import url("https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500&family=Ubuntu+Mono:wght@400;700&display=swap");
-
 :root {
   --bg: #1a1b26;
   --surface: #1a1b26;
@@ -20,7 +18,7 @@ body {
   margin: 0;
   background: var(--bg);
   color: var(--ink);
-  font-family: "Ubuntu Mono", ui-monospace, "Cascadia Mono", monospace;
+  font-family: Verdana, Geneva, sans-serif;
   font-size: 15px;
   line-height: 1.65;
 }
@@ -90,7 +88,7 @@ code {
   color: #a9b1d6;
   border-radius: 4px;
   padding: .12em .32em;
-  font: .9em "JetBrains Mono", "SFMono-Regular", Consolas, monospace;
+  font: .9em Verdana, Geneva, sans-serif;
 }
 pre { background: var(--code); border: 1px solid var(--line); border-radius: 6px; padding: 14px; overflow: auto; }
 table { width: 100%; border-collapse: collapse; margin: 1.35rem 0; font-size: .95rem; }
