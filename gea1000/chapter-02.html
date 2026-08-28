@@ -1,0 +1,227 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <title>GEA1000 Chapter 2 | Study Notes</title>
+  <link rel="stylesheet" href="../site-assets/docs.css?v=20260827e">
+  <script>MathJax={tex:{inlineMath:[["$","$"],["\\(","\\)"]]},svg:{fontCache:"global"}};</script>
+  <script defer src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-svg.js"></script>
+</head>
+<body>
+  <header class="topbar">
+    <a class="site-name" href="../index.html">Study Notes</a>
+    <span class="course-name">GEA1000 Quantitative Reasoning with Data</span>
+  </header>
+
+  <div class="shell">
+    <aside class="sidebar">
+      <h2>GEA1000</h2>
+      <a class="nav-link" href="index.html">Overview</a>
+      <a class="nav-link current indent" href="chapter-02.html">Chapter 2: Proportions, RR &amp; OR</a>
+    </aside>
+
+    <main class="content">
+      <div class="notice">
+        <strong>GEA1000 — Chapter 2 study notes</strong><br>
+        Categorical data, proportions, risk ratios and odds ratios, with the kidney-treatment and vaping examples.
+      </div>
+
+      <h1 id="top">Quantitative Reasoning with Categorical Data</h1>
+      <p><strong>Primary source:</strong> Chapter 2 lecture videos on proportions, risk ratios and odds ratios. These notes condense the videos, repair formula formatting and emphasise interpretation.</p>
+
+      <h2 id="map">1. Chapter map</h2>
+      <table>
+        <thead><tr><th>Question</th><th>Tool</th><th>Denominator / comparison</th></tr></thead>
+        <tbody>
+          <tr><td>How common is one category overall?</td><td>Marginal proportion</td><td>Grand total</td></tr>
+          <tr><td>How common is a combination of categories?</td><td>Joint proportion</td><td>Grand total</td></tr>
+          <tr><td>How common is an outcome within a group?</td><td>Conditional proportion</td><td>Size of that group</td></tr>
+          <tr><td>How do risks compare between exposed and unexposed groups?</td><td>Risk ratio (RR)</td><td>Risk in exposed divided by risk in unexposed</td></tr>
+          <tr><td>How do odds compare, especially in a case-control study?</td><td>Odds ratio (OR)</td><td>Odds in exposed divided by odds in unexposed</td></tr>
+        </tbody>
+      </table>
+      <div class="intuition">
+        <h4>Central habit: ask “proportion of what?”</h4>
+        <p>Before calculating or interpreting any proportion, identify its denominator. Most errors in this chapter come from silently switching the population being used.</p>
+      </div>
+
+      <h2 id="categorical">2. Categorical variables and summaries</h2>
+      <p>A <strong>categorical variable</strong> places each observation into a category. Examples include treatment type, success or failure, gender, and responses on a Likert scale from “strongly disagree” to “strongly agree.” A numerical code used for a category does not automatically make the variable numerical.</p>
+
+      <h3>One categorical variable</h3>
+      <p>In the kidney-stone dataset, 831 of 1,050 treatments succeeded and 219 failed.</p>
+      <table>
+        <thead><tr><th>Outcome</th><th>Count</th><th>Proportion</th><th>Percentage</th></tr></thead>
+        <tbody>
+          <tr><td>Success</td><td>831</td><td>$831/1050=0.791$</td><td>79.1%</td></tr>
+          <tr><td>Failure</td><td>219</td><td>$219/1050=0.209$</td><td>20.9%</td></tr>
+          <tr><th>Total</th><th>1,050</th><th>1</th><th>100%</th></tr>
+        </tbody>
+      </table>
+      <p>A proportion lies from 0 to 1 inclusive; as a percentage, it lies from 0% to 100% inclusive.</p>
+
+      <h3>Useful plots</h3>
+      <ul>
+        <li><strong>Bar plot:</strong> compares category counts or proportions.</li>
+        <li><strong>Stacked bar plot:</strong> shows how subcategories make up a total.</li>
+        <li><strong>100% stacked bar plot:</strong> normalises every group to 100%, making group compositions directly comparable.</li>
+      </ul>
+
+      <h2 id="proportions">3. Marginal, joint and conditional proportions</h2>
+      <p>For the kidney-stone data:</p>
+      <table>
+        <thead><tr><th>Treatment</th><th>Success</th><th>Failure</th><th>Row total</th></tr></thead>
+        <tbody>
+          <tr><th>X</th><td>542</td><td>158</td><td>700</td></tr>
+          <tr><th>Y</th><td>289</td><td>61</td><td>350</td></tr>
+          <tr><th>Column total</th><th>831</th><th>219</th><th>1,050</th></tr>
+        </tbody>
+      </table>
+
+      <h3>3.1 Marginal proportion</h3>
+      <p>A marginal proportion uses a row or column total from the table’s margin and divides it by the grand total.</p>
+      <div class="formula">$\displaystyle P(Y)=\frac{350}{1050}=0.333, \qquad P(\text{Success})=\frac{831}{1050}=0.791$</div>
+
+      <h3>3.2 Joint proportion</h3>
+      <p>A joint proportion describes two characteristics occurring together and uses the grand total.</p>
+      <div class="formula">$\displaystyle P(Y\cap\text{Failure})=\frac{61}{1050}=0.0581$</div>
+
+      <h3>3.3 Conditional proportion</h3>
+      <p>A conditional proportion restricts attention to a subgroup. The event after the vertical bar determines the denominator.</p>
+      <div class="formula">$\displaystyle P(\text{Success}\mid X)=\frac{542}{700}=0.774, \qquad P(\text{Success}\mid Y)=\frac{289}{350}=0.826$</div>
+      <p>Thus, about 77.4% of patients receiving X succeeded, compared with 82.6% of patients receiving Y.</p>
+
+      <div class="worked">
+        <h4>Why counts alone can mislead</h4>
+        <p>Treatment X has more successes than Y: 542 versus 289. However, twice as many patients received X. Comparing the conditional success proportions normalises for the different group sizes and suggests that Y has the higher success rate.</p>
+      </div>
+      <div class="warning">
+        <h4>Association is not causation</h4>
+        <p>The kidney data came from an observational study. The higher success proportion for Y shows an association, but it does not prove that Y caused better outcomes. Other variables—such as stone size or how treatments were assigned—may explain the pattern.</p>
+      </div>
+
+      <h2 id="design">4. Study design determines the measure</h2>
+      <table>
+        <thead><tr><th>Design</th><th>Starting point</th><th>Direction</th><th>What can be calculated?</th></tr></thead>
+        <tbody>
+          <tr><td>Cohort study</td><td>Exposure status</td><td>Follow participants forward to observe outcomes</td><td>Incidence proportions, RR and OR</td></tr>
+          <tr><td>Case-control study</td><td>Outcome status: cases and controls</td><td>Look backward for exposure</td><td>OR, but not incidence proportions or RR</td></tr>
+        </tbody>
+      </table>
+      <p>For a potentially harmful exposure such as vaping, randomly assigning people to vape would be unethical. An observational design is therefore appropriate.</p>
+      <p>In a case-control study, researchers choose how many cases and controls to include. The observed disease proportion is therefore fixed by the sampling design and does not estimate disease risk in the population.</p>
+
+      <h2 id="rr">5. Incidence proportions and risk ratio</h2>
+      <p>A cohort study follows 1,000 vapers and 1,000 non-vapers who initially have no respiratory disease:</p>
+      <table>
+        <thead><tr><th>Group</th><th>Developed disease</th><th>Did not develop disease</th><th>Total</th></tr></thead>
+        <tbody>
+          <tr><th>Vaper (exposed)</th><td>145</td><td>855</td><td>1,000</td></tr>
+          <tr><th>Non-vaper (unexposed)</th><td>101</td><td>899</td><td>1,000</td></tr>
+        </tbody>
+      </table>
+      <p>The <strong>incidence proportion</strong> is the proportion of initially disease-free people who develop the disease during the study period.</p>
+      <div class="formula">$\displaystyle \text{Risk}_{E}=\frac{145}{1000}=0.145, \qquad \text{Risk}_{U}=\frac{101}{1000}=0.101$</div>
+      <p>Using exposed as the comparison group of interest:</p>
+      <div class="formula">$\displaystyle RR=\frac{\text{Risk in exposed}}{\text{Risk in unexposed}}=\frac{0.145}{0.101}\approx1.44$</div>
+      <div class="worked">
+        <h4>Interpretation</h4>
+        <p>Vapers were <strong>1.44 times as likely</strong> to develop respiratory disease as non-vapers during the study period. Equivalently, their risk was about <strong>44% higher</strong>, because $(1.44-1)\times100\%=44\%$.</p>
+      </div>
+      <table>
+        <thead><tr><th>Value</th><th>Direction of association</th><th>Interpretation</th></tr></thead>
+        <tbody>
+          <tr><td>$RR=1$</td><td>No association</td><td>Both groups have the same risk.</td></tr>
+          <tr><td>$RR&gt;1$</td><td>Positive association</td><td>The outcome is more likely in the numerator group.</td></tr>
+          <tr><td>$RR&lt;1$</td><td>Negative association</td><td>The outcome is less likely in the numerator group.</td></tr>
+        </tbody>
+      </table>
+
+      <h2 id="odds">6. Odds and odds ratio</h2>
+      <p>The <strong>odds of an event</strong> compare the probability that it occurs with the probability that it does not occur.</p>
+      <div class="formula">$\displaystyle \text{Odds}(A)=\frac{P(A)}{P(A^c)}=\frac{P(A)}{1-P(A)}=\frac{\text{number with }A}{\text{number without }A}$</div>
+      <p>If Singapore has a 20% chance of winning a match, its odds of winning are $0.20/0.80=0.25$, or $1:4$. Probability and odds are related but are not the same quantity.</p>
+
+      <h3>Case-control example</h3>
+      <table>
+        <thead><tr><th>Exposure</th><th>Disease (cases)</th><th>No disease (controls)</th><th>Total</th></tr></thead>
+        <tbody>
+          <tr><th>Vaper</th><td>15</td><td>35</td><td>50</td></tr>
+          <tr><th>Non-vaper</th><td>235</td><td>715</td><td>950</td></tr>
+          <tr><th>Total</th><th>250</th><th>750</th><th>1,000</th></tr>
+        </tbody>
+      </table>
+      <div class="formula">$\displaystyle \text{Odds}_{E}=\frac{15}{35}=0.429, \qquad \text{Odds}_{U}=\frac{235}{715}=0.329$</div>
+      <div class="formula">$\displaystyle OR=\frac{\text{odds in exposed}}{\text{odds in unexposed}}=\frac{15/35}{235/715}\approx1.30$</div>
+      <p>The odds of respiratory disease among vapers are about <strong>1.30 times</strong> the odds among non-vapers. This is a positive association. Do not rewrite this as “30% higher risk,” because an OR compares odds, not risks.</p>
+
+      <h3>Shortcut: cross-products</h3>
+      <p>For a table arranged as below, the odds ratio can be calculated directly:</p>
+      <table>
+        <thead><tr><th></th><th>Outcome</th><th>No outcome</th></tr></thead>
+        <tbody>
+          <tr><th>Exposed</th><td>$a$</td><td>$b$</td></tr>
+          <tr><th>Unexposed</th><td>$c$</td><td>$d$</td></tr>
+        </tbody>
+      </table>
+      <div class="formula">$\displaystyle OR=\frac{a/b}{c/d}=\frac{ad}{bc}$</div>
+
+      <h2 id="compare">7. Risk ratio versus odds ratio</h2>
+      <table>
+        <thead><tr><th>Feature</th><th>Risk ratio (RR)</th><th>Odds ratio (OR)</th></tr></thead>
+        <tbody>
+          <tr><td>Compares</td><td>Probabilities / risks</td><td>Odds</td></tr>
+          <tr><td>Basic formula</td><td>$P(D\mid E)/P(D\mid U)$</td><td>$\text{Odds}(D\mid E)/\text{Odds}(D\mid U)$</td></tr>
+          <tr><td>Cohort study</td><td>Valid</td><td>Valid</td></tr>
+          <tr><td>Case-control study</td><td>Not valid</td><td>Valid</td></tr>
+          <tr><td>Null value</td><td>1</td><td>1</td></tr>
+          <tr><td>Direction</td><td colspan="2">For the same coding and reference groups, RR and OR indicate the same direction of association.</td></tr>
+        </tbody>
+      </table>
+      <p>Using the cohort data, $RR=1.44$ while $OR=(145/855)/(101/899)\approx1.51$. Both exceed 1, so both indicate a positive association. Their numerical values differ because risk and odds are different.</p>
+
+      <h2 id="workflow">8. Exam workflow</h2>
+      <ol>
+        <li><strong>Identify the variables and categories.</strong> State which group is exposed and which is unexposed.</li>
+        <li><strong>Identify the study design.</strong> Cohort starts from exposure; case-control starts from outcome.</li>
+        <li><strong>Choose the denominator.</strong> Grand total for marginal/joint proportions; subgroup total for conditional proportions.</li>
+        <li><strong>Choose the measure.</strong> RR requires meaningful incidence proportions; OR works for case-control data.</li>
+        <li><strong>Fix the comparison direction.</strong> Write “exposed divided by unexposed” before substituting values.</li>
+        <li><strong>Interpret in context.</strong> Name the groups, outcome and multiplier, then state the direction of association.</li>
+        <li><strong>Avoid causal language</strong> unless the study design and evidence justify it.</li>
+      </ol>
+
+      <h2 id="pitfalls">9. Common pitfalls</h2>
+      <ul>
+        <li>Comparing counts when group sizes differ instead of comparing conditional proportions.</li>
+        <li>Confusing $P(A\mid B)$ with $P(B\mid A)$.</li>
+        <li>Forgetting that the condition after $\mid$ determines the denominator.</li>
+        <li>Inverting RR or OR. Reversing the numerator and denominator changes the value to its reciprocal and reverses the interpretation.</li>
+        <li>Calling odds a probability, or interpreting an odds ratio as a risk ratio.</li>
+        <li>Calculating RR from a case-control sample.</li>
+        <li>Concluding causation from an observational association.</li>
+      </ul>
+
+      <div class="exam-box">
+        <h3>One-line memory aid</h3>
+        <p><strong>Proportion:</strong> part over the relevant whole. <strong>Risk:</strong> outcome over all people at risk. <strong>Odds:</strong> outcome over no outcome. <strong>Ratio:</strong> exposed measure over unexposed measure.</p>
+      </div>
+      <p class="source-note">Source note: based on the supplied GEA1000 Chapter 2 lecture-video material. Course-specific terminology and assessment instructions take precedence.</p>
+    </main>
+
+    <aside class="toc">
+      <h2>On this page</h2>
+      <a href="#map">Chapter map</a>
+      <a href="#categorical">Categorical variables</a>
+      <a href="#proportions">Three proportions</a>
+      <a href="#design">Study design</a>
+      <a href="#rr">Risk ratio</a>
+      <a href="#odds">Odds ratio</a>
+      <a href="#compare">RR versus OR</a>
+      <a href="#workflow">Exam workflow</a>
+      <a href="#pitfalls">Common pitfalls</a>
+    </aside>
+  </div>
+</body>
+</html>
