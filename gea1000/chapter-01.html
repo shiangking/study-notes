@@ -1,0 +1,252 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <title>GEA1000 Chapter 1 | Study Notes</title>
+  <link rel="stylesheet" href="../site-assets/docs.css?v=20260827e">
+</head>
+<body>
+  <header class="topbar">
+    <a class="site-name" href="../index.html">Study Notes</a>
+    <span class="course-name">GEA1000 Quantitative Reasoning with Data</span>
+  </header>
+
+  <div class="shell">
+    <aside class="sidebar">
+      <h2>GEA1000</h2>
+      <a class="nav-link" href="index.html">Overview</a>
+      <a class="nav-link current indent" href="chapter-01.html">Chapter 1: Questions, sampling &amp; studies</a>
+      <a class="nav-link indent" href="chapter-02.html">Chapter 2: Proportions, RR &amp; OR</a>
+    </aside>
+
+    <main class="content">
+      <div class="notice">
+        <strong>GEA1000 — Chapter 1 study notes</strong><br>
+        Research questions, populations and samples, sampling methods, variables, experiments and observational studies.
+      </div>
+
+      <h1 id="top">Foundations of Quantitative Reasoning with Data</h1>
+      <p><strong>Primary source:</strong> Chapter 1 lecture videos. This guide organises the material around the decisions you must make when reading or designing a study.</p>
+
+      <h2 id="map">1. The big picture</h2>
+      <p>A study begins with a question about a population, obtains data from a sample, analyses variables and uses the results to answer or refine the question.</p>
+      <table>
+        <thead><tr><th>Stage</th><th>Main question</th><th>Key ideas</th></tr></thead>
+        <tbody>
+          <tr><td>Problem</td><td>What do we want to learn, and about whom?</td><td>Research question, target population</td></tr>
+          <tr><td>Plan</td><td>How will units be selected and variables measured?</td><td>Sampling frame, sampling method, study design</td></tr>
+          <tr><td>Data</td><td>What was actually recorded?</td><td>Individuals, categorical and numerical variables</td></tr>
+          <tr><td>Analysis</td><td>What patterns appear?</td><td>Tables, plots, association and correlation</td></tr>
+          <tr><td>Conclusion</td><td>What can the evidence justify?</td><td>Generalisability, association, causation</td></tr>
+        </tbody>
+      </table>
+      <p>Exploratory data analysis is iterative: patterns in a visualisation or analysis often generate new questions, which lead to further analysis.</p>
+
+      <h2 id="questions">2. Population and research questions</h2>
+      <p>The <strong>population</strong> is the entire group of individuals or objects about which we want to draw a conclusion. A good research question identifies a characteristic or relationship in a clearly defined population.</p>
+      <table>
+        <thead><tr><th>Research question</th><th>Target population</th><th>Question type</th></tr></thead>
+        <tbody>
+          <tr><td>What percentage of Singapore adults own a car?</td><td>Singapore adults</td><td>Estimate a population proportion</td></tr>
+          <tr><td>Is the average university course load greater than 20 units?</td><td>University students in the defined setting</td><td>Test a population claim</td></tr>
+          <tr><td>Do female students have a higher GPA than male students at University X?</td><td>Students at University X</td><td>Compare subpopulations</td></tr>
+          <tr><td>Is weekly social-media time related to GPA?</td><td>The stated student population</td><td>Investigate a relationship</td></tr>
+        </tbody>
+      </table>
+      <div class="warning">
+        <h4>Do not infer a cause from a headline</h4>
+        <p>A fall in Singapore marriages during 2020 does not by itself prove that COVID-19 caused the fall. Ask how the count was obtained, whether population size changed, which other explanations are plausible and whether the design can support causality.</p>
+      </div>
+
+      <h2 id="population-sample">3. Population, sample and sampling frame</h2>
+      <table>
+        <thead><tr><th>Term</th><th>Meaning</th><th>Example</th></tr></thead>
+        <tbody>
+          <tr><td>Target population</td><td>The whole group about which the researcher wants a conclusion</td><td>All NUS undergraduates</td></tr>
+          <tr><td>Population parameter</td><td>A numerical fact about the population, usually unknown</td><td>The true mean weekly study time of all NUS undergraduates</td></tr>
+          <tr><td>Sampling frame</td><td>The actual list or set of units available for selection</td><td>A current enrolment list</td></tr>
+          <tr><td>Sample</td><td>The subset of units actually selected and studied</td><td>500 selected undergraduates</td></tr>
+          <tr><td>Sample statistic / estimate</td><td>A numerical result calculated from the sample and used to estimate a parameter</td><td>The sample’s mean weekly study time</td></tr>
+        </tbody>
+      </table>
+
+      <h3>Census versus sample</h3>
+      <p>A <strong>census</strong> attempts to collect data from every unit in the population. A sample is usually cheaper and faster. A census may be impractical when the population is extremely large or effectively infinite, measurement is destructive, or reaching every unit is too costly or inconvenient.</p>
+
+      <h3>Coverage of the sampling frame</h3>
+      <ul>
+        <li><strong>Undercoverage:</strong> eligible members of the target population are missing from the frame.</li>
+        <li><strong>Overcoverage:</strong> the frame contains ineligible or out-of-scope units.</li>
+        <li><strong>Duplicate coverage:</strong> some units appear more than once and may have an excessive chance of selection.</li>
+      </ul>
+      <p>A strong sampling frame closely matches the target population: it covers all eligible units once and excludes unwanted units.</p>
+
+      <h2 id="bias">4. Bias and generalisability</h2>
+      <p><strong>Bias</strong> is a systematic tendency for a method to favour particular outcomes. Increasing sample size reduces chance variability, but it does not repair a systematically biased design.</p>
+      <table>
+        <thead><tr><th>Problem</th><th>How it arises</th><th>Why it matters</th></tr></thead>
+        <tbody>
+          <tr><td>Selection bias</td><td>The selection process systematically favours some units; for example, an imperfect frame or convenience sample</td><td>The sample may differ systematically from the target population</td></tr>
+          <tr><td>Non-response bias</td><td>Selected units do not participate or disclose information, and respondents differ from non-respondents</td><td>The observed responses may not represent all selected units</td></tr>
+          <tr><td>Measurement error</td><td>Questions, instruments, memory or recording procedures produce inaccurate values</td><td>Even a representative sample can yield inaccurate data</td></tr>
+        </tbody>
+      </table>
+      <div class="exam-box">
+        <h3>When can results be generalised?</h3>
+        <p>Look for a sampling frame that adequately covers the target population, probability-based selection, a sufficiently large sample, low or well-managed non-response, and accurate measurement. Generalisability depends on the entire data-collection process, not sample size alone.</p>
+      </div>
+
+      <h2 id="probability-sampling">5. Probability sampling</h2>
+      <p>In <strong>probability sampling</strong>, selection uses a known random mechanism. Selection probabilities need not be equal, but the chance mechanism must be defined. Random selection helps control selection bias; it does not guarantee that a particular sample perfectly represents the population.</p>
+      <table>
+        <thead><tr><th>Method</th><th>How it works</th><th>Strength</th><th>Main caution</th></tr></thead>
+        <tbody>
+          <tr><td>Simple random sample (SRS)</td><td>Select units without replacement so every possible sample of the given size has equal chance</td><td>Simple probability basis and good long-run properties</td><td>Needs an accessible sampling frame; non-response can remain</td></tr>
+          <tr><td>Systematic sample</td><td>Choose a random start, then every <em>k</em>th unit</td><td>Easy to implement</td><td>A periodic ordering aligned with <em>k</em> can bias representation</td></tr>
+          <tr><td>Stratified random sample</td><td>Split into strata and randomly sample within every stratum</td><td>Ensures representation of important subgroups and can improve precision</td><td>Requires correct stratum information and a suitable frame</td></tr>
+          <tr><td>Cluster sample</td><td>Split into clusters, randomly choose clusters, then observe all units in selected clusters</td><td>Reduces travel, time and cost</td><td>Similar units within a cluster provide less independent information, increasing variability</td></tr>
+        </tbody>
+      </table>
+
+      <h3>Strata and clusters are opposites in structure</h3>
+      <table>
+        <thead><tr><th></th><th>Within each group</th><th>Across groups</th><th>What is sampled?</th></tr></thead>
+        <tbody>
+          <tr><td>Stratified sampling</td><td>Relatively homogeneous</td><td>Different from one another</td><td>Units from every stratum</td></tr>
+          <tr><td>Cluster sampling</td><td>Ideally mixed / heterogeneous</td><td>Clusters resemble one another</td><td>A selection of whole clusters</td></tr>
+        </tbody>
+      </table>
+
+      <h2 id="nonprobability">6. Non-probability sampling</h2>
+      <p>Non-probability sampling does not use a known chance mechanism, so selection probabilities are unknown.</p>
+      <ul>
+        <li><strong>Convenience sampling:</strong> selects nearby or readily available people, such as shoppers at one mall.</li>
+        <li><strong>Volunteer sampling:</strong> participants opt in, such as respondents to an open online poll.</li>
+        <li><strong>Quota sampling:</strong> fills preset category quotas without random selection within categories.</li>
+        <li><strong>Judgment sampling:</strong> researchers choose units they consider suitable.</li>
+      </ul>
+      <p>These approaches may be quick, but selection and non-response biases make population generalisation difficult. A large volunteer poll can still be badly biased.</p>
+
+      <h2 id="variables">7. Types and roles of variables</h2>
+      <p>A <strong>variable</strong> is an attribute that can be measured or labelled for each individual. A dataset contains observations (usually rows) and variables (usually columns).</p>
+      <table>
+        <thead><tr><th>Family</th><th>Subtype</th><th>Recognition rule</th><th>Example</th></tr></thead>
+        <tbody>
+          <tr><td rowspan="2">Categorical</td><td>Nominal</td><td>Labels with no natural order</td><td>Pet type: dog, cat, bird</td></tr>
+          <tr><td>Ordinal</td><td>Ordered labels, but gaps are not necessarily equal</td><td>Likert response: disagree, neutral, agree</td></tr>
+          <tr><td rowspan="2">Numerical</td><td>Discrete</td><td>Numerical values with gaps, often counts</td><td>Number of household members</td></tr>
+          <tr><td>Continuous</td><td>Can meaningfully take any value in an interval</td><td>Height, weight, time</td></tr>
+        </tbody>
+      </table>
+      <div class="warning">
+        <h4>Numbers can still be category labels</h4>
+        <p>Coding “strongly disagree” to “strongly agree” as 1 to 5 does not make the responses numerical. For ordinal data, the order is meaningful, but the difference between 1 and 2 need not equal the difference between 4 and 5.</p>
+      </div>
+
+      <h3>Independent and dependent variables</h3>
+      <p>The <strong>independent variable</strong> is the explanatory variable that is manipulated in an experiment or treated as the potential predictor/exposure. The <strong>dependent variable</strong> is the response or outcome hypothesised to change.</p>
+      <p>For “Does daily caffeine consumption affect sleep quality among Singaporean adults?”, caffeine consumption is the independent variable and sleep quality is the dependent variable.</p>
+      <p>Variable type determines which summaries and plots make sense: bar plots for categorical variables, histograms and box plots for numerical distributions, and scatter plots for relationships between two numerical variables.</p>
+
+      <h2 id="experiments">8. Experiments, controls and random assignment</h2>
+      <p>An <strong>experiment</strong> deliberately manipulates an independent variable to investigate its effect on a dependent variable. A well-designed randomised experiment can provide evidence of a cause-and-effect relationship.</p>
+      <ul>
+        <li>The <strong>treatment group</strong> receives the intervention of interest.</li>
+        <li>The <strong>control group</strong> provides a baseline. It may receive no treatment, standard treatment or a placebo.</li>
+      </ul>
+      <p>A high success rate in the treatment group is not enough by itself. If both treatment and control groups have the same success rate, the treatment has not shown an improvement over the baseline.</p>
+
+      <h3>Confounding</h3>
+      <p>A <strong>confounder</strong> is related to both the explanatory variable and the outcome, creating an alternative explanation for the observed relationship. If coffee drinkers revise longer than non-coffee drinkers, revision time could explain a difference in exam performance.</p>
+
+      <h3>Random assignment</h3>
+      <p><strong>Random assignment</strong> uses an impartial chance mechanism to place experimental subjects into treatment groups. With sufficiently large groups, it tends to balance both known and unknown confounders, making groups comparable before treatment.</p>
+      <div class="intuition">
+        <h4>Random sampling and random assignment solve different problems</h4>
+        <p><strong>Random sampling</strong> concerns who enters the study and supports generalisation to a population. <strong>Random assignment</strong> concerns which treatment participants receive and supports causal comparison between groups.</p>
+      </div>
+
+      <h2 id="blinding">9. Placebos and blinding</h2>
+      <p>A <strong>placebo</strong> resembles the treatment but contains no active component. The <strong>placebo effect</strong> is a response caused by participants’ expectations rather than the treatment’s active mechanism.</p>
+      <table>
+        <thead><tr><th>Design feature</th><th>Who is unaware?</th><th>Bias reduced</th></tr></thead>
+        <tbody>
+          <tr><td>Subject blinding</td><td>Participants do not know their assigned group</td><td>Expectation-driven changes in behaviour or reported outcomes</td></tr>
+          <tr><td>Assessor blinding</td><td>Outcome evaluators do not know assignments</td><td>Researcher or grader expectations affecting measurement</td></tr>
+          <tr><td>Double-blind experiment</td><td>Both subjects and assessors</td><td>Both sources above</td></tr>
+        </tbody>
+      </table>
+      <p>Blinding is distinct from random assignment: assignment makes groups comparable, while blinding reduces behaviour and measurement changes caused by knowing the assignment.</p>
+
+      <h2 id="observational">10. Observational studies</h2>
+      <p>An <strong>observational study</strong> measures exposures and outcomes without assigning the exposure. It is used when manipulation is unethical or impractical, such as studying long-term smoking effects.</p>
+      <table>
+        <thead><tr><th>Design</th><th>Start with</th><th>Time direction</th><th>Typical question</th></tr></thead>
+        <tbody>
+          <tr><td>Cohort study</td><td>Exposed and unexposed individuals, initially free of the outcome</td><td>Follow forward to outcomes</td><td>Who later develops the disease?</td></tr>
+          <tr><td>Case-control study</td><td>Cases with the outcome and controls without it</td><td>Look backward for exposure</td><td>Who was previously exposed?</td></tr>
+        </tbody>
+      </table>
+      <p>Because exposure is not randomly assigned, exposed and unexposed groups may differ in other ways. Observational studies can show <strong>association</strong>, but the association may be confounded and does not by itself establish causation.</p>
+
+      <h2 id="compare-designs">11. What can each design justify?</h2>
+      <table>
+        <thead><tr><th>Random sampling?</th><th>Random assignment?</th><th>Main justified scope</th></tr></thead>
+        <tbody>
+          <tr><td>Yes</td><td>Yes</td><td>Can support causal inference and generalisation, if the rest of the design is sound</td></tr>
+          <tr><td>Yes</td><td>No</td><td>Can support population association, not causation by itself</td></tr>
+          <tr><td>No</td><td>Yes</td><td>Can support causal inference for study participants, but population generalisation is limited</td></tr>
+          <tr><td>No</td><td>No</td><td>Shows patterns in the observed sample; both causal and population claims are limited</td></tr>
+        </tbody>
+      </table>
+
+      <h2 id="workflow">12. Exam workflow</h2>
+      <ol>
+        <li><strong>State the target population.</strong> Who or what is the conclusion about?</li>
+        <li><strong>Identify the sampling frame and sample.</strong> Who could be selected, and who was observed?</li>
+        <li><strong>Classify each variable.</strong> Categorical or numerical; then subtype and role.</li>
+        <li><strong>Identify selection.</strong> Was a probability-sampling mechanism used?</li>
+        <li><strong>Identify assignment.</strong> Did researchers randomly assign exposure?</li>
+        <li><strong>Check bias and confounding.</strong> Consider coverage, non-response, measurement and group differences.</li>
+        <li><strong>Match the conclusion to the design.</strong> Separate sample description, population generalisation, association and causation.</li>
+      </ol>
+
+      <h2 id="pitfalls">13. Common pitfalls</h2>
+      <ul>
+        <li>Treating “random” as haphazard rather than a defined chance mechanism.</li>
+        <li>Confusing random sampling with random assignment.</li>
+        <li>Assuming a large sample automatically removes selection bias.</li>
+        <li>Assuming a numerical category code makes a variable numerical.</li>
+        <li>Mixing up stratified sampling, which samples from every stratum, and cluster sampling, which selects whole clusters.</li>
+        <li>Assuming a census is automatically accurate; non-response and measurement error can still occur.</li>
+        <li>Claiming causation from an observational study.</li>
+        <li>Claiming population generalisability from a convenience or volunteer sample.</li>
+      </ul>
+
+      <div class="exam-box">
+        <h3>One-line memory aid</h3>
+        <p><strong>Selection decides whom you may generalise to; assignment decides whether you may argue causation.</strong></p>
+      </div>
+      <p class="source-note">Source note: based on the supplied GEA1000 Chapter 1 lecture-video material. Course-specific terminology and assessment instructions take precedence.</p>
+    </main>
+
+    <aside class="toc">
+      <h2>On this page</h2>
+      <a href="#map">Big picture</a>
+      <a href="#questions">Research questions</a>
+      <a href="#population-sample">Population and sample</a>
+      <a href="#bias">Bias</a>
+      <a href="#probability-sampling">Probability sampling</a>
+      <a href="#nonprobability">Non-probability sampling</a>
+      <a href="#variables">Variables</a>
+      <a href="#experiments">Experiments</a>
+      <a href="#blinding">Blinding</a>
+      <a href="#observational">Observational studies</a>
+      <a href="#compare-designs">Design conclusions</a>
+      <a href="#workflow">Exam workflow</a>
+      <a href="#pitfalls">Common pitfalls</a>
+    </aside>
+  </div>
+</body>
+</html>
