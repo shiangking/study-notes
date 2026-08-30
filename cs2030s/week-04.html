@@ -19,17 +19,17 @@
       <a class="nav-link indent" href="week-01.html">Week 1: Functions, Encapsulation &amp; OOP</a>
       <a class="nav-link indent" href="week-02.html">Week 2: Object-oriented design</a>
       <a class="nav-link indent" href="week-03.html">Week 3: Polymorphism and abstraction</a>
-      <a class="nav-link current indent" href="week-04.html">Week 4: Wrappers, casts and variance</a>
+      <a class="nav-link current indent" href="week-04.html">Week 4: Wrappers, casts, variance &amp; exceptions</a>
     </aside>
 
     <main class="content">
       <div class="notice">
         <strong>CS2030S — Week 4 study notes</strong><br>
-        Units 20–22. Use the left sidebar to move between weeks and the right sidebar to jump within this page.
+        Units 20–23. Use the left sidebar to move between weeks and the right sidebar to jump within this page.
       </div>
 
-      <h1 id="guide">CS2030S Guide: Wrapper Classes, Runtime Class Mismatch, and Variance</h1>
-      <p><strong>Primary source:</strong> supplied lecture notes for Units 20–22. Obvious transcription errors in the source code have been corrected; supplementary edge cases are marked as such.</p>
+      <h1 id="guide">CS2030S Guide: Wrappers, Runtime Types, Variance, and Exceptions</h1>
+      <p><strong>Primary source:</strong> supplied lecture notes for Units 20–23. Obvious transcription errors in the source code have been corrected; supplementary edge cases are marked as such.</p>
 
       <h2 id="big-picture">1. The big picture</h2>
       <p>These three units expose places where Java's convenient abstractions move some safety or cost away from the line of code where it originates:</p>
@@ -37,6 +37,7 @@
         <li><strong>Wrapper classes</strong> let primitive values participate in object-based APIs, but may hide conversions, allocations, and null-related failures.</li>
         <li><strong>Narrowing casts</strong> let a program recover a concrete subtype after treating an object abstractly, but the claim may fail at runtime.</li>
         <li><strong>Array covariance</strong> lets an array of a subtype be used as an array of a supertype, but an apparently valid write can fail at runtime.</li>
+        <li><strong>Exceptions</strong> separate normal logic from exceptional handling and propagate failures through method calls until an appropriate handler takes responsibility.</li>
       </ul>
       <p>The shared exam strategy is to track both the <strong>compile-time type</strong> of each expression and the <strong>runtime class</strong> of the object to which it refers.</p>
 
@@ -188,17 +189,186 @@ objArray[0] = "Hello!"; // compiles, then throws ArrayStoreException</code></pre
 // List&lt;Object&gt; objs = ints; // compile-time error</code></pre>
       <p>The invariant rule rejects the dangerous alias at compile time. Later generic wildcard syntax provides controlled forms of covariance and contravariance.</p>
 
-      <h2 id="comparison">5. Compare the three runtime failures</h2>
+      <h2 id="unit-23">5. Unit 23 — Exceptions</h2>
+      <h3>Why exceptions improve program structure</h3>
+      <p>Traditional error handling often uses special return values and global state such as C's <code>errno</code>. This creates two problems:</p>
+      <ul>
+        <li>the normal task becomes interspersed with repetitive error checks; and</li>
+        <li>every caller must remember what each special value means and check it correctly.</li>
+      </ul>
+      <p>Exceptions keep the main operation together and move exceptional responses into separate handlers:</p>
+      <pre><code>try {
+  reader = new FileReader(filename);
+  scanner = new Scanner(reader);
+  value = scanner.nextInt();
+} catch (FileNotFoundException e) {
+  System.err.println("Unable to open " + filename + ": " + e);
+} catch (InputMismatchException e) {
+  System.err.println("Unable to scan for an integer");
+} catch (NoSuchElementException e) {
+  System.err.println("No input found");
+} finally {
+  if (scanner != null) {
+    scanner.close();
+  }
+}</code></pre>
+      <p>The <code>try</code> block states the normal task. Each <code>catch</code> block describes a response to one family of failures. The optional <code>finally</code> block performs cleanup whether the <code>try</code> completes normally or abruptly.</p>
+
+      <h3><code>try</code>, <code>catch</code>, and handler selection</h3>
+      <p>Exceptions are objects. Information about the failure—including a message and stack trace—is encapsulated in the thrown object and made available through the catch parameter, such as <code>e</code>.</p>
+      <p>Catch clauses are examined from top to bottom. Java selects the first clause whose parameter type is the same as, or a supertype of, the runtime class of the thrown exception. Therefore, more specific handlers must appear before more general handlers.</p>
+      <pre><code>// Illegal: ExceptionX &lt;: ExceptionY, so the second handler is unreachable.
+try {
+  riskyOperation();
+} catch (ExceptionY e) {
+  // also catches every ExceptionX
+} catch (ExceptionX e) {
+  // compile-time error: already caught
+}</code></pre>
+
+      <h3>Multi-catch</h3>
+      <p>If unrelated exception types require the same response, combine them using <code>|</code>:</p>
+      <pre><code>catch (FileNotFoundException | NoSuchElementException e) {
+  System.err.println(e);
+}</code></pre>
+      <p><strong>Correction to the raw notes:</strong> <code>InputMismatchException</code> extends <code>NoSuchElementException</code>. Java forbids related alternatives in one multi-catch because the subtype is already covered, so listing both would not compile.</p>
+
+      <h3><code>throw</code> versus <code>throws</code></h3>
+      <table>
+        <thead><tr><th>Keyword</th><th>Purpose</th><th>Example</th></tr></thead>
+        <tbody>
+          <tr><td><code>throw</code></td><td>Actually raises one exception object now</td><td><code>throw new IllegalArgumentException(...);</code></td></tr>
+          <tr><td><code>throws</code></td><td>Declares that a method or constructor may propagate exception types to its caller</td><td><code>openFile(...) throws FileNotFoundException</code></td></tr>
+        </tbody>
+      </table>
+      <pre><code>class Circle {
+  private Point c;
+  private double r;
+
+  public Circle(Point c, double r) {
+    if (r &lt; 0) {
+      throw new IllegalArgumentException("radius cannot be negative");
+    }
+    this.c = c;
+    this.r = r;
+  }
+}</code></pre>
+      <p>Executing <code>throw</code> stops normal execution at that statement. The field assignments are skipped, and the exception begins propagating to the caller. Since <code>IllegalArgumentException</code> is unchecked, declaring it with <code>throws</code> is optional.</p>
+
+      <h3>Checked versus unchecked exceptions</h3>
+      <table>
+        <thead><tr><th>Property</th><th>Checked exception</th><th>Unchecked exception</th></tr></thead>
+        <tbody>
+          <tr><td>Hierarchy</td><td>Subclass of <code>Exception</code>, but not <code>RuntimeException</code></td><td>Subclass of <code>RuntimeException</code></td></tr>
+          <tr><td>Typical meaning</td><td>External or anticipated failure that valid code may still encounter</td><td>Usually a programming error or violated precondition</td></tr>
+          <tr><td>Compiler rule</td><td>Must be caught or declared with <code>throws</code></td><td>Need not be caught or declared</td></tr>
+          <tr><td>Examples</td><td><code>FileNotFoundException</code></td><td><code>IllegalArgumentException</code>, <code>NullPointerException</code>, <code>ClassCastException</code></td></tr>
+        </tbody>
+      </table>
+      <p>The course's practical distinction is that checked exceptions represent situations a correct program should actively anticipate, whereas unchecked exceptions usually reveal a defect or invalid use of an abstraction. This is a design guideline, not a claim that every real-world case fits perfectly into one category.</p>
+
+      <h3>Exceptions are part of a method contract</h3>
+      <p>A method contract includes parameter types, return type, behaviour, and exceptional outcomes. The compiler enforces checked-exception contracts:</p>
+      <pre><code>static FileReader openFile(String filename)
+    throws FileNotFoundException {
+  return new FileReader(filename);
+}</code></pre>
+      <p>Every caller must now either catch <code>FileNotFoundException</code> or explicitly propagate it. Adding a new checked exception therefore changes the public specification and may require changes throughout the caller chain.</p>
+      <p>An overriding method may declare only the same checked exceptions, more specific checked exceptions, or fewer checked exceptions than the overridden method. It may not introduce a broader or unrelated checked exception. This preserves Liskov substitution: a client using the supertype must not face a new checked obligation.</p>
+
+      <h3>Handle or pass the buck?</h3>
+      <p>When a method cannot respond meaningfully, it may propagate the exception to a caller:</p>
+      <pre><code>static FileReader openFile(String filename)
+    throws FileNotFoundException {
+  return new FileReader(filename);
+}
+
+public static void main(String[] args) {
+  try {
+    openFile("input.txt");
+  } catch (FileNotFoundException e) {
+    // warn the user and allow another file to be selected
+  }
+}</code></pre>
+      <p>Handle an exception at the lowest level that can <strong>meaningfully</strong> recover, restore a valid state, translate the failure, retry, or give an appropriate user-facing response. If the current method cannot do any of these, propagate it instead of pretending it has been handled.</p>
+      <p>Do not merely let every layer—including <code>main</code>—declare <code>throws</code>. If nobody handles a checked exception, the user receives an implementation-oriented stack trace rather than a controlled response.</p>
+
+      <h3>Exception control flow and stack unwinding</h3>
+      <pre><code>try {
+  m1();
+} catch (E1 e) {
+  handleE1();
+} catch (E2 e) {
+  handleE2();
+} finally {
+  cleanUp();
+}</code></pre>
+      <p>Suppose <code>m1()</code> calls <code>m2()</code>, which calls <code>m3()</code>, which calls <code>m4()</code>, and <code>m4()</code> throws <code>E2</code>:</p>
+      <ol>
+        <li>Normal execution in <code>m4()</code> stops at the <code>throw</code>.</li>
+        <li>The JVM searches the current method for a compatible handler.</li>
+        <li>If none exists, its stack frame is unwound and the search continues in its caller.</li>
+        <li>This repeats through <code>m3()</code>, <code>m2()</code>, and <code>m1()</code>.</li>
+        <li>The compatible <code>catch (E2 e)</code> executes.</li>
+        <li>The <code>finally</code> block executes, then control continues after the whole statement unless another abrupt action occurs.</li>
+      </ol>
+      <p>Statements skipped by stack unwinding are not resumed later. A <code>finally</code> block also executes when the associated <code>try</code> or <code>catch</code> uses <code>return</code> or throws again.</p>
+      <p><strong>Supplementary precision:</strong> “finally always runs” has rare exceptions, such as forced JVM termination. For ordinary exam traces involving normal completion, <code>return</code>, or <code>throw</code>, treat it as executing.</p>
+
+      <h3>Creating a custom exception</h3>
+      <p>Create a custom type only when it communicates a domain-specific failure or carries useful information that existing exception types cannot express:</p>
+      <pre><code>class IllegalCircleException extends IllegalArgumentException {
+  private Point center;
+
+  IllegalCircleException(Point center, String message) {
+    super(message);
+    this.center = center;
+  }
+
+  @Override
+  public String toString() {
+    return "The circle centered at " + this.center
+        + " cannot be created: " + getMessage();
+  }
+}</code></pre>
+      <p>Extending <code>IllegalArgumentException</code> makes this custom exception unchecked. Extending <code>Exception</code> directly would make it checked.</p>
+
+      <h3>Do not break the abstraction barrier</h3>
+      <pre><code>class ClassRoster {
+  public Student[] getStudents() throws FileNotFoundException {
+    // implementation reads a file
+  }
+}</code></pre>
+      <p>This leaks the implementation detail that the roster is stored in a file. If the class later reads from a database, callers must change despite the abstract operation—getting students—remaining the same. Prefer handling or translating implementation-specific exceptions inside the abstraction:</p>
+      <pre><code>public Student[] getStudents() throws RosterAccessException {
+  try {
+    return readStudentsFromFile();
+  } catch (FileNotFoundException e) {
+    throw new RosterAccessException("Unable to load roster", e);
+  }
+}</code></pre>
+      <p>The public exception now describes the abstraction's failure rather than its current storage mechanism.</p>
+
+      <h3>Resource cleanup</h3>
+      <p>If a method acquires a resource, it remains responsible for releasing it even when an exception propagates. A <code>finally</code> block can perform this cleanup and then allow the same exception to continue upward.</p>
+      <p><strong>Supplementary modern Java:</strong> for resources implementing <code>AutoCloseable</code>, prefer try-with-resources because Java closes them automatically:</p>
+      <pre><code>try (Scanner scanner = new Scanner(new FileReader(filename))) {
+  return scanner.nextInt();
+}</code></pre>
+
+      <h2 id="comparison">6. Compare the main runtime failures</h2>
       <table>
         <thead><tr><th>Exception</th><th>Typical cause in this week</th><th>Compiles because...</th></tr></thead>
         <tbody>
           <tr><td><code>NullPointerException</code></td><td>Auto-unboxing a <code>null</code> wrapper</td><td>The wrapper type is otherwise unboxable</td></tr>
           <tr><td><code>ClassCastException</code></td><td>Narrowing to a subtype incompatible with the actual object</td><td>The cast is statically plausible</td></tr>
           <tr><td><code>ArrayStoreException</code></td><td>Storing an incompatible object through a widened array reference</td><td>The value fits the reference's compile-time component type</td></tr>
+          <tr><td>Custom unchecked exception</td><td>A violated precondition or invalid object state defined by the abstraction</td><td>Unchecked exceptions need not be declared or caught</td></tr>
+          <tr><td>Checked exception</td><td>An anticipated external failure such as a missing file</td><td>Only if the caller catches it or declares that it propagates it</td></tr>
         </tbody>
       </table>
 
-      <h2 id="procedure">6. Step-by-step exam procedure</h2>
+      <h2 id="procedure">7. Step-by-step exam procedures</h2>
       <ol>
         <li>Write down the compile-time type of every relevant variable and expression.</li>
         <li>Write down the runtime class of every created object or array.</li>
@@ -206,9 +376,12 @@ objArray[0] = "Hello!"; // compiles, then throws ArrayStoreException</code></pre
         <li>For a cast, check whether the actual object is an instance of the target type.</li>
         <li>For an array write, check the array object's actual runtime component type.</li>
         <li>Name the exact failure: <code>NullPointerException</code>, <code>ClassCastException</code>, or <code>ArrayStoreException</code>.</li>
+        <li>For an exception trace, stop at the <code>throw</code>, unwind callers until the first compatible catch, then execute applicable <code>finally</code> blocks.</li>
+        <li>For a checked exception, verify that every path either catches it or declares it with <code>throws</code>.</li>
+        <li>Ask whether the current layer can respond meaningfully; if not, propagate or translate without leaking implementation details.</li>
       </ol>
 
-      <h2 id="pitfalls">7. Common mistakes and exam traps</h2>
+      <h2 id="pitfalls">8. Common mistakes and exam traps</h2>
       <ol>
         <li>Writing <code>Int</code> instead of Java's primitive type <code>int</code>.</li>
         <li>Assuming a primitive is a subtype of <code>Object</code>.</li>
@@ -220,9 +393,16 @@ objArray[0] = "Hello!"; // compiles, then throws ArrayStoreException</code></pre
         <li>Predicting <code>ClassCastException</code> for an invalid array store; the correct exception is <code>ArrayStoreException</code>.</li>
         <li>Assuming generic classes are covariant because arrays are.</li>
         <li>Forgetting that primitive arrays such as <code>int[]</code> are not subtypes of <code>Object[]</code>.</li>
+        <li>Confusing <code>throw</code> (raise one object) with <code>throws</code> (declare possible propagation).</li>
+        <li>Placing a general catch before a specific catch, making the latter unreachable.</li>
+        <li>Swallowing failures with <code>catch (Exception e) { }</code>—“catch-them-all” or Pokémon exception handling.</li>
+        <li>Calling <code>System.exit</code> in a handler, which prevents higher layers from responding or cleaning up.</li>
+        <li>Using exceptions for expected control flow, such as catching <code>NullPointerException</code> instead of checking whether a reference is <code>null</code>.</li>
+        <li>Exposing implementation-specific exceptions across an abstraction boundary.</li>
+        <li>Declaring a checked exception all the way through <code>main</code> instead of producing a meaningful user-facing response.</li>
       </ol>
 
-      <h2 id="remember">8. What to remember for the exam</h2>
+      <h2 id="remember">9. What to remember for the exam</h2>
       <ul>
         <li>Wrappers adapt primitives for reference-type APIs; boxing goes primitive-to-wrapper and unboxing goes wrapper-to-primitive.</li>
         <li>Wrappers are immutable, hidden conversions can cost performance, and unboxing <code>null</code> fails.</li>
@@ -231,6 +411,12 @@ objArray[0] = "Hello!"; // compiles, then throws ArrayStoreException</code></pre
         <li>Covariance preserves subtype direction, contravariance reverses it, and invariance gives neither direction by default.</li>
         <li>Java reference arrays are covariant; an unsafe store can compile but throw <code>ArrayStoreException</code>.</li>
         <li>Always distinguish the variable's compile-time type from the object's runtime class.</li>
+        <li>Checked exceptions must be caught or declared; unchecked exceptions do not have that compiler requirement.</li>
+        <li>Catch clauses are tested top-to-bottom, so specific exception types must come before general ones.</li>
+        <li><code>throw</code> stops normal execution; the JVM unwinds the stack until it finds the first compatible handler.</li>
+        <li><code>finally</code> is for cleanup and normally executes after normal completion, <code>return</code>, or <code>throw</code>.</li>
+        <li>Handle an exception at the lowest layer capable of a meaningful response; otherwise propagate or translate it.</li>
+        <li>Do not swallow exceptions, use them for normal control flow, expose implementation details, or abandon checked exceptions at <code>main</code>.</li>
       </ul>
     </main>
 
@@ -240,10 +426,11 @@ objArray[0] = "Hello!"; // compiles, then throws ArrayStoreException</code></pre
       <a href="#unit-20">2. Wrapper classes</a>
       <a href="#unit-21">3. Runtime mismatch</a>
       <a href="#unit-22">4. Variance</a>
-      <a href="#comparison">5. Exceptions</a>
-      <a href="#procedure">6. Exam procedure</a>
-      <a href="#pitfalls">7. Pitfalls</a>
-      <a href="#remember">8. Exam checklist</a>
+      <a href="#unit-23">5. Exceptions</a>
+      <a href="#comparison">6. Failure comparison</a>
+      <a href="#procedure">7. Exam procedures</a>
+      <a href="#pitfalls">8. Pitfalls</a>
+      <a href="#remember">9. Exam checklist</a>
     </aside>
   </div>
 </body>
