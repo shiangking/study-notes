@@ -1,0 +1,250 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <title>CS2030S Week 4 | Study Notes</title>
+  <link rel="stylesheet" href="../site-assets/docs.css?v=20260827e">
+</head>
+<body>
+  <header class="topbar">
+    <a class="site-name" href="../index.html">Study Notes</a>
+    <span class="course-name">CS2030S Programming Methodology</span>
+  </header>
+
+  <div class="shell">
+    <aside class="sidebar">
+      <h2>CS2030S</h2>
+      <a class="nav-link" href="index.html">Overview</a>
+      <a class="nav-link indent" href="week-01.html">Week 1: Functions, Encapsulation &amp; OOP</a>
+      <a class="nav-link indent" href="week-02.html">Week 2: Object-oriented design</a>
+      <a class="nav-link indent" href="week-03.html">Week 3: Polymorphism and abstraction</a>
+      <a class="nav-link current indent" href="week-04.html">Week 4: Wrappers, casts and variance</a>
+    </aside>
+
+    <main class="content">
+      <div class="notice">
+        <strong>CS2030S — Week 4 study notes</strong><br>
+        Units 20–22. Use the left sidebar to move between weeks and the right sidebar to jump within this page.
+      </div>
+
+      <h1 id="guide">CS2030S Guide: Wrapper Classes, Runtime Class Mismatch, and Variance</h1>
+      <p><strong>Primary source:</strong> supplied lecture notes for Units 20–22. Obvious transcription errors in the source code have been corrected; supplementary edge cases are marked as such.</p>
+
+      <h2 id="big-picture">1. The big picture</h2>
+      <p>These three units expose places where Java's convenient abstractions move some safety or cost away from the line of code where it originates:</p>
+      <ul>
+        <li><strong>Wrapper classes</strong> let primitive values participate in object-based APIs, but may hide conversions, allocations, and null-related failures.</li>
+        <li><strong>Narrowing casts</strong> let a program recover a concrete subtype after treating an object abstractly, but the claim may fail at runtime.</li>
+        <li><strong>Array covariance</strong> lets an array of a subtype be used as an array of a supertype, but an apparently valid write can fail at runtime.</li>
+      </ul>
+      <p>The shared exam strategy is to track both the <strong>compile-time type</strong> of each expression and the <strong>runtime class</strong> of the object to which it refers.</p>
+
+      <h2 id="unit-20">2. Unit 20 — Wrapper classes</h2>
+      <h3>Why wrappers exist</h3>
+      <p>Java's primitive types are not classes, do not participate in inheritance, and are not subtypes of <code>Object</code>. A <strong>wrapper class</strong> encapsulates one primitive value in an object so that it can be used by polymorphic code or APIs requiring a reference type.</p>
+
+      <table>
+        <thead><tr><th>Primitive</th><th>Wrapper</th><th>Primitive</th><th>Wrapper</th></tr></thead>
+        <tbody>
+          <tr><td><code>byte</code></td><td><code>Byte</code></td><td><code>float</code></td><td><code>Float</code></td></tr>
+          <tr><td><code>short</code></td><td><code>Short</code></td><td><code>double</code></td><td><code>Double</code></td></tr>
+          <tr><td><code>int</code></td><td><code>Integer</code></td><td><code>char</code></td><td><code>Character</code></td></tr>
+          <tr><td><code>long</code></td><td><code>Long</code></td><td><code>boolean</code></td><td><code>Boolean</code></td></tr>
+        </tbody>
+      </table>
+
+      <pre><code>Integer boxed = Integer.valueOf(4); // int -&gt; Integer
+int unboxed = boxed.intValue();     // Integer -&gt; int</code></pre>
+
+      <h3>Autoboxing and auto-unboxing</h3>
+      <p><strong>Boxing</strong> converts a primitive to its wrapper type. <strong>Unboxing</strong> extracts a primitive from a wrapper. Java inserts these conversions automatically when required:</p>
+      <pre><code>Integer x = 4; // autoboxing: Integer.valueOf(4)
+int y = x;     // auto-unboxing: x.intValue()
+
+int z = x + 2; // x is unboxed before arithmetic
+x++;           // unbox, increment, then box the result</code></pre>
+      <p>A wrapper object is immutable. Thus <code>x++</code> does not mutate an <code>Integer</code> object; it produces a primitive result and assigns a wrapper for that result back to <code>x</code>.</p>
+
+      <h3>Performance cost</h3>
+      <pre><code>Double sum = 0.0;
+for (Integer i = 0; i &lt; Integer.MAX_VALUE; i++) {
+  sum += i;
+}</code></pre>
+      <p>This version repeatedly unboxes values for arithmetic and boxes results back into immutable wrapper objects. The concise syntax hides that work. A primitive <code>double</code> accumulator and <code>int</code> counter avoid most of the overhead and are preferable for performance-sensitive numerical code.</p>
+
+      <h3>Equality</h3>
+      <p>For primitives, <code>==</code> compares values. For wrapper references, <code>==</code> compares object identity. Use <code>equals</code> to compare wrapped values:</p>
+      <pre><code>Integer a = Integer.valueOf(1000);
+Integer b = Integer.valueOf(1000);
+
+System.out.println(a == b);      // unreliable as a value comparison
+System.out.println(a.equals(b)); // true</code></pre>
+      <p><strong>Supplementary warning:</strong> Java may cache and reuse some wrapper instances, so <code>==</code> may appear to work for certain values. This is exactly why it is unsafe as a general value comparison.</p>
+
+      <h3>Null unboxing edge case</h3>
+      <pre><code>Integer n = null;
+int value = n; // NullPointerException at runtime</code></pre>
+      <p>The assignment compiles, but there is no primitive value to extract from <code>null</code>. This is a <code>NullPointerException</code>, not a <code>ClassCastException</code>.</p>
+
+      <h2 id="unit-21">3. Unit 21 — Runtime class mismatch</h2>
+      <h3>Abstraction forgets concrete information</h3>
+      <pre><code>GetAreable findLargest(GetAreable[] array) {
+  double maxArea = 0;
+  GetAreable maxObj = null;
+
+  for (GetAreable curr : array) {
+    double area = curr.getArea();
+    if (area &gt; maxArea) {
+      maxArea = area;
+      maxObj = curr;
+    }
+  }
+  return maxObj;
+}</code></pre>
+      <p>The method is reusable because it works over the <code>GetAreable</code> interface. Its return type promises only a <code>GetAreable</code>, even if the returned object happens to be a <code>Circle</code> at runtime.</p>
+
+      <h3>Compile-time type versus runtime class</h3>
+      <table>
+        <thead><tr><th>Concept</th><th>Determined by</th><th>What it controls</th></tr></thead>
+        <tbody>
+          <tr><td>Compile-time type</td><td>The declaration and static type rules</td><td>Which operations the compiler permits</td></tr>
+          <tr><td>Runtime class</td><td>The object actually created</td><td>Dynamic method lookup and whether a narrowing cast succeeds</td></tr>
+        </tbody>
+      </table>
+
+      <h3>Widening and narrowing</h3>
+      <p>Assume <code>Circle &lt;: GetAreable</code>.</p>
+      <pre><code>Circle c = new Circle(...);
+GetAreable ga = c; // widening: implicit and safe</code></pre>
+      <p>Widening from a subtype to a supertype is safe because every <code>Circle</code> satisfies the <code>GetAreable</code> contract.</p>
+      <pre><code>GetAreable ga = findLargest(array);
+Circle c = (Circle) ga; // narrowing: explicit cast required</code></pre>
+      <p>Narrowing from a supertype to a subtype requires an explicit cast because not every <code>GetAreable</code> is a <code>Circle</code>.</p>
+
+      <h3>What a cast means</h3>
+      <p>A cast changes how the compiler is allowed to view a reference expression. It does <strong>not</strong> modify the object or convert it into an instance of another class.</p>
+      <pre><code>GetAreable ga = new Rectangle(...);
+Circle c = (Circle) ga; // compiles, then throws ClassCastException</code></pre>
+      <p>The compiler accepts that the cast is structurally possible. At runtime, Java checks the actual object. A <code>Rectangle</code> is not a <code>Circle</code>, so the runtime check fails.</p>
+
+      <table>
+        <thead><tr><th>Stage</th><th>Question asked</th><th>Possible outcome</th></tr></thead>
+        <tbody>
+          <tr><td>Compile time</td><td>Could these reference types legally be related?</td><td>Compile-time error or successful compilation</td></tr>
+          <tr><td>Runtime</td><td>Is this actual object compatible with the target type?</td><td>Successful cast or <code>ClassCastException</code></td></tr>
+        </tbody>
+      </table>
+
+      <h3>Checking before casting</h3>
+      <pre><code>if (ga instanceof Circle) {
+  Circle c = (Circle) ga;
+  // use c safely here
+}</code></pre>
+      <p><code>instanceof</code> protects a genuinely necessary cast. However, frequent checks may signal that the abstraction does not expose the behaviour the client actually needs. Prefer using the object through its interface when possible.</p>
+      <p><strong>Supplementary edge case:</strong> casting <code>null</code> to a reference type succeeds and produces <code>null</code>; dereferencing it later may cause <code>NullPointerException</code>.</p>
+
+      <h2 id="unit-22">4. Unit 22 — Variance</h2>
+      <h3>Definition</h3>
+      <p><strong>Variance</strong> describes how a subtype relationship between component types affects the relationship between complex types constructed from them. Let <code>C(S)</code> be a complex type formed from component type <code>S</code>, and suppose <code>S &lt;: T</code>.</p>
+
+      <table>
+        <thead><tr><th>Relationship</th><th>Definition</th><th>Direction</th></tr></thead>
+        <tbody>
+          <tr><td>Covariant</td><td><code>C(S) &lt;: C(T)</code></td><td>Preserves the subtype direction</td></tr>
+          <tr><td>Contravariant</td><td><code>C(T) &lt;: C(S)</code></td><td>Reverses the subtype direction</td></tr>
+          <tr><td>Invariant</td><td>Neither relationship follows in general</td><td>Allows neither direction by default</td></tr>
+        </tbody>
+      </table>
+
+      <h3>Java reference arrays are covariant</h3>
+      <p>For Java reference arrays, if <code>S &lt;: T</code>, then <code>S[] &lt;: T[]</code>. Since <code>Integer &lt;: Object</code>, Java therefore permits:</p>
+      <pre><code>Integer[] intArray = {
+  Integer.valueOf(10),
+  Integer.valueOf(20)
+};
+
+Object[] objArray = intArray;</code></pre>
+      <p>This is convenient for read-oriented code: anything read from an <code>Integer[]</code> is certainly an <code>Object</code>.</p>
+
+      <h3>Why writable covariant arrays are unsafe</h3>
+      <pre><code>Integer[] intArray = { 10, 20 };
+Object[] objArray = intArray;
+objArray[0] = "Hello!"; // compiles, then throws ArrayStoreException</code></pre>
+      <p>At compile time, <code>objArray</code> has type <code>Object[]</code>, and a <code>String</code> is an <code>Object</code>, so the write is allowed. At runtime, the actual array object is still an <code>Integer[]</code>. Java checks the array's runtime component type and rejects the <code>String</code> with <code>ArrayStoreException</code>.</p>
+
+      <table>
+        <thead><tr><th>Operation through <code>Object[]</code></th><th>Compile-time result</th><th>Runtime result for actual <code>Integer[]</code></th></tr></thead>
+        <tbody>
+          <tr><td>Read an element as <code>Object</code></td><td>Allowed</td><td>Safe: an <code>Integer</code> is an <code>Object</code></td></tr>
+          <tr><td>Store an <code>Integer</code></td><td>Allowed</td><td>Succeeds</td></tr>
+          <tr><td>Store a <code>String</code></td><td>Allowed</td><td><code>ArrayStoreException</code></td></tr>
+        </tbody>
+      </table>
+
+      <h3>Arrays versus generic collections</h3>
+      <p>Arrays preserve their component type at runtime, enabling the runtime store check. Java generic classes such as <code>List&lt;T&gt;</code> are invariant by default:</p>
+      <pre><code>List&lt;Integer&gt; ints = ...;
+// List&lt;Object&gt; objs = ints; // compile-time error</code></pre>
+      <p>The invariant rule rejects the dangerous alias at compile time. Later generic wildcard syntax provides controlled forms of covariance and contravariance.</p>
+
+      <h2 id="comparison">5. Compare the three runtime failures</h2>
+      <table>
+        <thead><tr><th>Exception</th><th>Typical cause in this week</th><th>Compiles because...</th></tr></thead>
+        <tbody>
+          <tr><td><code>NullPointerException</code></td><td>Auto-unboxing a <code>null</code> wrapper</td><td>The wrapper type is otherwise unboxable</td></tr>
+          <tr><td><code>ClassCastException</code></td><td>Narrowing to a subtype incompatible with the actual object</td><td>The cast is statically plausible</td></tr>
+          <tr><td><code>ArrayStoreException</code></td><td>Storing an incompatible object through a widened array reference</td><td>The value fits the reference's compile-time component type</td></tr>
+        </tbody>
+      </table>
+
+      <h2 id="procedure">6. Step-by-step exam procedure</h2>
+      <ol>
+        <li>Write down the compile-time type of every relevant variable and expression.</li>
+        <li>Write down the runtime class of every created object or array.</li>
+        <li>Mark every implicit boxing or unboxing conversion.</li>
+        <li>For a cast, check whether the actual object is an instance of the target type.</li>
+        <li>For an array write, check the array object's actual runtime component type.</li>
+        <li>Name the exact failure: <code>NullPointerException</code>, <code>ClassCastException</code>, or <code>ArrayStoreException</code>.</li>
+      </ol>
+
+      <h2 id="pitfalls">7. Common mistakes and exam traps</h2>
+      <ol>
+        <li>Writing <code>Int</code> instead of Java's primitive type <code>int</code>.</li>
+        <li>Assuming a primitive is a subtype of <code>Object</code>.</li>
+        <li>Using <code>==</code> to compare the values of wrapper objects.</li>
+        <li>Believing a cast changes or converts the object.</li>
+        <li>Assuming successful compilation proves that a narrowing cast will succeed.</li>
+        <li>Reversing widening and narrowing: subtype-to-supertype widens; supertype-to-subtype narrows.</li>
+        <li>Reversing covariance and contravariance.</li>
+        <li>Predicting <code>ClassCastException</code> for an invalid array store; the correct exception is <code>ArrayStoreException</code>.</li>
+        <li>Assuming generic classes are covariant because arrays are.</li>
+        <li>Forgetting that primitive arrays such as <code>int[]</code> are not subtypes of <code>Object[]</code>.</li>
+      </ol>
+
+      <h2 id="remember">8. What to remember for the exam</h2>
+      <ul>
+        <li>Wrappers adapt primitives for reference-type APIs; boxing goes primitive-to-wrapper and unboxing goes wrapper-to-primitive.</li>
+        <li>Wrappers are immutable, hidden conversions can cost performance, and unboxing <code>null</code> fails.</li>
+        <li>Widening is implicit and safe; narrowing needs a cast and may throw <code>ClassCastException</code>.</li>
+        <li>A cast changes the compiler's view of a reference, never the runtime object.</li>
+        <li>Covariance preserves subtype direction, contravariance reverses it, and invariance gives neither direction by default.</li>
+        <li>Java reference arrays are covariant; an unsafe store can compile but throw <code>ArrayStoreException</code>.</li>
+        <li>Always distinguish the variable's compile-time type from the object's runtime class.</li>
+      </ul>
+    </main>
+
+    <aside class="toc">
+      <h2>On this page</h2>
+      <a href="#big-picture">1. Big picture</a>
+      <a href="#unit-20">2. Wrapper classes</a>
+      <a href="#unit-21">3. Runtime mismatch</a>
+      <a href="#unit-22">4. Variance</a>
+      <a href="#comparison">5. Exceptions</a>
+      <a href="#procedure">6. Exam procedure</a>
+      <a href="#pitfalls">7. Pitfalls</a>
+      <a href="#remember">8. Exam checklist</a>
+    </aside>
+  </div>
+</body>
+</html>
