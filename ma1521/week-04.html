@@ -1,0 +1,381 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <title>MA1521 Week 4 | Study Notes</title>
+  <link rel="stylesheet" href="../site-assets/docs.css?v=20260831a">
+  <script>MathJax={tex:{inlineMath:[["$","$"],["\\(","\\)"]]},svg:{fontCache:"global"}};</script>
+  <script defer src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-svg.js"></script>
+</head>
+<body>
+  <header class="topbar">
+    <a class="site-name" href="../index.html">Study Notes</a>
+    <span class="course-name">MA1521 Calculus</span>
+  </header>
+
+  <div class="shell">
+    <aside class="sidebar">
+      <h2>MA1521</h2>
+      <a class="nav-link" href="index.html">Overview</a>
+      <a class="nav-link" href="week-01.html">Week 1: Calculus foundations</a>
+      <a class="nav-link" href="week-02.html">Week 2: Vectors, matrices &amp; curves</a>
+      <span class="nav-link indent">Week 3 - coming soon</span>
+      <a class="nav-link current" href="week-04.html">Week 4: Multivariable functions</a>
+    </aside>
+
+    <main class="content">
+      <div class="notice"><strong>MA1521 - Week 4 detailed notes</strong><br>Functions of several variables, domains, level sets, limits, partial derivatives, tangent planes, extrema and least squares - with worked Q06 methods and supplementary examples.</div>
+
+      <h1 id="top">Multivariable Functions and Local Behaviour</h1>
+      <p><strong>Primary course material:</strong> MIT18.02 Week 4 lecture notes, physical PDF pages 2-4, together with MA1521 Q06.1-Q06.6 supplied in chat. <strong>Supplementary explanation:</strong> standard multivariable-calculus background, alternative solution methods and additional examples are labelled clearly.</p>
+
+      <h2 id="map">1. What kind of question is this?</h2>
+      <table>
+        <thead><tr><th>Question asks for...</th><th>First move</th><th>Main risk</th></tr></thead>
+        <tbody>
+          <tr><td>A function value</td><td>Substitute every coordinate simultaneously</td><td>Ignoring the domain or mishandling negative inputs</td></tr>
+          <tr><td>The maximal domain</td><td>List every denominator, root and logarithm restriction</td><td>Forgetting an outer restriction after checking the inner expression</td></tr>
+          <tr><td>A level curve or surface</td><td>Set $f=k$ and simplify geometrically</td><td>Including points excluded from the original domain</td></tr>
+          <tr><td>A multivariable limit</td><td>Try continuity/direct substitution first</td><td>Believing that a few matching paths prove existence</td></tr>
+          <tr><td>A partial derivative</td><td>Differentiate one variable and freeze the others</td><td>Accidentally differentiating a variable that should be constant</td></tr>
+          <tr><td>A tangent plane or approximation</td><td>Compute $f$, $f_x$ and $f_y$ at the base point</td><td>Evaluating derivatives at the target instead of the base point</td></tr>
+          <tr><td>A local extremum</td><td>Solve $f_x=f_y=0$, then classify</td><td>Calling every critical point a maximum or minimum</td></tr>
+        </tbody>
+      </table>
+
+      <h2 id="functions">2. Functions of several variables</h2>
+      <h3>2.1 Inputs, outputs and graphs</h3>
+      <p>A function of two variables</p>
+      <div class="formula">$\displaystyle f:D\subseteq\mathbb R^2\to\mathbb R,qquad (x,y)\mapsto f(x,y)$</div>
+      <p>takes a point $(x,y)$ as input and returns one scalar. Its graph is the surface</p>
+      <div class="formula">$\displaystyle z=f(x,y)$</div>
+      <p>in $\mathbb R^3$. A function $f(x,y,z)$ has a three-dimensional input domain, but its graph would require four dimensions; instead, we usually visualise its domain, slices and level surfaces.</p>
+
+      <div class="intuition">
+        <h4>Supplementary intuition: freeze variables</h4>
+        <p>Fixing $y=y_0$ turns $f(x,y)$ into the one-variable function $x\mapsto f(x,y_0)$. Fixing $x=x_0$ gives $y\mapsto f(x_0,y)$. These vertical slices let us reuse one-variable ideas such as tangent slopes and limits.</p>
+      </div>
+
+      <h3 id="evaluation">2.2 Evaluating a multivariable function</h3>
+      <ol>
+        <li>State the input point clearly.</li>
+        <li>Substitute every coordinate at the same time, using brackets around negatives and fractions.</li>
+        <li>Check whether the denominator, logarithm or root is defined.</li>
+        <li>Simplify only after the restrictions are safe.</li>
+      </ol>
+
+      <div class="worked" id="q061">
+        <h4>Q06.1 worked example</h4>
+        <p>For</p>
+        <div class="formula">$\displaystyle f(x,y,z)=\frac{x-y}{y^2+z^2},$</div>
+        <p>the denominator is zero exactly when $y=0$ and $z=0$. Thus the domain excludes the entire $x$-axis.</p>
+        <p>At $(3,-1,2)$:</p>
+        <div class="formula">$\displaystyle f(3,-1,2)=\frac{3-(-1)}{(-1)^2+2^2}=\frac45.$</div>
+        <p>At $(0,-\frac13,0)$:</p>
+        <div class="formula">$\displaystyle f\!\left(0,-\frac13,0\right)=\frac{0-(-1/3)}{(-1/3)^2+0^2}=3.$</div>
+        <p><strong>Verification:</strong> both denominators are positive, so both inputs are inside the domain.</p>
+      </div>
+      <p class="source-note"><strong>Course material:</strong> Q06.1. <strong>Supplementary explanation:</strong> domain interpretation and the evaluation checklist.</p>
+
+      <h2 id="domains">3. Maximal domains</h2>
+      <p>The <strong>maximal domain</strong> is the largest set of inputs for which every operation in the formula makes sense as a real number.</p>
+      <table>
+        <thead><tr><th>Expression</th><th>Required condition</th></tr></thead>
+        <tbody>
+          <tr><td>$1/g(x,y)$</td><td>$g(x,y)\ne0$</td></tr>
+          <tr><td>$\sqrt{g(x,y)}$</td><td>$g(x,y)\ge0$</td></tr>
+          <tr><td>$1/\sqrt{g(x,y)}$</td><td>$g(x,y)&gt;0$</td></tr>
+          <tr><td>$\ln(g(x,y))$</td><td>$g(x,y)&gt;0$</td></tr>
+          <tr><td>$1/\ln(g(x,y))$</td><td>$g(x,y)&gt;0$ and $g(x,y)\ne1$</td></tr>
+          <tr><td>$\arcsin(g(x,y))$ or $\arccos(g(x,y))$</td><td>$-1\le g(x,y)\le1$</td></tr>
+        </tbody>
+      </table>
+
+      <h3>3.1 Systematic procedure</h3>
+      <ol>
+        <li>Work from the innermost operation outward.</li>
+        <li>Write every restriction separately.</li>
+        <li>Intersect the restrictions using “and,” not “or.”</li>
+        <li>Translate expressions such as $x^2+y^2$ into radial geometry.</li>
+        <li>Draw excluded boundaries dashed and included boundaries solid.</li>
+      </ol>
+
+      <div class="worked" id="q062">
+        <h4>Q06.2 worked example: a logarithm in a denominator</h4>
+        <p>Consider</p>
+        <div class="formula">$\displaystyle f(x,y)=\frac1{\ln(9-x^2-y^2)}.$</div>
+        <p><strong>Restriction 1 - logarithm:</strong></p>
+        <div class="formula">$\displaystyle 9-x^2-y^2&gt;0\iff x^2+y^2&lt;9.$</div>
+        <p>This is the inside of the circle of radius $3$, excluding its boundary.</p>
+        <p><strong>Restriction 2 - denominator:</strong></p>
+        <div class="formula">$\displaystyle \ln(9-x^2-y^2)\ne0.$</div>
+        <p>Since $\ln u=0$ exactly when $u=1$:</p>
+        <div class="formula">$\displaystyle 9-x^2-y^2\ne1\iff x^2+y^2\ne8.$</div>
+        <p>Therefore the maximal domain is</p>
+        <div class="formula">$\displaystyle \boxed{D=\{(x,y):x^2+y^2&lt;9,\ x^2+y^2\ne8\}}.$</div>
+        <p><strong>Sketch:</strong> shade the open disk $r&lt;3$, but remove the entire dashed circle $r=2\sqrt2$. Both the inner disk $r&lt;2\sqrt2$ and the annular region $2\sqrt2&lt;r&lt;3$ are included.</p>
+      </div>
+
+      <div class="warning">
+        <h4>Common trap</h4>
+        <p>The logarithm is allowed to be negative. We require its <em>argument</em> to be positive, not the logarithm itself. The extra condition $\ln(\cdot)\ne0$ comes only because the logarithm is in the denominator.</p>
+      </div>
+      <p class="source-note"><strong>Course material:</strong> Q06.2. <strong>Supplementary explanation:</strong> the restriction table, connected-region description and sketching procedure.</p>
+
+      <h2 id="levels">4. Graphs, level curves and level surfaces</h2>
+      <p>The graph $z=f(x,y)$ is a surface. A <strong>level curve</strong></p>
+      <div class="formula">$\displaystyle f(x,y)=k$</div>
+      <p>is the intersection of that graph with the horizontal plane $z=k$, viewed in the $xy$-plane. This is the same idea used by contour lines on a topographical map. For $f:\mathbb R^3\to\mathbb R$, the equation $f(x,y,z)=k$ usually gives a <strong>level surface</strong>.</p>
+
+      <div class="intuition">
+        <h4>Course interpretation: what contours tell you</h4>
+        <p>Moving across contours toward larger labels increases $f$. Closely spaced contours indicate that the output changes rapidly in the crossing direction; widely spaced contours indicate slower change.</p>
+      </div>
+
+      <h3 id="level-curves">4.1 Q06.3: rational-function level curves</h3>
+      <p>For</p>
+      <div class="formula">$\displaystyle f(x,y)=\frac{x+y}{x-y},\qquad x\ne y,$</div>
+      <p>set $f(x,y)=k$:</p>
+      <div class="formula">$\displaystyle x+y=k(x-y)\iff (1-k)x+(1+k)y=0.$</div>
+      <p>For $k\ne-1$, solve for $y$:</p>
+      <div class="formula">$\displaystyle y=\frac{k-1}{k+1}x.$</div>
+      <table>
+        <thead><tr><th>Level</th><th>Curve</th><th>Geometric description</th></tr></thead>
+        <tbody>
+          <tr><td>$k=-2$</td><td>$y=3x$</td><td>Line of slope $3$</td></tr>
+          <tr><td>$k=0$</td><td>$y=-x$</td><td>Line of slope $-1$</td></tr>
+          <tr><td>$k=1$</td><td>$y=0$</td><td>The $x$-axis</td></tr>
+          <tr><td>$k=2$</td><td>$y=x/3$</td><td>Line of slope $1/3$</td></tr>
+        </tbody>
+      </table>
+      <p>Every listed line passes through the origin algebraically, but $(0,0)$ must be removed because the original denominator $x-y$ is zero there. More generally, simplifying a level equation never restores points excluded from the original domain.</p>
+
+      <h3 id="level-surfaces">4.2 Q06.4: level surfaces</h3>
+      <p>For</p>
+      <div class="formula">$\displaystyle f(x,y,z)=\sqrt{16-x^2-y^2-z^2},$</div>
+      <p>the domain is the closed ball</p>
+      <div class="formula">$\displaystyle x^2+y^2+z^2\le16.$</div>
+      <p>Set $f=k$. Because a square root is nonnegative, $k\ge0$. Squaring gives</p>
+      <div class="formula">$\displaystyle x^2+y^2+z^2=16-k^2.$</div>
+      <table>
+        <thead><tr><th>Value of $k$</th><th>Level set</th></tr></thead>
+        <tbody>
+          <tr><td>$0\le k&lt;4$</td><td>Sphere centred at the origin with radius $\sqrt{16-k^2}$</td></tr>
+          <tr><td>$k=4$</td><td>The single point $(0,0,0)$</td></tr>
+          <tr><td>$k&lt;0$ or $k&gt;4$</td><td>Empty set</td></tr>
+        </tbody>
+      </table>
+      <p>As $k$ increases from $0$ to $4$, the spheres shrink from radius $4$ to a single point.</p>
+      <p class="source-note"><strong>Course material:</strong> PDF page 2 on contour plots and Q06.3-Q06.4. <strong>Supplementary explanation:</strong> domain restoration, degenerate levels and contour-spacing interpretation.</p>
+
+      <h2 id="limits">5. Limits in several variables</h2>
+      <p>The statement</p>
+      <div class="formula">$\displaystyle \lim_{(x,y)\to(a,b)}f(x,y)=L$</div>
+      <p>means that $f(x,y)$ approaches the same number $L$ no matter how $(x,y)$ approaches $(a,b)$. Unlike a one-variable limit, there are infinitely many possible paths.</p>
+
+      <h3>5.1 Method-selection ladder</h3>
+      <ol>
+        <li><strong>Direct substitution:</strong> use it when the expression is continuous at the target.</li>
+        <li><strong>Algebraic repair:</strong> factor or rationalise if substitution produces $0/0$.</li>
+        <li><strong>Repeated-expression substitution:</strong> set $u=g(x,y)$ when the whole formula depends on one combination such as $2x-y$.</li>
+        <li><strong>Path comparison:</strong> two different path limits prove non-existence.</li>
+        <li><strong>Squeeze or polar coordinates:</strong> use a bound depending only on distance to prove existence when direct methods fail.</li>
+      </ol>
+
+      <div class="worked" id="q065i">
+        <h4>Q06.5(i): continuity and direct substitution</h4>
+        <div class="formula">$\displaystyle \lim_{(x,y)\to(0,\pi/4)}\sec x\tan(x+y)$</div>
+        <p>$\sec x$ is continuous where $\cos x\ne0$, and $\tan(x+y)$ is continuous where $\cos(x+y)\ne0$. Both conditions hold at the target, so substitute directly:</p>
+        <div class="formula">$\displaystyle \sec0\tan(\pi/4)=1.$</div>
+      </div>
+
+      <div class="worked" id="q065ii">
+        <h4>Q06.5(ii): two equivalent methods</h4>
+        <div class="formula">$\displaystyle \lim_{(x,y)\to(2,0)}\frac{\sqrt{2x-y}-2}{2x-y-4}$</div>
+        <p>Direct substitution gives $0/0$, so simplification is required.</p>
+        <p><strong>Method A - rationalise:</strong></p>
+        <div class="formula">$\displaystyle \frac{\sqrt{2x-y}-2}{2x-y-4}\cdot\frac{\sqrt{2x-y}+2}{\sqrt{2x-y}+2}=\frac1{\sqrt{2x-y}+2}$</div>
+        <p>for points near but not equal to the target. The simplified expression is continuous there, so the limit is</p>
+        <div class="formula">$\displaystyle \boxed{\frac14}.$</div>
+        <p><strong>Method B - reduce to one variable:</strong> set $u=2x-y$. Then $(x,y)\to(2,0)$ implies $u\to4$, and the problem becomes</p>
+        <div class="formula">$\displaystyle \lim_{u\to4}\frac{\sqrt u-2}{u-4},$</div>
+        <p>which is rationalised in exactly the same way. This method exposes that the original expression depends only on $2x-y$.</p>
+      </div>
+
+      <div class="worked" id="q066">
+        <h4>Q06.6: proving that a limit does not exist</h4>
+        <div class="formula">$\displaystyle \lim_{(x,y)\to(0,0)}\frac{y}{x^2}$</div>
+        <p>Along $y=0$ with $x\ne0$:</p>
+        <div class="formula">$\displaystyle \frac{y}{x^2}=0.$</div>
+        <p>Along $y=x^2$:</p>
+        <div class="formula">$\displaystyle \frac{y}{x^2}=1.$</div>
+        <p>The two path limits differ, so</p>
+        <div class="formula">$\displaystyle \boxed{\text{the limit does not exist}.}$</div>
+        <p><strong>Stronger alternative:</strong> along the family $y=cx^2$, the expression equals $c$. It can approach any chosen constant, making the path dependence unmistakable.</p>
+      </div>
+
+      <div class="warning">
+        <h4>What path checking can and cannot do</h4>
+        <p>Two different path answers are enough to disprove a limit. Ten matching paths still do not prove existence because untested paths remain. An existence proof must control every approach, usually through continuity, an inequality, the squeeze theorem or a suitable coordinate transformation.</p>
+      </div>
+      <p class="source-note"><strong>Course material:</strong> Q06.5-Q06.6. <strong>Supplementary explanation:</strong> the method ladder, repeated-expression substitution and the family-of-parabolas argument.</p>
+
+      <h2 id="partials">6. Partial derivatives</h2>
+      <p>The partial derivative with respect to $x$ at $(x_0,y_0)$ is</p>
+      <div class="formula">$\displaystyle f_x(x_0,y_0)=\lim_{\Delta x\to0}\frac{f(x_0+\Delta x,y_0)-f(x_0,y_0)}{\Delta x}.$</div>
+      <p>Only $x$ changes; $y$ remains fixed. Similarly,</p>
+      <div class="formula">$\displaystyle f_y(x_0,y_0)=\lim_{\Delta y\to0}\frac{f(x_0,y_0+\Delta y)-f(x_0,y_0)}{\Delta y}.$</div>
+
+      <h3>6.1 Geometric meaning</h3>
+      <p>Fixing $y=y_0$ cuts the surface $z=f(x,y)$ with a vertical plane parallel to the $xz$-plane. The slope of the resulting tangent line is $f_x$. Fixing $x=x_0$ gives a vertical slice parallel to the $yz$-plane whose tangent slope is $f_y$.</p>
+
+      <h3>6.2 How to compute</h3>
+      <p>Differentiate with respect to the named variable and treat every other independent variable as a constant.</p>
+      <div class="worked">
+        <h4>Course example</h4>
+        <p>If $f(x,y)=x^3y+y^2$, then</p>
+        <div class="formula">$\displaystyle f_x=3x^2y,\qquad f_y=x^3+2y.$</div>
+        <p>For $f_x$, $y$ behaves like a constant coefficient. For $f_y$, $x^3$ is a constant multiplying $y$.</p>
+      </div>
+
+      <h3>6.3 Second and mixed partials</h3>
+      <div class="formula">$\displaystyle f_{xx}=\frac{\partial^2f}{\partial x^2},\quad f_{xy}=\frac{\partial}{\partial y}(f_x),\quad f_{yx}=\frac{\partial}{\partial x}(f_y),\quad f_{yy}=\frac{\partial^2f}{\partial y^2}.$</div>
+      <p>Under standard conditions - for example, when the mixed partials are continuous near the point - Clairaut's theorem gives $f_{xy}=f_{yx}$. Do not state this equality without an appropriate regularity assumption.</p>
+      <p class="source-note"><strong>Course material:</strong> PDF page 2, Lecture 8. <strong>Supplementary explanation:</strong> notation parsing and the regularity qualification for equality of mixed partials.</p>
+
+      <h2 id="linearisation">7. Linear approximation and tangent planes</h2>
+      <p>For small changes $\Delta x$ and $\Delta y$, a differentiable function satisfies</p>
+      <div class="formula">$\displaystyle \Delta f\approx f_x(x_0,y_0)\Delta x+f_y(x_0,y_0)\Delta y.$</div>
+      <p>If $z_0=f(x_0,y_0)$, the tangent plane to $z=f(x,y)$ at $(x_0,y_0,z_0)$ is</p>
+      <div class="formula">$\displaystyle z=z_0+f_x(x_0,y_0)(x-x_0)+f_y(x_0,y_0)(y-y_0).$</div>
+
+      <h3>7.1 Procedure</h3>
+      <ol>
+        <li>Compute $z_0=f(x_0,y_0)$.</li>
+        <li>Find symbolic expressions for $f_x$ and $f_y$.</li>
+        <li>Evaluate both partial derivatives at the base point.</li>
+        <li>Insert them into the tangent-plane formula.</li>
+        <li>For numerical approximation, identify $\Delta x=x-x_0$ and $\Delta y=y-y_0$.</li>
+      </ol>
+
+      <div class="worked">
+        <h4>Supplementary example: approximating a square root</h4>
+        <p>Let $f(x,y)=\sqrt{x+y}$ near $(4,5)$. Then</p>
+        <div class="formula">$\displaystyle f(4,5)=3,\qquad f_x=f_y=\frac1{2\sqrt{x+y}},\qquad f_x(4,5)=f_y(4,5)=\frac16.$</div>
+        <p>Hence</p>
+        <div class="formula">$\displaystyle f(4+\Delta x,5+\Delta y)\approx3+\frac{\Delta x+\Delta y}{6}.$</div>
+        <p>This is a local approximation; retain the $\approx$ sign unless an error analysis proves equality.</p>
+      </div>
+      <p class="source-note"><strong>Course material:</strong> PDF page 2, Lecture 9. <strong>Supplementary explanation:</strong> the worked approximation and step-by-step procedure.</p>
+
+      <h2 id="extrema">8. Critical points and extrema</h2>
+      <p>At an interior local maximum or minimum of a differentiable function,</p>
+      <div class="formula">$\displaystyle f_x(x_0,y_0)=0,\qquad f_y(x_0,y_0)=0.$</div>
+      <p>A point satisfying both equations is a <strong>critical point</strong>. This condition finds candidates only: a critical point can be a local minimum, local maximum or saddle point.</p>
+
+      <h3>8.1 Second-derivative test</h3>
+      <p>At a critical point, define</p>
+      <div class="formula">$\displaystyle A=f_{xx},\qquad B=f_{xy},\qquad C=f_{yy},\qquad D=AC-B^2,$</div>
+      <p>with all derivatives evaluated at that point.</p>
+      <table>
+        <thead><tr><th>Condition</th><th>Conclusion</th><th>Local shape</th></tr></thead>
+        <tbody>
+          <tr><td>$D&gt;0$ and $A&gt;0$</td><td>Local minimum</td><td>Bowl opening upward</td></tr>
+          <tr><td>$D&gt;0$ and $A&lt;0$</td><td>Local maximum</td><td>Bowl opening downward</td></tr>
+          <tr><td>$D&lt;0$</td><td>Saddle point</td><td>Rises in some directions and falls in others</td></tr>
+          <tr><td>$D=0$</td><td>Inconclusive</td><td>Use another method or higher-order terms</td></tr>
+        </tbody>
+      </table>
+
+      <div class="worked">
+        <h4>Course example: completing the square</h4>
+        <p>For</p>
+        <div class="formula">$\displaystyle f(x,y)=x^2-2xy+3y^2+2x-2y,$</div>
+        <p>solving $f_x=f_y=0$ gives the critical point $(-1,0)$. The lecture rewrites</p>
+        <div class="formula">$\displaystyle f=(x-y+1)^2+2y^2-1\ge-1.$</div>
+        <p>Equality occurs at $(-1,0)$, so this is a minimum. For quadratic functions, completing the square can be clearer and stronger than merely applying a classification table.</p>
+      </div>
+
+      <div class="warning">
+        <h4>Local is not global</h4>
+        <p>A global maximum or minimum may occur at an interior critical point, on the boundary of the domain, or through behaviour at infinity. The second-derivative test classifies local behaviour only.</p>
+      </div>
+
+      <h3>8.2 Why the test works</h3>
+      <p>Near a critical point, the first-order terms vanish, and the leading change is approximately quadratic:</p>
+      <div class="formula">$\displaystyle \Delta f\approx\frac A2(\Delta x)^2+B\Delta x\Delta y+\frac C2(\Delta y)^2.$</div>
+      <p>The sign pattern of this quadratic form determines whether nearby values lie above, below or on both sides of the critical value.</p>
+      <p class="source-note"><strong>Course material:</strong> PDF pages 2-4, Lectures 9-10. <strong>Supplementary explanation:</strong> the method table, geometric descriptions and distinction between local and global extrema.</p>
+
+      <h2 id="least-squares">9. Least squares</h2>
+      <p>Given data $(x_i,y_i)$, a line $y=ax+b$ usually does not pass through every point. Its residual at point $i$ is</p>
+      <div class="formula">$\displaystyle r_i=y_i-(ax_i+b).$</div>
+      <p>Least squares chooses $a$ and $b$ to minimise</p>
+      <div class="formula">$\displaystyle D(a,b)=\sum_{i=1}^n\big[y_i-(ax_i+b)\big]^2.$</div>
+      <p>The variables being optimised are $a$ and $b$, not the data coordinates. Setting $D_a=D_b=0$ gives the normal equations:</p>
+      <div class="formula">$\displaystyle \left(\sum x_i^2\right)a+\left(\sum x_i\right)b=\sum x_iy_i,$</div>
+      <div class="formula">$\displaystyle \left(\sum x_i\right)a+nb=\sum y_i.$</div>
+
+      <div class="intuition">
+        <h4>Why square the residuals?</h4>
+        <p>Without squaring, positive and negative errors could cancel. Squaring makes every contribution nonnegative and penalises larger deviations more strongly.</p>
+      </div>
+
+      <div class="worked">
+        <h4>Supplementary example</h4>
+        <p>For $(0,1)$, $(1,3)$ and $(2,4)$:</p>
+        <div class="formula">$\displaystyle n=3,\quad\sum x_i=3,\quad\sum x_i^2=5,\quad\sum y_i=8,\quad\sum x_iy_i=11.$</div>
+        <p>The normal equations are $5a+3b=11$ and $3a+3b=8$, giving</p>
+        <div class="formula">$\displaystyle a=\frac32,\qquad b=\frac76.$</div>
+        <p>The least-squares line is therefore $y=\frac32x+\frac76$.</p>
+      </div>
+
+      <p>The lecture also notes two extensions:</p>
+      <ul>
+        <li>For $y=ce^{ax}$ with $y&gt;0$, take logarithms: $\ln y=ax+\ln c$.</li>
+        <li>For $y=ax^2+bx+c$, minimise the squared residuals in the three unknown coefficients, producing a $3\times3$ system.</li>
+      </ul>
+      <p class="source-note"><strong>Course material:</strong> PDF page 3, Lecture 9. <strong>Supplementary explanation:</strong> residual intuition and the numerical example. Log-linear fitting changes the error model because errors are measured after taking logarithms.</p>
+
+      <h2 id="exam">10. What to remember for the exam</h2>
+      <div class="exam-box">
+        <ul>
+          <li><strong>Evaluation:</strong> substitute with brackets and check the domain before simplifying.</li>
+          <li><strong>Domain:</strong> combine every restriction; a logarithm in a denominator creates two conditions.</li>
+          <li><strong>Level sets:</strong> solve $f=k$ but preserve exclusions from the original domain.</li>
+          <li><strong>Limits:</strong> continuity first, algebra second; different paths disprove, but matching paths do not prove.</li>
+          <li><strong>Partial derivatives:</strong> vary one coordinate while freezing the others.</li>
+          <li><strong>Tangent plane:</strong> evaluate $f$, $f_x$ and $f_y$ at the same base point.</li>
+          <li><strong>Critical points:</strong> $f_x=f_y=0$ finds candidates; use $D=f_{xx}f_{yy}-f_{xy}^2$ to classify when $D\ne0$.</li>
+          <li><strong>Global extrema:</strong> check boundaries and infinity, not only critical points.</li>
+          <li><strong>Least squares:</strong> minimise squared residuals with respect to the model parameters.</li>
+        </ul>
+      </div>
+
+      <h3>Final verification habits</h3>
+      <ul>
+        <li>Test a proposed domain with one allowed point and one excluded boundary point.</li>
+        <li>Substitute representative points into level-set equations and the original function.</li>
+        <li>For a claimed non-existent limit, write the two paths and their distinct limiting values explicitly.</li>
+        <li>For a critical-point classification, state the critical point before evaluating $D$.</li>
+        <li>Label supplementary facts separately from statements directly contained in the lecture notes.</li>
+      </ul>
+    </main>
+
+    <aside class="toc">
+      <h2>On this page</h2>
+      <a href="#map">Question-type map</a>
+      <a href="#functions">Functions &amp; evaluation</a>
+      <a href="#domains">Maximal domains</a>
+      <a href="#levels">Level curves &amp; surfaces</a>
+      <a href="#limits">Multivariable limits</a>
+      <a href="#partials">Partial derivatives</a>
+      <a href="#linearisation">Tangent planes</a>
+      <a href="#extrema">Critical points</a>
+      <a href="#least-squares">Least squares</a>
+      <a href="#exam">Exam checklist</a>
+    </aside>
+  </div>
+</body>
+</html>
