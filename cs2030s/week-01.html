@@ -144,6 +144,273 @@ System.out.println(c2.r); // Prints 10.0</code></pre>
           </tr>
         </tbody>
       </table>
+
+      <section id="des-ex1">
+        <h2>5. Exercise 1 — Discrete Event Simulator I &amp; OOP Fundamentals</h2>
+        <p><strong>Source:</strong> supplied Exercise 1 reference notes. This section connects the exercise implementation to the OOP principles introduced earlier on this page. Any additional clarification is explicitly labelled supplementary.</p>
+
+        <h3>5.1 What is a discrete event simulator?</h3>
+        <p>A <strong>discrete event simulator (DES)</strong> models a system whose state changes only at separate, instantaneous points in time called <strong>events</strong>. Between two consecutive events, nothing in the simulated system changes. The simulator can therefore jump directly from one event timestamp to the next instead of processing every possible clock tick.</p>
+        <pre><code>Event at time 1.0  -- state changes
+(no change between events)
+Event at time 3.5  -- state changes
+(no change between events)
+Event at time 8.0  -- state changes</code></pre>
+        <p>The simulator engine stores scheduled events in a priority queue. It repeatedly removes the next event, prints its representation through <code>toString()</code>, calls <code>simulate()</code>, and enqueues any new events returned by that method.</p>
+
+        <h3>5.2 Three-layer architecture</h3>
+        <table>
+          <thead>
+            <tr><th>Layer</th><th>Role</th><th>Knows about</th></tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td><strong>Simulator engine</strong></td>
+              <td>Manages the priority queue, advances simulated time, and invokes event behaviour.</td>
+              <td>The general <code>Event</code> abstraction, including <code>toString()</code> and <code>simulate()</code>.</td>
+            </tr>
+            <tr>
+              <td><strong>Event hierarchy</strong></td>
+              <td>Represents state transitions such as arrival, service beginning, service ending, and departure.</td>
+              <td>The domain entities required by each event.</td>
+            </tr>
+            <tr>
+              <td><strong>Domain entities</strong></td>
+              <td>Store and control business state such as customer information and counter availability.</td>
+              <td>Their own state and responsibilities, not the simulator's scheduling mechanism.</td>
+            </tr>
+          </tbody>
+        </table>
+        <p>This separation keeps the simulator reusable. The engine does not need a large bank-specific conditional; it only asks each event object to simulate itself.</p>
+
+        <h3>5.3 Entity modelling: encapsulation and Tell-Don't-Ask</h3>
+        <p>Instead of passing unrelated primitive values such as a customer ID or counter ID everywhere, the program models meaningful concepts as classes. Each class owns the state and behaviour belonging to that concept.</p>
+        <table>
+          <thead>
+            <tr><th>Class</th><th>Encapsulated state</th><th>Responsibilities</th><th>Design reason</th></tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td><code>Customer</code></td>
+              <td><code>int id</code>, <code>double arrivalTime</code>, <code>double serviceTime</code></td>
+              <td>Provides its identity, arrival time, and required service duration.</td>
+              <td>Represents an immutable request for service. It does not decide when service actually starts or ends.</td>
+            </tr>
+            <tr>
+              <td><code>Counter</code></td>
+              <td><code>int id</code>, <code>boolean isAvailable</code></td>
+              <td>Reports availability and performs state transitions through methods such as <code>serve(Customer)</code> and <code>endService()</code>.</td>
+              <td>The counter, rather than an event, controls its own availability state.</td>
+            </tr>
+          </tbody>
+        </table>
+        <pre><code>// Preferred: tell the counter what happened.
+counter.serve(customer);
+
+// Avoid exposing representation and mutating it externally.
+// counter.available = false;</code></pre>
+        <p>The first version follows <strong>Tell-Don't-Ask</strong> and information hiding. If the representation of counter state changes later, event classes need not change as long as the counter's public behaviour remains consistent.</p>
+
+        <h3>5.4 Polymorphic event hierarchy</h3>
+        <p>Each event type is a subclass of <code>Event</code> and overrides <code>simulate()</code>. This replaces a brittle event-type integer followed by a long <code>if</code> or <code>switch</code> statement.</p>
+        <table>
+          <thead>
+            <tr><th>Event subclass</th><th>Stored dependencies</th><th>State transition in <code>simulate()</code></th><th>New event(s)</th></tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td><code>Arrival</code></td>
+              <td><code>Customer</code>, <code>Counter[]</code></td>
+              <td>Scans counters from index <code>0</code>. If one is available, the customer proceeds to service; otherwise the customer is rejected.</td>
+              <td><code>ServiceBegin</code> if a counter is free; otherwise <code>Departure</code>.</td>
+            </tr>
+            <tr>
+              <td><code>ServiceBegin</code></td>
+              <td><code>Customer</code>, <code>Counter</code></td>
+              <td>Calls <code>counter.serve(customer)</code> and computes the completion time from the actual service-start time.</td>
+              <td><code>ServiceEnd</code> at <code>getTime() + customer.getServiceTime()</code>.</td>
+            </tr>
+            <tr>
+              <td><code>ServiceEnd</code></td>
+              <td><code>Customer</code>, <code>Counter</code></td>
+              <td>Calls <code>counter.endService()</code>, making the counter available immediately.</td>
+              <td><code>Departure</code> at the current event time.</td>
+            </tr>
+            <tr>
+              <td><code>Departure</code></td>
+              <td><code>Customer</code></td>
+              <td>Represents the terminal state of the customer's lifecycle.</td>
+              <td>An empty array: <code>new Event[] {}</code>.</td>
+            </tr>
+          </tbody>
+        </table>
+
+        <h3>5.5 Customer lifecycle</h3>
+        <ol>
+          <li>An <code>Arrival</code> event occurs at the customer's arrival time.</li>
+          <li>The arrival searches for the first available counter.</li>
+          <li>If a counter is available, a <code>ServiceBegin</code> event is produced.</li>
+          <li><code>ServiceBegin</code> marks the selected counter busy and schedules <code>ServiceEnd</code>.</li>
+          <li><code>ServiceEnd</code> frees the counter and schedules <code>Departure</code> at the same timestamp.</li>
+          <li><code>Departure</code> produces no more events.</li>
+        </ol>
+        <p>If every counter is busy at arrival time, the customer skips the service events and proceeds directly to <code>Departure</code>.</p>
+
+        <h3>5.6 Why completion time belongs in <code>ServiceBegin</code></h3>
+        <p>The service completion timestamp is:</p>
+        <pre><code>completionTime = actualServiceStartTime + customerServiceTime</code></pre>
+        <p>It is <strong>not</strong> generally:</p>
+        <pre><code>arrivalTime + serviceTime</code></pre>
+        <p>A customer might wait before service begins in later versions of the simulator. The customer knows the amount of service required, but cannot predict the scheduling delay. The <code>ServiceBegin</code> event knows the actual start timestamp through <code>getTime()</code>, so it is the correct place to calculate completion.</p>
+
+        <h3>5.7 <code>BankSimulation</code> as the setup factory</h3>
+        <p><code>BankSimulation</code> extends <code>Simulation</code>. Its job is to parse the input, construct shared domain state, create the initial events, and return them to the generic simulator.</p>
+        <table>
+          <thead>
+            <tr><th>Step</th><th>Operation</th><th>Key implementation detail</th></tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td>1. Parse dimensions</td>
+              <td>Read the number of customers <code>n</code> and counters <code>k</code>.</td>
+              <td><code>int numOfCustomers = sc.nextInt();</code><br><code>int numOfCounters = sc.nextInt();</code></td>
+            </tr>
+            <tr>
+              <td>2. Allocate counter state</td>
+              <td>Create and fill a <code>Counter[]</code>.</td>
+              <td>Allocate <code>new Counter[numOfCounters]</code>, then instantiate each counter from index <code>0</code> to <code>k - 1</code>.</td>
+            </tr>
+            <tr>
+              <td>3. Build initial events</td>
+              <td>Create customers and their arrival events from the input pairs.</td>
+              <td>Allocate <code>new Event[numOfCustomers]</code>, then assign an <code>Arrival</code> object to every slot.</td>
+            </tr>
+            <tr>
+              <td>4. Provide events</td>
+              <td>Override <code>getInitialEvents()</code>.</td>
+              <td>Return the fully initialized <code>Event[]</code> to the simulator.</td>
+            </tr>
+          </tbody>
+        </table>
+        <pre><code>Counter[] counters = new Counter[numOfCounters];
+for (int i = 0; i &lt; numOfCounters; i++) {
+  counters[i] = new Counter(i);
+}
+
+Event[] initialEvents = new Event[numOfCustomers];
+for (int i = 0; i &lt; numOfCustomers; i++) {
+  double arrivalTime = sc.nextDouble();
+  double serviceTime = sc.nextDouble();
+  Customer customer = new Customer(i, arrivalTime, serviceTime);
+  initialEvents[i] = new Arrival(customer, counters);
+}</code></pre>
+
+        <h3>5.8 Arrays store references, not automatically created objects</h3>
+        <pre><code>Event[] events = new Event[n];</code></pre>
+        <p>This creates one array containing <code>n</code> reference slots. Every slot initially contains <code>null</code>; it does not create <code>n</code> event objects.</p>
+        <pre><code>events[i] = new Arrival(customer, counters);</code></pre>
+        <p>Each slot must be assigned an actual event before the simulator uses it. Calling a method through an uninitialized slot causes <code>NullPointerException</code>. If the array variable itself was never allocated, evaluating <code>events[i]</code> already dereferences <code>null</code> and also fails.</p>
+
+        <h3>5.9 Why terminal events return an empty array</h3>
+        <pre><code>@Override
+public Event[] simulate() {
+  return new Event[] {};
+}</code></pre>
+        <p>The simulator expects to iterate through the returned array and enqueue its elements. An empty array means “this event produces zero successors” while preserving that contract. Returning <code>null</code> instead forces the engine to perform a special null check and risks <code>NullPointerException</code>.</p>
+        <p><strong>Supplementary explanation:</strong> an empty collection or array is often preferable to <code>null</code> when “no results” is a normal, valid outcome. Both cases can represent zero elements, but only the empty array can be safely iterated without extra branching.</p>
+
+        <h3>5.10 Exam traps and implementation pitfalls</h3>
+        <table>
+          <thead>
+            <tr><th>Trap</th><th>Incorrect approach</th><th>Correct pattern</th><th>Why it matters</th></tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td>Constructor <code>super()</code> order</td>
+              <td>Performing assignments before <code>super(time)</code>.</td>
+              <td>Place <code>super(time)</code> first in the constructor body.</td>
+              <td>This is the constructor rule expected by the exercise environment and strict checkers.</td>
+            </tr>
+            <tr>
+              <td>Premature completion time</td>
+              <td>Defining the end time as arrival time plus service time inside <code>Customer</code>.</td>
+              <td>Calculate <code>getTime() + customer.getServiceTime()</code> in <code>ServiceBegin</code>.</td>
+              <td>Arrival and actual service start may differ.</td>
+            </tr>
+            <tr>
+              <td>Null array slots</td>
+              <td>Allocating <code>new Event[n]</code> and assuming it contains events.</td>
+              <td>Assign an instantiated event to every slot.</td>
+              <td>New reference arrays are filled with <code>null</code>.</td>
+            </tr>
+            <tr>
+              <td>Static counter IDs</td>
+              <td>Using a static auto-incrementing <code>nextId</code>.</td>
+              <td>Pass the loop index explicitly: <code>new Counter(i)</code>.</td>
+              <td>Static state persists across simulations in the same JVM and can make later tests start from the wrong ID.</td>
+            </tr>
+            <tr>
+              <td>Raw Javadoc tags</td>
+              <td>Writing <code>@param</code> inside a Java parameter list.</td>
+              <td>Put <code>@param</code> only inside a <code>/** ... */</code> comment above the declaration.</td>
+              <td>Javadoc tags are documentation syntax, not Java parameter syntax.</td>
+            </tr>
+            <tr>
+              <td>Monolithic event type</td>
+              <td>Using one event class with an integer type and large conditional.</td>
+              <td>Create one subclass for each event behaviour.</td>
+              <td>Polymorphism localizes each transition and makes new event types easier to add.</td>
+            </tr>
+          </tbody>
+        </table>
+
+        <h3>5.11 Active recall</h3>
+        <table>
+          <thead>
+            <tr><th style="width:45%">Question</th><th style="width:55%">Answer</th></tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td>Why use separate event subclasses instead of an event-type integer?</td>
+              <td>Polymorphism lets each event own its <code>simulate()</code> behaviour, eliminating brittle conditionals and supporting extension without rewriting existing event logic.</td>
+            </tr>
+            <tr>
+              <td>Why call <code>counter.serve(customer)</code> instead of setting an availability field?</td>
+              <td>The counter owns its state transition. This preserves information hiding and follows Tell-Don't-Ask.</td>
+            </tr>
+            <tr>
+              <td>Why does <code>Departure.simulate()</code> return an empty array instead of <code>null</code>?</td>
+              <td>The simulator can iterate over an empty array safely; <code>null</code> violates the expected return contract and risks <code>NullPointerException</code>.</td>
+            </tr>
+            <tr>
+              <td>What does <code>new Event[n]</code> create?</td>
+              <td>One array containing <code>n</code> reference slots initialized to <code>null</code>, not <code>n</code> event objects.</td>
+            </tr>
+            <tr>
+              <td>How does DES time advance?</td>
+              <td>It jumps from the timestamp of one priority-queue event to the timestamp of the next event rather than ticking continuously.</td>
+            </tr>
+            <tr>
+              <td>Where should service completion time be calculated?</td>
+              <td>In <code>ServiceBegin</code>, using the actual event time plus the customer's service duration.</td>
+            </tr>
+          </tbody>
+        </table>
+
+        <h3>5.12 What to remember for the exam</h3>
+        <ul>
+          <li>A DES changes state only at event timestamps and jumps directly between them.</li>
+          <li>The simulator engine handles scheduling; event subclasses handle transitions; domain entities own business state.</li>
+          <li>Polymorphism replaces event-type conditionals with overridden <code>simulate()</code> methods.</li>
+          <li>Use Tell-Don't-Ask: tell a counter to serve or finish rather than mutating its fields externally.</li>
+          <li>Compute completion from the actual service-start event time, not from arrival time.</li>
+          <li>Allocating a reference array does not instantiate the objects stored in its slots.</li>
+          <li>Return an empty event array for a terminal event rather than <code>null</code>.</li>
+          <li>Avoid static ID counters when multiple simulations may run in the same JVM.</li>
+          <li><code>BankSimulation</code> constructs shared state and initial events; the generic engine executes them.</li>
+        </ul>
+      </section>
+
     </main>
 
     <aside class="toc">
@@ -152,6 +419,7 @@ System.out.println(c2.r); // Prints 10.0</code></pre>
       <a href="#oop-basics">2. Deep dive</a>
       <a href="#pitfalls">3. Exam traps</a>
       <a href="#flashcards">4. Flashcards</a>
+      <a href="#des-ex1">5. Exercise 1: DES I</a>
     </aside>
   </div>
 </body>
