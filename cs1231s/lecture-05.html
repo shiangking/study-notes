@@ -1,0 +1,365 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <title>CS1231S Lecture 05 | Set Theory</title>
+  <link rel="stylesheet" href="../site-assets/docs.css?v=20260827e">
+</head>
+<body>
+<header class="topbar"><a class="site-name" href="../index.html">Study Notes</a><span class="course-name">CS1231S Discrete Structures</span></header>
+<div class="shell">
+<aside class="sidebar">
+  <h2>CS1231S</h2>
+  <a class="nav-link" href="index.html">Overview</a>
+  <a class="nav-link" href="lecture-02.html">Lecture 02: Propositional logic</a>
+  <a class="nav-link" href="lecture-03.html">Lecture 03: Predicate logic</a>
+  <a class="nav-link" href="lecture-04.html">Lecture 04: Methods of proof</a>
+  <a class="nav-link current" href="lecture-05.html">Lecture 05: Set theory</a>
+</aside>
+<main class="content">
+<div class="notice"><strong>Lecture 05 — Set Theory</strong><br>CS1231S, AY2026/27 Semester 1 · Lecturer: Ashish Dandekar · Slide credits: Aaron Tan · Reference: Susanna S. Epp, Chapter 6</div>
+<h1 id="lecture-05">Set Theory</h1>
+<p>This page preserves the supplied lecture material. Content marked <strong>Supplementary explanation</strong> or <strong>Supplementary worked answer</strong> was added to build intuition and make the notes exam-ready.</p>
+
+<h2 id="context">Introduction and context</h2>
+<blockquote><p>“For whereas in the past it was thought that every branch of mathematics depended on its own particular intuition which provided its concepts and prime truths, nowadays it is known to be possible, logically speaking, to derive practically the whole of known mathematics from a single source – the Theory of Sets.”</p><p>— Nicolas Bourbaki, <em>Elements of Mathematics: Theory of Sets</em></p></blockquote>
+<p>The Bourbaki members pictured in the slides were Henri Cartan, André Weil, René de Possel, Charles Ehresmann, Laurent Schwartz, Jean Dieudonné, Claude Chevalley, Pierre Samuel, Jean-Pierre Serre, and Adrien Douady.</p>
+<p>Set theory is important in computer science because it formalizes computation and the objects being computed. It is inseparable from logic, one of the foundations of computer science. Applications include data structures, database theory (relations over sets), formal-language theory, machine learning, and many other areas.</p>
+
+<h3 id="turing-machine">Motivating example: a Turing machine</h3>
+<p>Following Michael Sipser, a Turing machine is a 7-tuple</p>
+<p><code>(Q, Σ, Γ, δ, q₀, q_accept, q_reject)</code>,</p>
+<p>where Q, Σ, and Γ are finite sets and:</p>
+<ul>
+  <li><code>Q</code> is the set of states.</li>
+  <li><code>Σ</code> is the input alphabet and does not contain the special blank symbol <code>⊔</code>.</li>
+  <li><code>Γ</code> is the tape alphabet, where <code>⊔ ∈ Γ</code> and <code>Σ ⊆ Γ</code>.</li>
+  <li><code>δ: Q × Γ → Q × Γ × {L,R}</code> is the transition function.</li>
+  <li><code>q₀ ∈ Q</code> is the start state.</li>
+  <li><code>q_accept ∈ Q</code> is the accept state.</li>
+  <li><code>q_reject ∈ Q</code> is the reject state, with <code>q_reject ≠ q_accept</code>.</li>
+</ul>
+<div class="notice"><strong>Supplementary explanation:</strong> set theory appears in nearly every component: states and alphabets are sets, configurations are tuples, the transition rule is a function between Cartesian products, and inclusion <code>Σ ⊆ Γ</code> relates the two alphabets.</div>
+
+<h2 id="definitions">5.1 Definitions</h2>
+<h3 id="fundamentals">5.1.1 Sets and notation</h3>
+<p>A <strong>set</strong> is an unordered collection of objects. The contained objects are its <strong>elements</strong> or <strong>members</strong>. Examples include <code>S = {3,a,√5}</code> and the set of the seven days of the week.</p>
+
+<h4>Set-roster notation</h4>
+<p>Roster notation lists elements inside braces: <code>{1,2,3}</code>, <code>{1,2,3,…,100}</code>, or <code>{1,2,3,…}</code>. The ellipsis <code>…</code> means “and so forth” and should only be used when the pattern is unambiguous.</p>
+<p>Order and repetition do not matter:</p>
+<p><code>{9,8,7} = {7,9,8} = {7,8,7,9,9,7,7}</code>.</p>
+<p>A <strong>multiset</strong> records multiplicity, so <code>{a,b,c}</code> and <code>{a,b,b,c}</code> would differ as multisets. Multisets are outside this lecture.</p>
+
+<h4>Membership and cardinality</h4>
+<ul>
+  <li><code>x ∈ S</code>: x is an element of S.</li>
+  <li><code>x ∉ S</code>: x is not an element of S.</li>
+  <li><code>|S|</code>: the cardinality or number of distinct elements of S.</li>
+</ul>
+<p>Examples: <code>b ∈ {a,b,c}</code>, <code>456 ∈ {1,2,…,999}</code>, <code>f ∉ {a,b,c}</code>, and <code>|{a,b,c}| = 3</code>.</p>
+<p>The bars <code>|·|</code> may instead mean absolute value, depending on context. Other texts may use <code>n(S)</code> or <code>#S</code>; CS1231S uses <code>|S|</code>.</p>
+
+<div class="notice"><strong>Supplementary worked answers — membership and cardinality</strong>
+<ol>
+  <li><code>{a} ∈ {a,{a,b},c}</code> is <strong>false</strong>. The set contains a, <code>{a,b}</code>, and c, not the singleton <code>{a}</code>.</li>
+  <li><code>|{1,{1,2},{3,{4,5},6},{2,3}}| = 4</code>. Each nested set counts as one element.</li>
+  <li>If <code>Uₙ={n,−n}</code>, then <code>|U₁|=2</code>, <code>|U₋₅|=2</code>, and <code>|U₀|=1</code>, since <code>−0=0</code> and duplicates collapse.</li>
+</ol></div>
+
+<h4>Common number sets</h4>
+<table>
+  <thead><tr><th>Symbol</th><th>Meaning</th></tr></thead>
+  <tbody>
+    <tr><td><code>ℕ</code></td><td>Natural numbers <code>{0,1,2,3,…}</code> in this module</td></tr>
+    <tr><td><code>ℤ</code></td><td>Integers</td></tr>
+    <tr><td><code>ℚ</code></td><td>Rational numbers</td></tr>
+    <tr><td><code>ℝ</code></td><td>Real numbers</td></tr>
+    <tr><td><code>ℂ</code></td><td>Complex numbers</td></tr>
+    <tr><td><code>ℤ⁺</code></td><td>Positive integers</td></tr>
+    <tr><td><code>ℤ⁻</code></td><td>Negative integers</td></tr>
+    <tr><td><code>ℤ≥0</code></td><td>Non-negative integers</td></tr>
+  </tbody>
+</table>
+<p>Notation such as <code>ℚ⁺</code>, <code>ℚ⁻</code>, <code>ℚ≥m</code>, <code>ℝ⁺</code>, <code>ℝ⁻</code>, and <code>ℝ≥m</code> is interpreted similarly. Zero is neither positive nor negative.</p>
+
+<h4>Set-builder notation</h4>
+<p>Given a universe U and predicate P(x),</p>
+<p><code>{x ∈ U : P(x)}</code> or <code>{x ∈ U | P(x)}</code></p>
+<p>is the set of all x in U satisfying P(x). For example, <code>{x ∈ ℤ≥0 : Even(x)}</code> is the set of non-negative even integers.</p>
+<p>For <code>S={x∈U:P(x)}</code>, an object z belongs to S exactly when both <code>z∈U</code> and P(z) hold. If z is outside U or P(z) is false, then <code>z∉S</code>.</p>
+<div class="notice"><strong>Supplementary worked answers — set-builder notation</strong>
+<ul>
+  <li><code>{x∈ℝ:−2&lt;x&lt;5} = (−2,5)</code>.</li>
+  <li><code>{x∈ℤ:−2&lt;x&lt;5} = {−1,0,1,2,3,4}</code>.</li>
+  <li><code>{x∈ℤ⁺:−2&lt;x&lt;5} = {1,2,3,4}</code>.</li>
+</ul>
+The same inequality produces different sets because the domains differ.</div>
+
+<h4>Replacement notation</h4>
+<p>Given a set A and term t(x),</p>
+<p><code>{t(x) : x ∈ A}</code> or <code>{t(x) | x ∈ A}</code></p>
+<p>contains every output of t as x ranges through A. For example, <code>{x+1:x∈ℤ≥0}=ℤ⁺</code>; in particular, <code>1=0+1</code> belongs but 0 does not.</p>
+<p>To show <code>z ∈ {t(x):x∈A}</code>, find a witness <code>x∈A</code> for which <code>t(x)=z</code>. If no such witness exists, z is not a member.</p>
+<div class="notice"><strong>Supplementary explanation:</strong> set-builder notation filters a domain using a predicate; replacement notation maps a domain through an expression. Thus <code>{x∈ℤ:x²&lt;5}</code> filters integers, while <code>{x²:x∈ℤ}</code> collects square outputs. Replacement outputs may repeat, but repeated values still occur only once in the resulting set.</div>
+
+<h3 id="subsets">5.1.2 Subsets, proper subsets, empty set, and singleton</h3>
+<p><code>A ⊆ B</code> iff every element of A is also an element of B:</p>
+<p><code>A ⊆ B ⇔ ∀x(x∈A → x∈B)</code>.</p>
+<p>We may also write <code>B ⊇ A</code> and say B contains, includes, or is a superset of A. Avoid <code>⊂</code>, which has conflicting meanings across textbooks.</p>
+<p>A is a <strong>proper subset</strong> of B, written <code>A ⊊ B</code>, iff <code>A⊆B</code> and <code>A≠B</code>. Inclusion is then strict.</p>
+<p>A is <strong>not</strong> a subset of B iff A has a counterexample element:</p>
+<p><code>A ⊈ B ⇔ ∃x(x∈A ∧ x∉B)</code>.</p>
+<p>The <strong>empty set</strong>, <code>∅</code> or <code>{}</code>, has no elements. It is a subset of every set (Theorem 6.2.4) because <code>∀x(x∈∅→x∈A)</code> is vacuously true. A <strong>singleton</strong> has exactly one element.</p>
+<div class="notice"><strong>Supplementary worked answers — membership versus subset</strong>
+<table>
+  <thead><tr><th>Claim</th><th>Answer</th><th>Reason</th></tr></thead>
+  <tbody>
+    <tr><td><code>∅ ∈ {1,2,3}</code></td><td>False</td><td>∅ is not listed as an element.</td></tr>
+    <tr><td><code>∅ ⊆ {1,2,3}</code></td><td>True</td><td>∅ is a subset of every set.</td></tr>
+    <tr><td><code>2 ∈ {1,2,3}</code></td><td>True</td><td>2 is listed.</td></tr>
+    <tr><td><code>{2} ∈ {1,2,3}</code></td><td>False</td><td>The element 2 is listed, not the set {2}.</td></tr>
+    <tr><td><code>2 ⊆ {1,2,3}</code></td><td>Not well-formed</td><td>The subset relation compares sets, and 2 is not a set here.</td></tr>
+    <tr><td><code>{2} ⊆ {1,2,3}</code></td><td>True</td><td>Its sole element, 2, is in the right-hand set.</td></tr>
+    <tr><td><code>{2,3} ⊆ {1,2,3}</code></td><td>True</td><td>Both elements occur on the right.</td></tr>
+    <tr><td><code>{2} ⊆ {{1},{2},{3}}</code></td><td>False</td><td>This would require <code>2∈{{1},{2},{3}}</code>.</td></tr>
+    <tr><td><code>{2} ∈ {{1},{2},{3}}</code></td><td>True</td><td>The singleton {2} is explicitly an element.</td></tr>
+  </tbody>
+</table></div>
+
+<h3 id="ordered-pairs">5.1.3 Ordered pairs</h3>
+<p>An ordered pair has form <code>(x,y)</code>. Order matters:</p>
+<p><code>(a,b)=(c,d) ⇔ (a=c) ∧ (b=d)</code>.</p>
+<div class="notice"><strong>Supplementary worked answers:</strong> <code>(1,2)≠(2,1)</code>. However, <code>(3,0.5)=(√9,1/2)</code> because the positive square root <code>√9=3</code> and <code>1/2=0.5</code>.</div>
+
+<h3 id="cartesian-products">5.1.4 Cartesian products</h3>
+<p>For sets A and B,</p>
+<p><code>A×B = {(a,b):a∈A ∧ b∈B}</code>.</p>
+<p>In general, <code>A×B≠B×A</code> because ordered pairs remember position. If A and B are finite, <code>|A×B|=|A||B|</code>.</p>
+<div class="notice"><strong>Supplementary worked answers:</strong> Let <code>A={1,2,3}</code> and <code>B={u,v}</code>.
+<ul>
+  <li><code>A×B={(1,u),(1,v),(2,u),(2,v),(3,u),(3,v)}</code>, so <code>|A×B|=6</code>.</li>
+  <li><code>B×A={(u,1),(u,2),(u,3),(v,1),(v,2),(v,3)}</code>, so <code>|B×A|=6</code>.</li>
+  <li><code>B×B={(u,u),(u,v),(v,u),(v,v)}</code>, so <code>|B×B|=4</code>.</li>
+</ul></div>
+<p><code>ℝ×ℝ</code> is the set of ordered pairs of real numbers. Each <code>(x,y)</code> is a unique point in the Cartesian plane, with x the horizontal and y the vertical coordinate—for example, <code>(2,1)</code>, <code>(−3,2)</code>, <code>(−2,−2)</code>, and <code>(1,−2)</code>.</p>
+
+<h3 id="set-equality">5.1.5 Set equality</h3>
+<p>Sets are equal exactly when they contain the same elements:</p>
+<p><code>A=B ⇔ (A⊆B ∧ B⊆A) ⇔ ∀x(x∈A ↔ x∈B)</code>.</p>
+<p>To prove <code>X=Y</code> by double inclusion:</p>
+<ol>
+  <li>Prove <code>X⊆Y</code>.</li>
+  <li>Prove <code>Y⊆X</code> (equivalently, <code>X⊇Y</code>).</li>
+  <li>Conclude <code>X=Y</code>.</li>
+</ol>
+<div class="notice"><strong>Supplementary worked answers:</strong>
+<ul>
+  <li><code>{1,2,3}</code>, <code>{3,1,2}</code>, and <code>{1,1,2,3,3,3}</code> are the same set: order and repetition do not matter.</li>
+  <li><code>{9}≠9</code>: the left side is a singleton set, while the right side is a number.</li>
+  <li><code>{9}≠{{9}}</code>: their sole elements are 9 and {9}, respectively.</li>
+  <li><code>{9}≠{9,∅}</code>: the right side has the additional element ∅.</li>
+</ul></div>
+<h4>Worked proof: <code>{x∈ℤ:x²=1}={1,−1}</code></h4>
+<p>Let <code>X={x∈ℤ:x²=1}</code> and <code>Y={1,−1}</code>.</p>
+<ul>
+  <li><strong>X⊆Y:</strong> let <code>x∈X</code>. Then <code>x²=1</code>, so <code>x²−1=(x−1)(x+1)=0</code>. Hence <code>x=1</code> or <code>x=−1</code>, giving <code>x∈Y</code>.</li>
+  <li><strong>Y⊆X:</strong> if <code>x∈Y</code>, then x is 1 or −1. In either case <code>x²=1</code>, so <code>x∈X</code>.</li>
+</ul>
+<p>Therefore <code>X=Y</code>. ∎</p>
+
+<h3 id="venn">5.1.6 Venn diagrams</h3>
+<p>John Venn introduced these diagrams in 1881. Sets are drawn as planar regions. If <code>A⊆B</code>, region A lies entirely inside B (or coincides with it). If <code>A⊈B</code>, at least some portion of A lies outside B; A may be disjoint from B, overlap B, or contain B while extending beyond it.</p>
+<div class="notice"><strong>Supplementary exam note:</strong> a Venn diagram is useful for intuition and finding candidate identities, but unless diagrams are expressly permitted as proofs, prove the result elementwise or with established set identities.</div>
+
+<h3 id="operations">5.1.7 Operations on sets</h3>
+<p>A <strong>universal set</strong> U specifies the context of discussion. For <code>A,B⊆U</code>:</p>
+<table>
+  <thead><tr><th>Operation</th><th>Definition</th><th>Logical word</th></tr></thead>
+  <tbody>
+    <tr><td>Union</td><td><code>A∪B={x∈U:x∈A ∨ x∈B}</code></td><td>or</td></tr>
+    <tr><td>Intersection</td><td><code>A∩B={x∈U:x∈A ∧ x∈B}</code></td><td>and</td></tr>
+    <tr><td>Difference</td><td><code>B\A={x∈U:x∈B ∧ x∉A}</code></td><td>and not</td></tr>
+    <tr><td>Complement</td><td><code>Aᶜ={x∈U:x∉A}=U\A</code></td><td>not</td></tr>
+  </tbody>
+</table>
+<div class="notice"><strong>Supplementary worked answers:</strong> Let <code>U={a,b,c,d,e,f,g}</code>, <code>A={a,c,e,g}</code>, and <code>B={d,e,f,g}</code>.
+<ul>
+  <li><code>A∪B={a,c,d,e,f,g}</code>.</li>
+  <li><code>A∩B={e,g}</code>.</li>
+  <li><code>B\A={d,f}</code>.</li>
+  <li><code>Aᶜ=U\A={b,d,f}</code>.</li>
+</ul></div>
+
+<h4>Intervals of real numbers</h4>
+<table>
+  <thead><tr><th>Interval</th><th>Set-builder form</th></tr></thead>
+  <tbody>
+    <tr><td><code>(a,b)</code></td><td><code>{x∈ℝ:a&lt;x&lt;b}</code></td></tr>
+    <tr><td><code>[a,b]</code></td><td><code>{x∈ℝ:a≤x≤b}</code></td></tr>
+    <tr><td><code>(a,b]</code></td><td><code>{x∈ℝ:a&lt;x≤b}</code></td></tr>
+    <tr><td><code>[a,b)</code></td><td><code>{x∈ℝ:a≤x&lt;b}</code></td></tr>
+    <tr><td><code>(a,∞)</code></td><td><code>{x∈ℝ:x&gt;a}</code></td></tr>
+    <tr><td><code>[a,∞)</code></td><td><code>{x∈ℝ:x≥a}</code></td></tr>
+    <tr><td><code>(−∞,b)</code></td><td><code>{x∈ℝ:x&lt;b}</code></td></tr>
+    <tr><td><code>(−∞,b]</code></td><td><code>{x∈ℝ:x≤b}</code></td></tr>
+  </tbody>
+</table>
+<p>Parentheses exclude a finite endpoint; brackets include it. Infinity is never an endpoint element, so it always receives a parenthesis. The notation <code>(a,b)</code> can mean either an open interval or an ordered pair; context resolves the meaning.</p>
+
+<h4>Indexed unions and intersections</h4>
+<p>For sets <code>A₀,A₁,A₂,…⊆U</code>:</p>
+<ul>
+  <li><code>⋃ᵢ₌₀ⁿ Aᵢ=A₀∪A₁∪⋯∪Aₙ={x∈U:x∈Aᵢ for at least one i∈{0,…,n}}</code>.</li>
+  <li><code>⋃ᵢ₌₀^∞ Aᵢ={x∈U:x∈Aᵢ for at least one non-negative integer i}</code>.</li>
+  <li><code>⋂ᵢ₌₀ⁿ Aᵢ=A₀∩A₁∩⋯∩Aₙ={x∈U:x∈Aᵢ for every i∈{0,…,n}}</code>.</li>
+  <li><code>⋂ᵢ₌₀^∞ Aᵢ={x∈U:x∈Aᵢ for every non-negative integer i}</code>.</li>
+</ul>
+<div class="notice"><strong>Supplementary explanation:</strong> indexed union behaves like an existential quantifier (“in at least one”), while indexed intersection behaves like a universal quantifier (“in all”).</div>
+
+<h3 id="partitions">5.1.8 Partitions</h3>
+<p>A and B are <strong>disjoint</strong> iff <code>A∩B=∅</code>. A family <code>A₁,A₂,…</code> is <strong>mutually</strong> or <strong>pairwise disjoint</strong> iff <code>Aᵢ∩Aⱼ=∅</code> whenever <code>i≠j</code>.</p>
+<p>A collection <code>{A₁,…,Aₖ}</code> is a partition of A iff:</p>
+<ol>
+  <li>every block <code>Aᵢ</code> is a non-empty subset of A;</li>
+  <li>the blocks are pairwise disjoint; and</li>
+  <li><code>A=A₁∪⋯∪Aₖ</code>.</li>
+</ol>
+<p>The supporting Quotient–Remainder Theorem (Theorem 4.4.1) says that for every integer n and positive integer d, there exist unique integers q and r such that <code>n=dq+r</code> and <code>0≤r&lt;d</code>.</p>
+<div class="notice"><strong>Supplementary worked answers — partitions</strong>
+<ol>
+  <li><code>{{1,2},{3,4},{5,6}}</code> is a partition of <code>{1,2,3,4,5,6}</code>: each block is non-empty, the blocks are pairwise disjoint, and their union is the whole set.</li>
+  <li><code>{T₀,T₁,T₂}</code>, where <code>Tᵣ={n∈ℤ:n=3k+r for some k∈ℤ}</code>, is a partition of ℤ. By quotient–remainder with d=3, every integer has exactly one remainder 0, 1, or 2. Existence gives coverage; uniqueness makes the classes pairwise disjoint. Each class is non-empty—for example, 0, 1, and 2 are witnesses.</li>
+</ol></div>
+
+<h3 id="power-sets">5.1.9 Power sets</h3>
+<p>The <strong>power set</strong> <code>𝒫(A)</code> is the set of all subsets of A. If <code>A={x,y}</code>, then</p>
+<p><code>𝒫(A)={∅,{x},{y},{x,y}}</code>.</p>
+<p>If A is finite with <code>|A|=n</code>, then <code>|𝒫(A)|=2ⁿ</code>. The formal proof by mathematical induction appears in Lecture 8.</p>
+<div class="notice"><strong>Supplementary explanation:</strong> each of the n elements independently has two choices—either included or excluded—giving <code>2×⋯×2=2ⁿ</code> possible subsets. Also remember that <code>∅∈𝒫(A)</code> and <code>A∈𝒫(A)</code> for every A.</div>
+
+<h3 id="n-tuples">5.1.10 Ordered n-tuples and products</h3>
+<p>For positive integer n, an ordered n-tuple has form <code>(x₁,x₂,…,xₙ)</code>; entries need not be distinct. A 2-tuple is an ordered pair and a 3-tuple is an ordered triple.</p>
+<p>Two n-tuples are equal iff corresponding components are equal:</p>
+<p><code>(x₁,…,xₙ)=(y₁,…,yₙ) ⇔ x₁=y₁ ∧ ⋯ ∧ xₙ=yₙ</code>.</p>
+<p><code>A₁×⋯×Aₙ={(a₁,…,aₙ):a₁∈A₁ ∧ ⋯ ∧ aₙ∈Aₙ}</code>. The power <code>Aⁿ</code> means the n-fold product <code>A×⋯×A</code>.</p>
+<div class="notice"><strong>Supplementary worked answers:</strong> Let <code>A₁={x,y}</code>, <code>A₂={1,2,3}</code>, and <code>A₃={a,b}</code>.
+<ul>
+  <li><code>A₁×A₂={(x,1),(x,2),(x,3),(y,1),(y,2),(y,3)}</code>.</li>
+  <li><code>(A₁×A₂)×A₃</code> has elements <code>((x,1),a), ((x,1),b), …, ((y,3),a), ((y,3),b)</code>.</li>
+  <li><code>A₁×A₂×A₃</code> has elements <code>(x,1,a), (x,1,b), …, (y,3,a), (y,3,b)</code>.</li>
+</ul>
+Both latter sets have <code>2·3·2=12</code> elements, but they are not literally equal: one contains nested ordered pairs and the other contains ordered triples.</div>
+
+<h2 id="properties">5.2 Properties of sets</h2>
+<h3 id="subset-relations">5.2.1 Subset relations and procedural definitions</h3>
+<p>Theorem 6.2.1 gives, for all sets A and B:</p>
+<ul>
+  <li><code>A∩B⊆A</code> and <code>A∩B⊆B</code>.</li>
+  <li><code>A⊆A∪B</code> and <code>B⊆A∪B</code>.</li>
+</ul>
+<p>Subset inclusion is transitive: <code>A⊆B ∧ B⊆C → A⊆C</code>.</p>
+<p>For <code>X,Y⊆U</code> and <code>a,b∈U</code>, procedural forms turn membership into logic:</p>
+<table>
+  <thead><tr><th>Membership statement</th><th>Equivalent condition</th></tr></thead>
+  <tbody>
+    <tr><td><code>a∈X∪Y</code></td><td><code>a∈X ∨ a∈Y</code></td></tr>
+    <tr><td><code>a∈X∩Y</code></td><td><code>a∈X ∧ a∈Y</code></td></tr>
+    <tr><td><code>a∈X\Y</code></td><td><code>a∈X ∧ a∉Y</code></td></tr>
+    <tr><td><code>a∈Xᶜ</code></td><td><code>a∉X</code></td></tr>
+    <tr><td><code>(a,b)∈X×Y</code></td><td><code>a∈X ∧ b∈Y</code></td></tr>
+  </tbody>
+</table>
+<p>Here <code>Xᶜ=U\X</code>; complements always depend on the chosen universal set.</p>
+
+<h3 id="identities">5.2.2 Set identities (Theorem 6.2.2)</h3>
+<p>All complements below are taken relative to the universal set U.</p>
+<table>
+  <thead><tr><th>Law</th><th>Union form</th><th>Intersection form</th></tr></thead>
+  <tbody>
+    <tr><td>Commutative</td><td><code>A∪B=B∪A</code></td><td><code>A∩B=B∩A</code></td></tr>
+    <tr><td>Associative</td><td><code>(A∪B)∪C=A∪(B∪C)</code></td><td><code>(A∩B)∩C=A∩(B∩C)</code></td></tr>
+    <tr><td>Distributive</td><td><code>A∪(B∩C)=(A∪B)∩(A∪C)</code></td><td><code>A∩(B∪C)=(A∩B)∪(A∩C)</code></td></tr>
+    <tr><td>Identity</td><td><code>A∪∅=A</code></td><td><code>A∩U=A</code></td></tr>
+    <tr><td>Complement</td><td><code>A∪Aᶜ=U</code></td><td><code>A∩Aᶜ=∅</code></td></tr>
+    <tr><td>Idempotent</td><td><code>A∪A=A</code></td><td><code>A∩A=A</code></td></tr>
+    <tr><td>Universal bound</td><td><code>A∪U=U</code></td><td><code>A∩∅=∅</code></td></tr>
+    <tr><td>De Morgan</td><td><code>(A∪B)ᶜ=Aᶜ∩Bᶜ</code></td><td><code>(A∩B)ᶜ=Aᶜ∪Bᶜ</code></td></tr>
+    <tr><td>Absorption</td><td><code>A∪(A∩B)=A</code></td><td><code>A∩(A∪B)=A</code></td></tr>
+  </tbody>
+</table>
+<p>Also:</p>
+<ul>
+  <li><strong>Double complement:</strong> <code>(Aᶜ)ᶜ=A</code>.</li>
+  <li><strong>Complements of bounds:</strong> <code>Uᶜ=∅</code> and <code>∅ᶜ=U</code>.</li>
+  <li><strong>Set difference:</strong> <code>A\B=A∩Bᶜ</code>.</li>
+</ul>
+
+<h3 id="boolean-algebra">Set theory and propositional logic</h3>
+<p>Set identities and logical equivalences share the structure of Boolean algebra. Fix an arbitrary element x and read “<code>x∈A</code>” as proposition p:</p>
+<table>
+  <thead><tr><th>Logic</th><th>Sets</th></tr></thead>
+  <tbody>
+    <tr><td><code>p∨q</code></td><td><code>A∪B</code></td></tr>
+    <tr><td><code>p∧q</code></td><td><code>A∩B</code></td></tr>
+    <tr><td><code>¬p</code></td><td><code>Aᶜ</code></td></tr>
+    <tr><td><code>true</code></td><td><code>U</code></td></tr>
+    <tr><td><code>false</code></td><td><code>∅</code></td></tr>
+  </tbody>
+</table>
+<p>Under this correspondence, the commutative, associative, distributive, identity, complement/negation, double complement/negation, idempotent, universal-bound, De Morgan, and absorption laws match term for term. Likewise, <code>¬true≡false</code> corresponds to <code>Uᶜ=∅</code>, while <code>¬false≡true</code> corresponds to <code>∅ᶜ=U</code>.</p>
+<div class="notice"><strong>Supplementary explanation:</strong> this is why an elementwise proof of a set identity often becomes a propositional-logic calculation. Set equality is obtained once every x has equivalent membership conditions on both sides.</div>
+
+<h3 id="set-proofs">5.2.3 Examples of proofs involving sets</h3>
+<h4>Example 1: De Morgan's law</h4>
+<p>Prove <code>(A∪B)ᶜ=Aᶜ∩Bᶜ</code> in universal set U.</p>
+<p>Let x be an arbitrary element of U. Then:</p>
+<p><code>x∈(A∪B)ᶜ</code><br>
+<code>⇔ x∉A∪B</code> (definition of complement)<br>
+<code>⇔ ¬(x∈A ∨ x∈B)</code> (definition of union)<br>
+<code>⇔ (x∉A ∧ x∉B)</code> (De Morgan's law for propositions)<br>
+<code>⇔ (x∈Aᶜ ∧ x∈Bᶜ)</code> (definition of complement)<br>
+<code>⇔ x∈Aᶜ∩Bᶜ</code> (definition of intersection).</p>
+<p>Thus every x belongs to the left side iff it belongs to the right side, so <code>(A∪B)ᶜ=Aᶜ∩Bᶜ</code>. ∎</p>
+
+<h4>Example 2: intersection plus difference</h4>
+<p>Using set identities, prove <code>(A∩B)∪(A\B)=A</code>.</p>
+<p><code>(A∩B)∪(A\B)</code><br>
+<code>=(A∩B)∪(A∩Bᶜ)</code> (set-difference law)<br>
+<code>=A∩(B∪Bᶜ)</code> (distributive law)<br>
+<code>=A∩U</code> (complement law)<br>
+<code>=A</code> (identity law). ∎</p>
+
+<h2 id="exam-checklist">Lecture 05 exam checklist</h2>
+<ol>
+  <li>Distinguish <code>x∈A</code> from <code>{x}⊆A</code>; one relates an object to a set, the other compares two sets.</li>
+  <li>Order and duplicates do not matter in sets, but order does matter in tuples.</li>
+  <li>To disprove <code>A⊆B</code>, find one x with <code>x∈A</code> and <code>x∉B</code>.</li>
+  <li>To prove set equality, use double inclusion or prove equivalent membership conditions for arbitrary x.</li>
+  <li>Complement depends on U; always identify the universal set.</li>
+  <li>Indexed union means “at least one index”; indexed intersection means “every index”.</li>
+  <li>A partition requires non-empty blocks, pairwise disjointness, and complete coverage.</li>
+  <li>A finite n-element set has <code>2ⁿ</code> subsets.</li>
+  <li>Translate <code>∪,∩,ᶜ,U,∅</code> to <code>∨,∧,¬,true,false</code> when proving identities.</li>
+</ol>
+</main>
+<aside class="toc">
+  <h2>On this page</h2>
+  <a href="#context">Context</a>
+  <a href="#fundamentals">5.1.1 Notation</a>
+  <a href="#subsets">5.1.2 Subsets</a>
+  <a href="#ordered-pairs">5.1.3 Ordered pairs</a>
+  <a href="#cartesian-products">5.1.4 Products</a>
+  <a href="#set-equality">5.1.5 Equality</a>
+  <a href="#operations">5.1.7 Operations</a>
+  <a href="#partitions">5.1.8 Partitions</a>
+  <a href="#power-sets">5.1.9 Power sets</a>
+  <a href="#n-tuples">5.1.10 n-tuples</a>
+  <a href="#properties">5.2 Properties</a>
+  <a href="#set-proofs">Set proofs</a>
+  <a href="#exam-checklist">Exam checklist</a>
+</aside>
+</div>
+</body>
+</html>
