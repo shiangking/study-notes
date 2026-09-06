@@ -1,0 +1,945 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <title>CS2030S Week 5 | Study Notes</title>
+  <link rel="stylesheet" href="../site-assets/docs.css?v=20260827e">
+</head>
+<body>
+  <header class="topbar">
+    <a class="site-name" href="../index.html">Study Notes</a>
+    <span class="course-name">CS2030S Programming Methodology</span>
+  </header>
+
+  <div class="shell">
+    <aside class="sidebar">
+      <h2>CS2030S</h2>
+      <a class="nav-link" href="index.html">Overview</a>
+      <a class="nav-link indent" href="week-01.html">Week 1: Functions, Encapsulation &amp; OOP</a>
+      <a class="nav-link indent" href="week-02.html">Week 2: Object-oriented design</a>
+      <a class="nav-link indent" href="week-03.html">Week 3: Polymorphism and abstraction</a>
+      <a class="nav-link indent" href="week-04.html">Week 4: Wrappers, casts, variance &amp; exceptions</a>
+      <a class="nav-link current indent" href="week-05.html">Week 5: Generics and type erasure</a>
+    </aside>
+
+    <main class="content">
+      <div class="notice">
+        <strong>CS2030S — Week 5 study notes</strong><br>
+        Units 24–26: Generics, Type Erasure, and Unchecked Warnings.
+      </div>
+<h1 id="cs2030s-units-2426-generics-type-erasure-and-unchecked-warnings">CS2030S Units 24–26: Generics, Type Erasure, and Unchecked Warnings</h1>
+<blockquote>
+<p><strong>Source convention:</strong> The main definitions, examples, and rules below are based on the supplied lecture notes. Boxes labelled <strong>Supplementary clarification</strong> add background, edge cases, or corrections that make the Java behaviour more precise.</p>
+</blockquote>
+<h2 id="topic-overview">Topic overview</h2>
+<p>Java generics solve a tension created by polymorphism:</p>
+<ul>
+<li>Using <code>Object</code> makes code reusable, but loses precise type information.</li>
+<li>Writing one class for every combination of types preserves precision, but duplicates code.</li>
+<li>Generics allow one reusable definition while letting the compiler track the actual types used at each location.</li>
+</ul>
+<pre class="text"><code>Object-based code: reusable, but imprecise
+Generic code:      reusable and statically type-safe</code></pre>
+<p>Unit 24 studies how to write and use generic classes and methods. Unit 25 explains Java's implementation strategy—<strong>type erasure</strong>—and the resulting limitations involving runtime checks, static members, arrays, heap pollution, and overriding. Unit 26 explains what the compiler means by an <strong>unchecked warning</strong>, how to justify a necessary unchecked cast, and why raw types should be avoided.</p>
+<hr />
+<h1 id="unit-24-generics">Unit 24: Generics</h1>
+<h2 id="1-motivation-why-object-is-not-enough">1. Motivation: why <code>Object</code> is not enough</h2>
+<p>Suppose we want a class that stores two values. A specialised version for integers is straightforward:</p>
+<pre class="java"><code>class IntPair {
+  private int first;
+  private int second;
+
+  public IntPair(int first, int second) {
+    this.first = first;
+    this.second = second;
+  }
+
+  int getFirst() {
+    return this.first;
+  }
+
+  int getSecond() {
+    return this.second;
+  }
+}</code></pre>
+<p>However, we may later need <code>DoublePair</code>, <code>BooleanPair</code>, or a pair containing two different types. Creating a class for every possible combination duplicates the same structure and behaviour.</p>
+<h3 id="the-object-approach">The <code>Object</code> approach</h3>
+<p>Because every reference type is a subtype of <code>Object</code>, one general <code>Pair</code> class could store two <code>Object</code> references:</p>
+<pre class="java"><code>class Pair {
+  private Object first;
+  private Object second;
+
+  public Pair(Object first, Object second) {
+    this.first = first;
+    this.second = second;
+  }
+
+  Object getFirst() {
+    return this.first;
+  }
+
+  Object getSecond() {
+    return this.second;
+  }
+}</code></pre>
+<p>This removes duplication, but discards the relationship between the stored values and the getter return types:</p>
+<pre class="java"><code>Pair foo() {
+  return new Pair(&quot;hello&quot;, 4);
+}
+
+Pair p = foo();
+Integer i = (Integer) p.getFirst(); // ClassCastException at runtime</code></pre>
+<p>The compiler only knows that <code>getFirst()</code> returns <code>Object</code>. The incorrect assumption that the first value is an <code>Integer</code> is therefore expressed as a narrowing cast, and the mistake is discovered only at runtime.</p>
+<h3 id="what-we-want-the-compiler-to-know">What we want the compiler to know</h3>
+<p>If the first component has type <code>S</code> and the second has type <code>T</code>, we want the compiler to enforce:</p>
+<pre class="text"><code>getFirst()  returns S
+getSecond() returns T</code></pre>
+<p>Generics let the class definition state these relationships without fixing <code>S</code> and <code>T</code> to specific types.</p>
+<h2 id="2-generic-classes">2. Generic classes</h2>
+<pre class="java"><code>class Pair&lt;S, T&gt; {
+  private S first;
+  private T second;
+
+  public Pair(S first, T second) {
+    this.first = first;
+    this.second = second;
+  }
+
+  public S getFirst() {
+    return this.first;
+  }
+
+  public T getSecond() {
+    return this.second;
+  }
+}</code></pre>
+<p><code>S</code> and <code>T</code> are declared between <code>&lt;</code> and <code>&gt;</code> after the class name. Inside the class definition they may be used as types for fields, parameters, local variables, and return values.</p>
+<p>The constructor is still named <code>Pair</code>, not <code>Pair&lt;S, T&gt;</code>:</p>
+<pre class="java"><code>public Pair(S first, T second) { ... } // correct</code></pre>
+<p>Type variables must be declared before use:</p>
+<pre class="java"><code>class A {
+  T x; // compile-time error: T has not been declared
+}</code></pre>
+<h2 id="3-essential-terminology">3. Essential terminology</h2>
+<table>
+<thead>
+<tr class="header">
+<th>Term</th>
+<th>Meaning</th>
+<th>Example</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td><strong>Generic type</strong></td>
+<td>A class or interface whose definition declares type parameters</td>
+<td><code>Pair&lt;S, T&gt;</code></td>
+</tr>
+<tr class="even">
+<td><strong>Type parameter</strong></td>
+<td>A type variable declared by a generic class, interface, constructor, or method</td>
+<td><code>S</code> and <code>T</code> in <code>class Pair&lt;S, T&gt;</code></td>
+</tr>
+<tr class="odd">
+<td><strong>Type argument</strong></td>
+<td>An actual type supplied for a type parameter</td>
+<td><code>String</code> and <code>Integer</code> in <code>Pair&lt;String, Integer&gt;</code></td>
+</tr>
+<tr class="even">
+<td><strong>Parameterized type</strong></td>
+<td>The generic type used with specific type arguments</td>
+<td><code>Pair&lt;String, Integer&gt;</code></td>
+</tr>
+<tr class="odd">
+<td><strong>Type variable</strong></td>
+<td>The parameter name used as a type within its scope</td>
+<td><code>S</code> in <code>private S first</code></td>
+</tr>
+<tr class="even">
+<td><strong>Raw type</strong></td>
+<td>A generic type used without type arguments</td>
+<td><code>Pair</code> rather than <code>Pair&lt;String, Integer&gt;</code></td>
+</tr>
+</tbody>
+</table>
+<h3 id="parameter-analogy">Parameter analogy</h3>
+<pre class="text"><code>Method declaration:  void f(int x)       x is a value parameter
+Method invocation:   f(10)               10 is a value argument
+
+Generic declaration: class Box&lt;T&gt;        T is a type parameter
+Generic use:         Box&lt;String&gt;          String is a type argument</code></pre>
+<p>Do not call <code>String</code> a type parameter in <code>Pair&lt;String, Integer&gt;</code>; it is a <strong>type argument</strong>. Do not call <code>Pair&lt;S, T&gt;</code> an instantiated object; it is a generic type declaration.</p>
+<h2 id="4-using-a-parameterized-type">4. Using a parameterized type</h2>
+<pre class="java"><code>Pair&lt;String, Integer&gt; foo() {
+  return new Pair&lt;String, Integer&gt;(&quot;hello&quot;, 4);
+}
+
+Pair&lt;String, Integer&gt; p = foo();
+String s = p.getFirst();
+Integer i = p.getSecond();</code></pre>
+<p>For <code>Pair&lt;String, Integer&gt;</code>:</p>
+<ul>
+<li><code>S</code> is bound to <code>String</code>;</li>
+<li><code>T</code> is bound to <code>Integer</code>;</li>
+<li><code>getFirst()</code> has compile-time return type <code>String</code>; and</li>
+<li><code>getSecond()</code> has compile-time return type <code>Integer</code>.</li>
+</ul>
+<p>Therefore, the compiler rejects the mistake before the program runs:</p>
+<pre class="java"><code>Integer i = (Integer) p.getFirst(); // compile-time error</code></pre>
+<p>The type system knows that <code>p.getFirst()</code> is a <code>String</code>, and the unrelated final class <code>String</code> cannot be cast to <code>Integer</code>.</p>
+<blockquote>
+<p><strong>Supplementary clarification — diamond syntax:</strong> Modern Java usually allows the constructor's type arguments to be inferred:</p>
+<pre class="java"><code>Pair&lt;String, Integer&gt; p = new Pair&lt;&gt;(&quot;hello&quot;, 4);</code></pre>
+<p>The <code>&lt;&gt;</code> is called the diamond operator. It does not remove generic checking; it asks the compiler to infer the arguments from the surrounding context.</p>
+</blockquote>
+<h3 id="only-reference-types-may-be-type-arguments">Only reference types may be type arguments</h3>
+<p>This is illegal:</p>
+<pre class="java"><code>Pair&lt;String, int&gt; p; // compile-time error</code></pre>
+<p>Use the wrapper type instead:</p>
+<pre class="java"><code>Pair&lt;String, Integer&gt; p;</code></pre>
+<p>Autoboxing allows an <code>int</code> value such as <code>4</code> to be supplied where <code>Integer</code> is expected.</p>
+<h2 id="5-passing-a-type-parameter-as-another-types-argument">5. Passing a type parameter as another type's argument</h2>
+<p>A generic class may use its own type parameter as the type argument of another generic type:</p>
+<pre class="java"><code>class DictEntry&lt;T&gt; extends Pair&lt;String, T&gt; {
+  // ...
+}</code></pre>
+<p>Here:</p>
+<ul>
+<li><code>DictEntry</code> declares one type parameter, <code>T</code>;</li>
+<li><code>String</code> is the first type argument passed to <code>Pair&lt;S, T&gt;</code>; and</li>
+<li><code>DictEntry</code>'s <code>T</code> becomes the second type argument passed to <code>Pair</code>.</li>
+</ul>
+<p>For example, <code>DictEntry&lt;Integer&gt;</code> is a subtype of <code>Pair&lt;String, Integer&gt;</code>.</p>
+<h2 id="6-generic-methods">6. Generic methods</h2>
+<p>A method can declare its own type parameters even if its enclosing class is not generic:</p>
+<pre class="java"><code>class A {
+  public static &lt;T&gt; boolean contains(T[] array, T obj) {
+    for (T curr : array) {
+      if (curr.equals(obj)) {
+        return true;
+      }
+    }
+    return false;
+  }
+}</code></pre>
+<h3 id="syntax-rule">Syntax rule</h3>
+<p>The type-parameter declaration appears before the return type:</p>
+<pre class="text"><code>modifiers &lt;type-parameters&gt; return-type method-name(parameters)</code></pre>
+<p>For example:</p>
+<pre class="java"><code>public static &lt;T&gt; boolean contains(T[] array, T obj)</code></pre>
+<p>The method's <code>T</code> is scoped to the entire method declaration and body. It expresses the intended relationship that the array elements and searched object have the same type.</p>
+<h3 id="explicit-type-arguments">Explicit type arguments</h3>
+<pre class="java"><code>String[] words = { &quot;hello&quot;, &quot;world&quot; };
+
+A.&lt;String&gt;contains(words, &quot;hello&quot;); // valid
+A.&lt;String&gt;contains(words, 123);     // compile-time error</code></pre>
+<p><code>A.&lt;String&gt;contains(...)</code> explicitly binds method type parameter <code>T</code> to <code>String</code>.</p>
+<h3 id="type-inference">Type inference</h3>
+<p>Usually Java infers a generic method's type argument:</p>
+<pre class="java"><code>A.contains(words, &quot;hello&quot;); // compiler infers T = String</code></pre>
+<blockquote>
+<p><strong>Supplementary clarification — an important subtlety:</strong> The definition <code>&lt;T&gt; contains(T[] array, T obj)</code> does not absolutely guarantee that <code>A.contains(words, 123)</code> is rejected. Because Java arrays are covariant, the compiler may infer a broader common type such as <code>Object</code>, treating <code>String[]</code> as <code>Object[]</code>. The explicitly witnessed call <code>A.&lt;String&gt;contains(words, 123)</code> definitely fails. This is an interaction between method inference and array covariance, not a failure of generic classes in general.</p>
+</blockquote>
+<h2 id="7-why-an-unbounded-type-variable-has-limited-operations">7. Why an unbounded type variable has limited operations</h2>
+<p>Consider this attempted generic version of <code>findLargest</code>:</p>
+<pre class="java"><code>public static &lt;T&gt; T findLargest(T[] array) {
+  double maxArea = 0;
+  T maxObj = null;
+
+  for (T curr : array) {
+    double area = curr.getArea(); // compile-time error
+    if (area &gt; maxArea) {
+      maxArea = area;
+      maxObj = curr;
+    }
+  }
+  return maxObj;
+}</code></pre>
+<p>The compiler cannot assume that an arbitrary reference type <code>T</code> has a <code>getArea()</code> method. With no explicit bound, the only general guarantee is that values behave as <code>Object</code>s. This is why <code>equals</code>, <code>toString</code>, and other <code>Object</code> operations are available, but <code>getArea()</code> is not.</p>
+<h2 id="8-bounded-type-parameters">8. Bounded type parameters</h2>
+<p>We can restrict <code>T</code> to subtypes of <code>GetAreable</code>:</p>
+<pre class="java"><code>public static &lt;T extends GetAreable&gt; T findLargest(T[] array) {
+  double maxArea = 0;
+  T maxObj = null;
+
+  for (T curr : array) {
+    double area = curr.getArea();
+    if (area &gt; maxArea) {
+      maxArea = area;
+      maxObj = curr;
+    }
+  }
+  return maxObj;
+}</code></pre>
+<p>The bound gives the compiler two guarantees:</p>
+<ol type="1">
+<li>Every <code>T</code> value supports <code>getArea()</code> because <code>T &lt;: GetAreable</code>.</li>
+<li>The return type remains the precise array element type rather than being widened to <code>GetAreable</code>.</li>
+</ol>
+<p>For a <code>Circle[]</code>, the return type is <code>Circle</code>; for a <code>Rectangle[]</code>, it is <code>Rectangle</code>. The caller no longer needs a narrowing cast.</p>
+<p>Java uses <code>extends</code> for an upper bound even when the bound is an interface:</p>
+<pre class="java"><code>&lt;T extends GetAreable&gt;</code></pre>
+<p>Do not write <code>&lt;T implements GetAreable&gt;</code>.</p>
+<blockquote>
+<p><strong>Supplementary edge case:</strong> The lecture implementation returns <code>null</code> for an empty array and assumes valid areas can beat the initial value <code>0</code>. In production code, define the empty-input contract explicitly and consider initializing from the first element after checking that the array is non-empty.</p>
+</blockquote>
+<h2 id="9-self-referential-bounds-and-comparable">9. Self-referential bounds and <code>Comparable</code></h2>
+<p>Java's <code>Comparable&lt;T&gt;</code> interface describes objects that can compare themselves with values of type <code>T</code>:</p>
+<pre class="java"><code>interface Comparable&lt;T&gt; {
+  int compareTo(T other);
+}</code></pre>
+<p>To order pairs by their first component, require the first component type to be comparable with itself:</p>
+<pre class="java"><code>class Pair&lt;S extends Comparable&lt;S&gt;, T&gt;
+    implements Comparable&lt;Pair&lt;S, T&gt;&gt; {
+
+  private S first;
+  private T second;
+
+  public Pair(S first, T second) {
+    this.first = first;
+    this.second = second;
+  }
+
+  public S getFirst() {
+    return this.first;
+  }
+
+  public T getSecond() {
+    return this.second;
+  }
+
+  @Override
+  public int compareTo(Pair&lt;S, T&gt; other) {
+    return this.first.compareTo(other.first);
+  }
+
+  @Override
+  public String toString() {
+    return this.first + &quot; &quot; + this.second;
+  }
+}</code></pre>
+<p>Read the declaration in two parts:</p>
+<ul>
+<li><code>S extends Comparable&lt;S&gt;</code>: <code>S</code> must support comparison with another <code>S</code>.</li>
+<li><code>implements Comparable&lt;Pair&lt;S, T&gt;&gt;</code>: this pair can compare itself with another pair having the same component types.</li>
+</ul>
+<p>This is called a <strong>recursive</strong> or <strong>self-referential bound</strong> because the bound on <code>S</code> mentions <code>S</code> itself.</p>
+<pre class="java"><code>Pair&lt;String, Integer&gt;[] pairs = ...;
+Arrays.sort(pairs); // uses Pair.compareTo</code></pre>
+<p>The pairs are ordered by their first <code>String</code> component because <code>compareTo</code> delegates to <code>String.compareTo</code>.</p>
+<h2 id="10-generics-versus-the-object-approach">10. Generics versus the <code>Object</code> approach</h2>
+<table>
+<thead>
+<tr class="header">
+<th>Property</th>
+<th><code>Object</code>-based <code>Pair</code></th>
+<th>Generic <code>Pair&lt;S, T&gt;</code></th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td>Reusable for many reference types</td>
+<td>Yes</td>
+<td>Yes</td>
+</tr>
+<tr class="even">
+<td>Getter return type</td>
+<td><code>Object</code></td>
+<td>Precise type variable</td>
+</tr>
+<tr class="odd">
+<td>Caller casts required</td>
+<td>Usually</td>
+<td>No for correctly parameterized use</td>
+</tr>
+<tr class="even">
+<td>Wrong component assumption</td>
+<td>May fail at runtime</td>
+<td>Usually rejected at compile time</td>
+</tr>
+<tr class="odd">
+<td>Relationship between inputs and outputs</td>
+<td>Lost</td>
+<td>Explicitly tracked</td>
+</tr>
+<tr class="even">
+<td>Raw-type compatibility</td>
+<td>Not applicable</td>
+<td>Possible, but unsafe and discouraged</td>
+</tr>
+</tbody>
+</table>
+<hr />
+<h1 id="unit-25-type-erasure">Unit 25: Type Erasure</h1>
+<h2 id="11-the-key-idea">11. The key idea</h2>
+<p>Java generics perform their main safety work at <strong>compile time</strong>. After the compiler checks the program, it removes most generic type-argument information when producing bytecode. This implementation strategy is called <strong>type erasure</strong>.</p>
+<pre class="text"><code>Generic source code
+      ↓ compile-time generic checking
+Erasure of type parameters and arguments
+      ↓ insertion of casts and bridge methods where required
+Mostly non-generic bytecode executed by the JVM</code></pre>
+<p>The most important consequence is:</p>
+<blockquote>
+<p>The compiler knows much more about generic type arguments than the JVM usually knows at runtime.</p>
+</blockquote>
+<h2 id="12-code-sharing-versus-code-specialization">12. Code sharing versus code specialization</h2>
+<p>Different languages implement generic programming differently.</p>
+<table>
+<thead>
+<tr class="header">
+<th>Strategy</th>
+<th>Main idea</th>
+<th>Examples from the lecture notes</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td><strong>Code specialization</strong></td>
+<td>Generate code specialised for instantiated type arguments</td>
+<td>C++ and Rust at compile time; C# uses runtime support/specialisation</td>
+</tr>
+<tr class="even">
+<td><strong>Code sharing through erasure</strong></td>
+<td>Type-check generic source, then use one erased runtime representation</td>
+<td>Java</td>
+</tr>
+</tbody>
+</table>
+<p>For Java, <code>Pair&lt;String, Integer&gt;</code> and <code>Pair&lt;Double, Boolean&gt;</code> do not become two separately defined runtime classes. Both are represented by the same raw runtime class, <code>Pair</code>.</p>
+<p>Backward compatibility was an important motivation: generics were introduced in Java 5, and erased generic code could interoperate with older non-generic Java binaries and libraries.</p>
+<h2 id="13-the-erasure-transformation">13. The erasure transformation</h2>
+<p>Start with:</p>
+<pre class="java"><code>class Pair&lt;S, T&gt; {
+  private S first;
+  private T second;
+
+  public Pair(S first, T second) {
+    this.first = first;
+    this.second = second;
+  }
+
+  public S getFirst() {
+    return this.first;
+  }
+
+  public T getSecond() {
+    return this.second;
+  }
+}</code></pre>
+<p>Conceptually, erasure produces something like:</p>
+<pre class="java"><code>class Pair {
+  private Object first;
+  private Object second;
+
+  public Pair(Object first, Object second) {
+    this.first = first;
+    this.second = second;
+  }
+
+  public Object getFirst() {
+    return this.first;
+  }
+
+  public Object getSecond() {
+    return this.second;
+  }
+}</code></pre>
+<h3 id="erasure-rule">Erasure rule</h3>
+<ul>
+<li>An <strong>unbounded</strong> type parameter such as <code>&lt;T&gt;</code> erases to <code>Object</code>.</li>
+<li>A <strong>bounded</strong> type parameter such as <code>&lt;T extends GetAreable&gt;</code> erases to its bound, <code>GetAreable</code>.</li>
+<li>With multiple bounds, the erasure is the leftmost bound.</li>
+</ul>
+<h2 id="14-compiler-inserted-casts">14. Compiler-inserted casts</h2>
+<p>Source code:</p>
+<pre class="java"><code>Integer i = new Pair&lt;String, Integer&gt;(&quot;hello&quot;, 4).getSecond();</code></pre>
+<p>Conceptual erased code:</p>
+<pre class="java"><code>Integer i = (Integer) new Pair(&quot;hello&quot;, 4).getSecond();</code></pre>
+<p>After erasure, <code>getSecond()</code> returns <code>Object</code>, so the compiler inserts a cast to restore the type promised by the checked source program.</p>
+<p>This differs crucially from writing an unsafe cast manually:</p>
+<ul>
+<li>For properly parameterized code, the compiler first proves that the generic relationships are consistent.</li>
+<li>Only then does it generate the cast required by the erased representation.</li>
+<li>If raw types or unchecked casts bypass the generic checks, that guarantee can be broken.</li>
+</ul>
+<h2 id="15-compile-time-versus-runtime-knowledge">15. Compile time versus runtime knowledge</h2>
+<p>Consider:</p>
+<pre class="java"><code>Pair&lt;String, Integer&gt; p = new Pair&lt;&gt;(&quot;hello&quot;, 4);</code></pre>
+<table>
+<thead>
+<tr class="header">
+<th>Question</th>
+<th>Compiler</th>
+<th>JVM at runtime</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td>May <code>getFirst()</code> be assigned to <code>String</code>?</td>
+<td>Yes; it knows <code>S = String</code></td>
+<td>Executes erased method and cast generated by compiler</td>
+</tr>
+<tr class="even">
+<td>May <code>getSecond()</code> be assigned to <code>String</code>?</td>
+<td>No; it knows <code>T = Integer</code></td>
+<td>Normally never sees this rejected program</td>
+</tr>
+<tr class="odd">
+<td>Is the object a <code>Pair</code>?</td>
+<td>Yes</td>
+<td>Yes</td>
+</tr>
+<tr class="even">
+<td>Is the object specifically a <code>Pair&lt;String, Integer&gt;</code>?</td>
+<td>Statically tracked</td>
+<td>Usually unavailable because arguments were erased</td>
+</tr>
+</tbody>
+</table>
+<p>This is why the following is illegal:</p>
+<pre class="java"><code>if (obj instanceof Pair&lt;String, Integer&gt;) { ... } // illegal</code></pre>
+<p>But checking the erased class is legal:</p>
+<pre class="java"><code>if (obj instanceof Pair) { ... }</code></pre>
+<h2 id="16-reifiable-and-non-reifiable-types">16. Reifiable and non-reifiable types</h2>
+<p>A <strong>reifiable type</strong> is a type whose runtime representation retains enough information for the JVM to perform the relevant type check.</p>
+<p>Typical reifiable types include:</p>
+<ul>
+<li>primitive types;</li>
+<li>ordinary non-generic classes such as <code>String</code>;</li>
+<li>raw generic types such as <code>Pair</code>;</li>
+<li>parameterized types with only unbounded wildcards, such as <code>List&lt;?&gt;</code>; and</li>
+<li>arrays whose component type is reifiable, such as <code>String[]</code>.</li>
+</ul>
+<p>A concrete parameterized type such as <code>Pair&lt;String, Integer&gt;</code> is <strong>non-reifiable</strong> because the JVM normally sees only <code>Pair</code> after erasure.</p>
+<p>Do not interpret “non-reifiable” as “not type-checked.” It is checked strongly at compile time; its full arguments are simply not generally available to runtime checks.</p>
+<h2 id="17-why-overloads-cannot-differ-only-by-type-arguments">17. Why overloads cannot differ only by type arguments</h2>
+<p>This source code is illegal:</p>
+<pre class="java"><code>class A {
+  void foo(Pair&lt;String, String&gt; p) { }
+
+  void foo(Pair&lt;Integer, Integer&gt; p) { }
+}</code></pre>
+<p>Both parameter types erase to <code>Pair</code>, producing the same effective signature:</p>
+<pre class="java"><code>void foo(Pair p)
+void foo(Pair p)</code></pre>
+<p>Java therefore reports a name clash or duplicate method. Generic type arguments cannot be the sole basis of overloading because they do not produce distinct erased parameter types.</p>
+<h2 id="18-class-type-parameters-and-static-contexts">18. Class type parameters and static contexts</h2>
+<p>An instance belongs to a particular parameterized use:</p>
+<pre class="java"><code>B&lt;Integer&gt; bInteger = new B&lt;&gt;();
+bInteger.setX(67);
+Integer i = bInteger.getX();</code></pre>
+<p>The compiler can use the receiver's type <code>B&lt;Integer&gt;</code> to check instance-member calls.</p>
+<p>A static member, however, belongs to the class itself and is shared by every parameterization. There is not one static field for <code>C&lt;String&gt;</code> and another for <code>C&lt;Integer&gt;</code>:</p>
+<pre class="java"><code>class C&lt;T&gt; {
+  private static T x;       // illegal
+  public static T getX() {  // illegal
+    return x;
+  }
+}</code></pre>
+<p>Which <code>T</code> should the single shared <code>x</code> use? There is no instance receiver such as <code>C&lt;Integer&gt;</code> to provide an answer. Therefore, a static context cannot use the enclosing class's type parameter.</p>
+<h3 id="static-generic-methods-declare-their-own-type-parameters">Static generic methods declare their own type parameters</h3>
+<pre class="java"><code>class D&lt;T&gt; {
+  public static &lt;U&gt; U identity(U x) {
+    return x;
+  }
+}</code></pre>
+<p><code>U</code> belongs to the static method invocation and is independent of the class's <code>T</code>. Using a different letter avoids falsely suggesting they are related.</p>
+<h2 id="19-why-arrays-and-generics-do-not-mix-cleanly">19. Why arrays and generics do not mix cleanly</h2>
+<p>Arrays and generics make opposite runtime promises:</p>
+<ul>
+<li>Arrays are <strong>reified</strong>: an array object knows its runtime component type and checks every store.</li>
+<li>Parameterized generic types are <strong>erased</strong>: a <code>Pair&lt;String, Integer&gt;</code> object normally knows only that it is a <code>Pair</code> at runtime.</li>
+</ul>
+<p>Imagine Java allowed:</p>
+<pre class="java"><code>Pair&lt;String, Integer&gt;[] pairArray =
+    new Pair&lt;String, Integer&gt;[2]; // actually illegal Java
+
+Object[] objArray = pairArray;
+objArray[0] = new Pair&lt;Double, Boolean&gt;(3.14, true);</code></pre>
+<p>The runtime would see approximately:</p>
+<pre class="java"><code>Pair[] pairArray = new Pair[2];
+Object[] objArray = pairArray;
+objArray[0] = new Pair(3.14, true);</code></pre>
+<p>The array store check can confirm only that the inserted object is a <code>Pair</code>. It cannot distinguish <code>Pair&lt;Double, Boolean&gt;</code> from <code>Pair&lt;String, Integer&gt;</code>, so no <code>ArrayStoreException</code> could protect the generic promise.</p>
+<p>Java prevents the direct creation:</p>
+<pre class="java"><code>new Pair&lt;String, Integer&gt;[2]; // illegal
+new Pair&lt;S, T&gt;[2];           // illegal
+new T[2];                    // illegal</code></pre>
+<p>However, declarations are allowed:</p>
+<pre class="java"><code>Pair&lt;String, Integer&gt;[] pairArray;
+T[] array;</code></pre>
+<p>A declaration does not create an array and therefore does not yet require the JVM to represent a non-reifiable component type.</p>
+<h2 id="20-heap-pollution">20. Heap pollution</h2>
+<p><strong>Heap pollution</strong> occurs when a variable of a parameterized type refers to an object that is not compatible with that parameterized type's promise.</p>
+<p>Conceptually, after the unsafe store above:</p>
+<pre class="text"><code>Static promise: pairArray[0] is Pair&lt;String, Integer&gt;
+Actual object:  pairArray[0] is Pair&lt;Double, Boolean&gt;</code></pre>
+<p>The failure may appear later and far from the unsafe operation:</p>
+<pre class="java"><code>String str = pairArray[0].getFirst();</code></pre>
+<p>After erasure, the compiler-generated behaviour is conceptually:</p>
+<pre class="java"><code>String str = (String) pairArray[0].getFirst();</code></pre>
+<p>The actual first value is a <code>Double</code>, so the inserted cast throws <code>ClassCastException</code>.</p>
+<p>Common sources of heap pollution include raw types, unchecked casts, and unsafe generic varargs or array workarounds. A compiler warning about an unchecked operation is therefore meaningful evidence that static guarantees are being bypassed.</p>
+<h2 id="21-bridge-methods">21. Bridge methods</h2>
+<p>Type erasure can otherwise break overriding.</p>
+<h3 id="source-level-program">Source-level program</h3>
+<pre class="java"><code>class Box&lt;T&gt; {
+  void get(T value) {
+    // ...
+  }
+}
+
+class StringBox extends Box&lt;String&gt; {
+  @Override
+  void get(String value) {
+    // programmer-defined implementation
+  }
+}</code></pre>
+<p>At source level, <code>StringBox.get(String)</code> overrides <code>Box&lt;T&gt;.get(T)</code> after <code>T</code> is bound to <code>String</code>.</p>
+<h3 id="the-erasure-problem">The erasure problem</h3>
+<p>Conceptually, <code>Box&lt;T&gt;.get(T)</code> erases to:</p>
+<pre class="java"><code>void get(Object value)</code></pre>
+<p>But the subclass still has:</p>
+<pre class="java"><code>void get(String value)</code></pre>
+<p>These have different descriptors. Without help, a call compiled against the erased superclass descriptor <code>get(Object)</code> would not dynamically select <code>get(String)</code>.</p>
+<h3 id="compiler-generated-bridge">Compiler-generated bridge</h3>
+<p>The compiler adds a synthetic method to <code>StringBox</code>:</p>
+<pre class="java"><code>class StringBox extends Box {
+  // Generated by the compiler
+  void get(Object value) {
+    this.get((String) value);
+  }
+
+  // Written by the programmer
+  void get(String value) {
+    // ...
+  }
+}</code></pre>
+<p>Now consider:</p>
+<pre class="java"><code>Box&lt;String&gt; box = new StringBox();
+box.get(&quot;CS2030S&quot;);</code></pre>
+<p>The runtime sequence is:</p>
+<ol type="1">
+<li>Compile-time method selection uses the generic superclass view.</li>
+<li>The stored runtime descriptor is the erased <code>get(Object)</code>.</li>
+<li>Dynamic method lookup finds <code>StringBox</code>'s bridge <code>get(Object)</code>.</li>
+<li>The bridge casts the argument to <code>String</code>.</li>
+<li>The bridge delegates to the programmer-written <code>get(String)</code>.</li>
+</ol>
+<p>The bridge method preserves the overriding and polymorphic behaviour promised by the generic source code.</p>
+<blockquote>
+<p><strong>Supplementary correction:</strong> The bridge does not make the runtime directly dispatch an <code>Object</code>-descriptor call to <code>get(String)</code>. Runtime dispatch first reaches the generated <code>get(Object)</code> bridge, which then calls <code>get(String)</code>.</p>
+</blockquote>
+<hr />
+<h1 id="unit-26-unchecked-warnings">Unit 26: Unchecked Warnings</h1>
+<h2 id="22-why-unchecked-warnings-exist">22. Why unchecked warnings exist</h2>
+<p>Java's compiler normally proves that operations involving generics are type-safe. Type erasure and non-reifiable types sometimes prevent it from proving a cast or call safe, even though the operation can be useful when implementing a generic data structure.</p>
+<p>In such a situation, Java may issue an <strong>unchecked warning</strong> instead of rejecting the program:</p>
+<blockquote>
+<p>An unchecked warning means that the compiler cannot fully verify the generic type-safety claim. It does not prove that the code is wrong, but responsibility for the missing proof has shifted to the programmer.</p>
+</blockquote>
+<p>Compile with detailed generic warnings enabled:</p>
+<pre class="bash"><code>javac -Xlint:unchecked Seq.java</code></pre>
+<p>This identifies the exact operation the compiler could not verify, the required type, the type it actually found, and the relevant type-variable declaration.</p>
+<h2 id="23-prefer-generic-collections-when-an-array-is-unnecessary">23. Prefer generic collections when an array is unnecessary</h2>
+<p>From the user's perspective, Java collections avoid many generic-array problems:</p>
+<pre class="java"><code>ArrayList&lt;Pair&lt;String, Integer&gt;&gt; pairList =
+    new ArrayList&lt;Pair&lt;String, Integer&gt;&gt;();
+
+pairList.add(0, new Pair&lt;Double, Boolean&gt;(3.14, true));
+// compile-time error</code></pre>
+<p>The element type is checked at compile time. Furthermore, generic classes are invariant by default:</p>
+<pre class="java"><code>ArrayList&lt;Pair&lt;String, Integer&gt;&gt; pairList = new ArrayList&lt;&gt;();
+ArrayList&lt;Object&gt; objList = pairList; // compile-time error</code></pre>
+<p>Even though <code>Pair&lt;String, Integer&gt; &lt;: Object</code>, it does not follow that:</p>
+<pre class="text"><code>ArrayList&lt;Pair&lt;String, Integer&gt;&gt; &lt;: ArrayList&lt;Object&gt;</code></pre>
+<p>Rejecting the alias prevents a caller from inserting an arbitrary <code>Object</code> into a list promised to contain only <code>Pair&lt;String, Integer&gt;</code> values.</p>
+<p><code>ArrayList</code> still uses an array internally. The library implementation has to manage the same low-level representation problem, which is why understanding the unchecked cast remains important when implementing generic data structures.</p>
+<h2 id="24-implementing-seqt-with-an-array">24. Implementing <code>Seq&lt;T&gt;</code> with an array</h2>
+<p>We may want a fixed-size generic sequence:</p>
+<pre class="java"><code>class Seq&lt;T&gt; {
+  private T[] array;
+
+  public Seq(int size) {
+    this.array = (T[]) new Object[size];
+  }
+
+  public void set(int index, T item) {
+    this.array[index] = item;
+  }
+
+  public T get(int index) {
+    return this.array[index];
+  }
+}</code></pre>
+<p>Java forbids <code>new T[size]</code> because <code>T</code> is non-reifiable: the JVM does not know the actual component type needed to create and protect that array. The implementation therefore creates an <code>Object[]</code> and casts the reference to <code>T[]</code>.</p>
+<p>The compiler reports:</p>
+<pre class="text"><code>warning: [unchecked] unchecked cast
+  required: T[]
+  found:    Object[]</code></pre>
+<p>After erasure, the JVM can confirm only that the object is an <code>Object[]</code>. It cannot verify the stronger source-level claim that the array should behave as an array of the unknown <code>T</code>.</p>
+<h2 id="25-how-the-unchecked-cast-can-become-unsafe">25. How the unchecked cast can become unsafe</h2>
+<p>Suppose <code>Seq</code> exposes its internal array:</p>
+<pre class="java"><code>public T[] getArray() {
+  return this.array;
+}</code></pre>
+<p>Client code can now create an alias with the actual backing <code>Object[]</code>:</p>
+<pre class="java"><code>Seq&lt;String&gt; seq = new Seq&lt;String&gt;(4);
+Object[] objArray = seq.getArray();
+objArray[0] = 4;
+
+String value = seq.get(0); // ClassCastException</code></pre>
+<p>The static promise says that <code>seq.get(0)</code> returns <code>String</code>. Due to erasure, the generated code conceptually contains:</p>
+<pre class="java"><code>String value = (String) seq.get(0);</code></pre>
+<p>The internal array actually contains an <code>Integer</code>, so the compiler-inserted cast fails.</p>
+<blockquote>
+<p><strong>Supplementary precision:</strong> Merely writing <code>seq.get(0);</code> and discarding the result may not require a runtime cast. Assigning it to <code>String</code>, returning it from a <code>String</code> method, or otherwise using it in a context that requires <code>String</code> exposes the <code>ClassCastException</code>.</p>
+</blockquote>
+<p>This example demonstrates <strong>heap pollution</strong>: a location treated as holding values of type <code>T</code> contains a value that violates that promise.</p>
+<h2 id="26-informal-type-safety-proof-for-the-restricted-seqt">26. Informal type-safety proof for the restricted <code>Seq&lt;T&gt;</code></h2>
+<p>Remove <code>getArray()</code> so clients cannot obtain or mutate the backing array directly:</p>
+<pre class="java"><code>class Seq&lt;T&gt; {
+  private T[] array;
+
+  public Seq(int size) {
+    this.array = (T[]) new Object[size];
+  }
+
+  public void set(int index, T item) {
+    this.array[index] = item;
+  }
+
+  public T get(int index) {
+    return this.array[index];
+  }
+}</code></pre>
+<p>The human justification is an invariant argument:</p>
+<ol type="1">
+<li><code>array</code> is <code>private</code>, so ordinary clients cannot directly access it.</li>
+<li>The constructor initially fills the backing array only with <code>null</code>, which is valid for every reference type <code>T</code>.</li>
+<li>The only ordinary write operation is <code>set(int, T)</code>.</li>
+<li>The compiler ensures that correctly parameterized callers pass only values compatible with that instance's <code>T</code>.</li>
+<li>Therefore, every non-null value retrieved from the backing array was previously accepted as a <code>T</code>.</li>
+<li>Consequently, the cast inserted when <code>get</code> is used as a <code>T</code> will succeed, provided no raw type, unchecked operation, reflection, or other unsafe back door breaks the invariant.</li>
+</ol>
+<p>This is an <strong>informal proof of representation safety</strong>. The cast itself is not magically safe; encapsulation and the controlled write path make it safe under the stated assumptions.</p>
+<h3 id="proof-obligations-to-check">Proof obligations to check</h3>
+<p>Before suppressing the warning, verify all of the following:</p>
+<ul>
+<li>The unsafe representation is private and does not escape.</li>
+<li>Every write is checked through the generic API.</li>
+<li>No method returns the backing array directly.</li>
+<li>No raw-type or unchecked client can inject incompatible values within the assumed scope.</li>
+<li>The cast is used only to implement the representation, not to claim that an arbitrary object has type <code>T</code>.</li>
+<li>Future maintainers can understand and preserve the invariant.</li>
+</ul>
+<p>If any condition fails, the warning may represent a real route to heap pollution.</p>
+<h2 id="27-suppressing-a-justified-warning">27. Suppressing a justified warning</h2>
+<p>Once the cast has been justified, suppress only that exact warning:</p>
+<pre class="java"><code>class Seq&lt;T&gt; {
+  private T[] array;
+
+  public Seq(int size) {
+    // The backing array is private and never exposed. All writes occur
+    // through set(int, T), so every stored value is compatible with T.
+    @SuppressWarnings(&quot;unchecked&quot;)
+    T[] a = (T[]) new Object[size];
+    this.array = a;
+  }
+
+  public void set(int index, T item) {
+    this.array[index] = item;
+  }
+
+  public T get(int index) {
+    return this.array[index];
+  }
+}</code></pre>
+<p>The correct spelling is:</p>
+<pre class="java"><code>@SuppressWarnings(&quot;unchecked&quot;)</code></pre>
+<p>It contains two <code>p</code> characters in <code>Suppress</code>.</p>
+<p>The annotation hides the warning; it does <strong>not</strong> change the program, insert a safety check, or fix unsafe code.</p>
+<h3 id="minimal-and-ethical-suppression">Minimal and ethical suppression</h3>
+<p>The annotation can target several declaration scopes, but use the narrowest permitted scope. In CS2030S, apply it only to the local variable declaration containing the justified cast.</p>
+<p>Do not annotate the whole class or method merely for convenience. A broad annotation may hide unrelated warnings introduced later.</p>
+<p>Every suppression should include a comment explaining:</p>
+<ol type="1">
+<li>what operation is unchecked;</li>
+<li>why the compiler cannot prove it;</li>
+<li>the invariant that makes it safe; and</li>
+<li>how the code prevents the unsafe representation from escaping.</li>
+</ol>
+<p>Treat the warning as a proof obligation, not as cosmetic output to remove.</p>
+<h2 id="28-why-a-temporary-local-variable-is-used">28. Why a temporary local variable is used</h2>
+<p><code>@SuppressWarnings</code> applies to declarations, not to an assignment expression by itself. Therefore, this is the precise pattern used in the constructor:</p>
+<pre class="java"><code>@SuppressWarnings(&quot;unchecked&quot;)
+T[] a = (T[]) new Object[size];
+this.array = a;</code></pre>
+<p>The warning is attached only to <code>a</code>'s declaration. Annotating a broader scope would suppress more warnings than necessary.</p>
+<h2 id="29-raw-types">29. Raw types</h2>
+<p>A <strong>raw type</strong> is a generic class or interface used without type arguments:</p>
+<pre class="java"><code>Seq s = new Seq(4); // raw Seq</code></pre>
+<p>Raw types exist primarily for backward compatibility with Java code written before generics were introduced in Java 5. They approximate the erased view of generic code and disable important generic checks.</p>
+<p>Compare:</p>
+<pre class="java"><code>Seq&lt;String&gt; strings = new Seq&lt;&gt;(4);
+strings.set(0, 1234); // compile-time error</code></pre>
+<p>with:</p>
+<pre class="java"><code>Seq raw = strings;
+raw.set(0, 1234); // unchecked warning, but compiles
+
+String value = strings.get(0); // ClassCastException</code></pre>
+<p>The raw reference bypasses the generic promise and pollutes the same object later viewed as <code>Seq&lt;String&gt;</code>.</p>
+<h3 id="raw-and-parameterized-assignments">Raw and parameterized assignments</h3>
+<p>Java permits raw and parameterized code to interoperate for migration compatibility:</p>
+<ul>
+<li>Assigning a parameterized value to a raw variable loses type information.</li>
+<li>Assigning a raw value to a parameterized variable generally produces an unchecked warning.</li>
+</ul>
+<blockquote>
+<p><strong>Supplementary precision:</strong> Do not interpret this as an ordinary, fully safe subtype relationship in both directions. One direction discards generic information; the other relies on an unchecked conversion that the compiler cannot verify.</p>
+</blockquote>
+<h2 id="30-detecting-raw-types">30. Detecting raw types</h2>
+<p>Ask the compiler to report accidental raw-type usage:</p>
+<pre class="bash"><code>javac -Xlint:unchecked -Xlint:rawtypes Seq.java</code></pre>
+<p>The two categories answer different questions:</p>
+<table>
+<thead>
+<tr class="header">
+<th>Warning</th>
+<th>Meaning</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td><code>[rawtypes]</code></td>
+<td>A generic type was used without its required type arguments.</td>
+</tr>
+<tr class="even">
+<td><code>[unchecked]</code></td>
+<td>A generic cast, conversion, or method call could not be fully verified.</td>
+</tr>
+</tbody>
+</table>
+<p>A raw call such as <code>raw.set(0, 1234)</code> may generate both kinds of warning: the declaration uses a raw type, and the call cannot enforce <code>T</code>.</p>
+<h2 id="31-raw-types-and-instanceof">31. Raw types and <code>instanceof</code></h2>
+<p>Because concrete type arguments are erased, this is illegal:</p>
+<pre class="java"><code>obj instanceof Seq&lt;String&gt; // illegal: Seq&lt;String&gt; is non-reifiable</code></pre>
+<p>At this point in the course, the permitted runtime check is:</p>
+<pre class="java"><code>obj instanceof Seq</code></pre>
+<p>This checks only the erased runtime class and says nothing about its original type argument.</p>
+<blockquote>
+<p><strong>Supplementary preview:</strong> After wildcards are introduced, <code>obj instanceof Seq&lt;?&gt;</code> expresses the same available runtime check without using a raw type. Until then, the raw operand is the lecture's temporary exception to the rule against raw types.</p>
+</blockquote>
+<h2 id="32-how-to-respond-to-an-unchecked-warning">32. How to respond to an unchecked warning</h2>
+<p>Use this decision procedure:</p>
+<ol type="1">
+<li>Compile with <code>-Xlint:unchecked</code> and locate the exact unchecked operation.</li>
+<li>Try to redesign the code so the operation is statically checkable—prefer a generic collection when appropriate.</li>
+<li>Identify the runtime representation after erasure.</li>
+<li>State the invariant needed for the cast or call to remain safe.</li>
+<li>Check every way that invariant might be broken, especially aliases, exposed arrays, raw types, and unchecked casts.</li>
+<li>If safety cannot be justified, fix the design; do not suppress the warning.</li>
+<li>If safety can be justified, document the proof and suppress only the smallest local declaration allowed.</li>
+<li>Recompile with both <code>-Xlint:unchecked</code> and <code>-Xlint:rawtypes</code> to ensure no unrelated warnings were hidden.</li>
+</ol>
+<hr />
+<h1 id="problem-solving-procedures">Problem-solving procedures</h1>
+<h2 id="33-how-to-analyse-generic-code">33. How to analyse generic code</h2>
+<ol type="1">
+<li>Locate every type-parameter declaration: class-level <code>&lt;T&gt;</code> or method-level <code>&lt;T&gt;</code>.</li>
+<li>Determine the scope of each type variable.</li>
+<li>Substitute the supplied or inferred type arguments into fields, parameters, and return types.</li>
+<li>Check each bound and list the operations that the bound guarantees.</li>
+<li>Identify raw types or unchecked casts that may bypass safety.</li>
+<li>Only after source-level checking, imagine erasure if the question concerns runtime behaviour.</li>
+</ol>
+<h2 id="34-how-to-compute-erasure">34. How to compute erasure</h2>
+<ol type="1">
+<li>Replace each unbounded type variable with <code>Object</code>.</li>
+<li>Replace each bounded type variable with the erasure of its leftmost bound.</li>
+<li>Remove type arguments from parameterized types.</li>
+<li>Insert casts where client code needs to recover the statically promised type.</li>
+<li>Check whether erased methods create a signature clash.</li>
+<li>Check whether inheritance requires a bridge method to preserve overriding.</li>
+</ol>
+<h2 id="35-how-to-analyse-generic-arrays-and-heap-pollution">35. How to analyse generic arrays and heap pollution</h2>
+<ol type="1">
+<li>Ask whether the proposed array component type is reifiable.</li>
+<li>If code directly creates an array of a concrete parameterized type or <code>T</code>, predict a compile-time error.</li>
+<li>If an unchecked cast or raw array is involved, record the array's real runtime component type.</li>
+<li>Check what the runtime store test can actually see after erasure.</li>
+<li>Compare the variable's static generic promise with the actual stored object.</li>
+<li>Locate the later compiler-inserted cast where heap pollution may become <code>ClassCastException</code>.</li>
+</ol>
+<hr />
+<h1 id="common-mistakes-and-exam-traps">Common mistakes and exam traps</h1>
+<ol type="1">
+<li>Confusing a <strong>type parameter</strong> (<code>T</code>) with a <strong>type argument</strong> (<code>String</code>).</li>
+<li>Calling <code>Pair&lt;String, Integer&gt;</code> a generic declaration instead of a parameterized type.</li>
+<li>Using primitive <code>int</code> as a type argument instead of <code>Integer</code>.</li>
+<li>Forgetting that a constructor is declared as <code>Pair(...)</code>, not <code>Pair&lt;S, T&gt;(...)</code>.</li>
+<li>Using a type variable without declaring it.</li>
+<li>Placing a generic method's <code>&lt;T&gt;</code> after the return type.</li>
+<li>Assuming an unbounded <code>T</code> has domain-specific methods.</li>
+<li>Writing <code>implements</code> inside a bound; Java uses <code>extends</code> for both class and interface upper bounds.</li>
+<li>Assuming generic type arguments remain fully available at runtime.</li>
+<li>Believing erasure removes compile-time safety; checking happens before erasure.</li>
+<li>Overloading methods whose parameter types differ only by generic arguments.</li>
+<li>Using the enclosing class's type parameter in a static context.</li>
+<li>Assuming each parameterized type has separate static fields.</li>
+<li>Creating <code>new T[]</code> or <code>new Pair&lt;String, Integer&gt;[]</code>.</li>
+<li>Ignoring unchecked warnings that may indicate heap pollution.</li>
+<li>Predicting <code>ArrayStoreException</code> when the runtime can see only the raw component type <code>Pair</code>; the delayed failure is typically <code>ClassCastException</code>.</li>
+<li>Thinking a bridge method is programmer-written or source-visible; it is generated by the compiler.</li>
+<li>Thinking a bridge is an ordinary overload with independent behaviour; its purpose is to preserve source-level overriding after erasure.</li>
+<li>Treating every unchecked warning as proof of an error; it means the compiler cannot prove safety.</li>
+<li>Treating a warning as harmless without supplying the missing human proof.</li>
+<li>Suppressing <code>"unchecked"</code> over an entire method or class instead of the smallest declaration.</li>
+<li>Forgetting that suppression hides diagnostics but does not change runtime behaviour.</li>
+<li>Exposing a backing array whose safety depends on controlled access.</li>
+<li>Using a raw type such as <code>Seq</code> rather than <code>Seq&lt;T&gt;</code> or a concrete parameterized type.</li>
+<li>Suppressing warnings caused by raw-type pollution rather than removing the raw type.</li>
+<li>Misspelling <code>@SuppressWarnings</code> as <code>@SupressWarnings</code>.</li>
+<li>Assuming raw-to-parameterized conversion is fully safe because Java permits it for compatibility.</li>
+</ol>
+<hr />
+<h1 id="what-to-remember-for-the-exam">What to remember for the exam</h1>
+<ul>
+<li>Generics provide reusable code while preserving relationships between types at compile time.</li>
+<li>A type parameter is declared; a type argument is supplied; their combination forms a parameterized type.</li>
+<li>Only reference types can be type arguments, so primitives require wrappers.</li>
+<li>A generic method declares <code>&lt;T&gt;</code> before its return type.</li>
+<li>An upper bound such as <code>&lt;T extends GetAreable&gt;</code> both restricts permitted types and makes the bound's methods available.</li>
+<li>Java type-checks generics first and erases most type arguments afterward.</li>
+<li>Unbounded parameters erase to <code>Object</code>; bounded parameters erase to their bound.</li>
+<li>The compiler inserts casts at use sites to recover types promised by the generic source program.</li>
+<li>Concrete parameterized types are generally non-reifiable, so their full arguments cannot usually be checked at runtime.</li>
+<li>Methods cannot be overloaded solely by different type arguments because the erased signatures clash.</li>
+<li>A class's type parameter cannot be used by static members; a static generic method declares its own independent parameter.</li>
+<li>Generic array declarations are allowed, but direct instantiation of arrays with non-reifiable component types is forbidden.</li>
+<li>Heap pollution breaks a parameterized variable's static promise and can cause a delayed <code>ClassCastException</code>.</li>
+<li>Bridge methods are compiler-generated erased-signature methods that delegate to the programmer's specialised override, preserving polymorphism.</li>
+<li>An unchecked warning means the compiler cannot prove generic type safety; it is not automatically proof that the code is unsafe.</li>
+<li>A necessary unchecked cast creates a human proof obligation based on a clearly stated representation invariant.</li>
+<li>A private <code>Object[]</code> backing array can safely implement a restricted <code>Seq&lt;T&gt;</code> only when all writes accept <code>T</code> and the array never escapes.</li>
+<li><code>@SuppressWarnings("unchecked")</code> should be applied minimally and accompanied by a justification; it hides a warning but fixes nothing.</li>
+<li>Generic collections are invariant by default, preventing the unsafe aliases permitted by covariant arrays.</li>
+<li>A raw type omits type arguments, disables generic checks, and exists mainly for pre-Java-5 compatibility.</li>
+<li>Use <code>-Xlint:unchecked -Xlint:rawtypes</code> to expose unchecked operations and raw-type usage.</li>
+</ul>
+    </main>
+
+    <aside class="toc">
+      <h2>On this page</h2>
+      <a href="#topic-overview">Overview</a>
+      <a href="#unit-24-generics">Unit 24: Generics</a>
+      <a href="#unit-25-type-erasure">Unit 25: Type erasure</a>
+      <a href="#unit-26-unchecked-warnings">Unit 26: Unchecked warnings</a>
+      <a href="#problem-solving-procedures">Problem-solving procedures</a>
+      <a href="#common-mistakes-and-exam-traps">Exam traps</a>
+      <a href="#what-to-remember-for-the-exam">Exam checklist</a>
+    </aside>
+  </div>
+</body>
+</html>
