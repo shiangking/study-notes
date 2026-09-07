@@ -1,0 +1,523 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <title>CS1231S Lecture 06 | Relations</title>
+  <link rel="stylesheet" href="../site-assets/docs.css?v=20260827e">
+</head>
+<body>
+<header class="topbar"><a class="site-name" href="../index.html">Study Notes</a><span class="course-name">CS1231S Discrete Structures</span></header>
+<div class="shell">
+<aside class="sidebar">
+  <h2>CS1231S</h2>
+  <a class="nav-link" href="index.html">Overview</a>
+  <a class="nav-link" href="lecture-02.html">Lecture 02: Propositional logic</a>
+  <a class="nav-link" href="lecture-03.html">Lecture 03: Predicate logic</a>
+  <a class="nav-link" href="lecture-04.html">Lecture 04: Methods of proof</a>
+  <a class="nav-link" href="lecture-05.html">Lecture 05: Set theory</a>
+  <a class="nav-link current" href="lecture-06.html">Lecture 06: Relations</a>
+</aside>
+<main class="content">
+<div class="notice"><strong>Lecture 06 — Relations</strong><br>CS1231S, AY2026/27 Semester 1 · Instructor: Ashish Dandekar · Slide credits: Aaron Tan and Dr. Wong Tin Lok · Reference: Susanna S. Epp, Chapter 8</div>
+<h1 id="lecture-06">Relations: Academic Study Guide</h1>
+<p>This page preserves the supplied lecture definitions, examples, theorems, proofs, remarks, diagram descriptions, exam questions, and pitfalls. Material explicitly marked <strong>Supplementary explanation</strong> was added for intuition or revision.</p>
+
+<h2 id="overview">Lecture structure</h2>
+<ul>
+  <li>6.1 Relations on sets</li>
+  <li>6.2 Reflexivity, symmetry, and transitivity</li>
+  <li>6.3 Equivalence relations</li>
+  <li>6.4 Partial-order relations</li>
+</ul>
+
+<h2 id="relations-on-sets">6.1 Relations on sets</h2>
+<h3 id="set-recap">6.1.1 Set-theory recap</h3>
+<p>An <strong>ordered pair</strong> has two components and remembers order:</p>
+<p><code>(a,b)=(c,d) ⇔ a=c ∧ b=d</code>.</p>
+<p>An ordered n-tuple has form <code>(x₁,x₂,…,xₙ)</code>. The Cartesian product is</p>
+<p><code>A×B={(x,y):x∈A ∧ y∈B}</code>.</p>
+<p><strong>Example 1.</strong> For <code>A={0,1,2}</code> and <code>B={a,b,c}</code>:</p>
+<p><code>A×B={(0,a),(0,b),(0,c),(1,a),(1,b),(1,c),(2,a),(2,b),(2,c)}</code>.</p>
+
+<h3 id="relation-definition">6.1.2 Binary relations</h3>
+<p>Let A and B be sets. A <strong>binary relation from A to B</strong> is any subset of <code>A×B</code>. For <code>(x,y)∈A×B</code>:</p>
+<ul>
+  <li><code>x R y ⇔ (x,y)∈R</code>: x is R-related to y.</li>
+  <li><code>x not-R y ⇔ (x,y)∉R</code>.</li>
+</ul>
+<div class="notice"><strong>Supplementary explanation:</strong> a relation need not pair every input with anything, and one input may be paired with several outputs. A function is a special kind of relation with exactly one output for every input in its declared domain.</div>
+
+<h3 id="relation-examples">6.1.3 Concrete relation examples</h3>
+<p><strong>Example 2.</strong> Let <code>A={0,1,2}</code>, <code>B={1,2,3}</code>, and define <code>xRy ⇔ x&lt;y</code>. Then</p>
+<p><code>R={(0,1),(0,2),(0,3),(1,2),(1,3),(2,3)}</code>.</p>
+<p>Thus <code>0R1</code>, <code>0R2</code>, <code>0R3</code>, <code>1R2</code>, <code>1R3</code>, and <code>2R3</code>; but <code>1 not-R 1</code>, <code>2 not-R 1</code>, and <code>2 not-R 2</code>.</p>
+
+<p><strong>Example 3.</strong> Let <code>A={1,2}</code>, <code>B={1,2,3}</code>, and</p>
+<p><code>(x,y)∈R ⇔ (x−y)/2∈ℤ</code>.</p>
+<table>
+  <thead><tr><th>Pair</th><th>Test</th><th>In R?</th></tr></thead>
+  <tbody>
+    <tr><td><code>(1,1)</code></td><td><code>(1−1)/2=0∈ℤ</code></td><td>Yes</td></tr>
+    <tr><td><code>(1,2)</code></td><td><code>(1−2)/2=−1/2∉ℤ</code></td><td>No</td></tr>
+    <tr><td><code>(1,3)</code></td><td><code>(1−3)/2=−1∈ℤ</code></td><td>Yes</td></tr>
+    <tr><td><code>(2,1)</code></td><td><code>(2−1)/2=1/2∉ℤ</code></td><td>No</td></tr>
+    <tr><td><code>(2,2)</code></td><td><code>(2−2)/2=0∈ℤ</code></td><td>Yes</td></tr>
+    <tr><td><code>(2,3)</code></td><td><code>(2−3)/2=−1/2∉ℤ</code></td><td>No</td></tr>
+  </tbody>
+</table>
+<p>Hence <code>R={(1,1),(1,3),(2,2)}</code>.</p>
+
+<h3 id="database">6.1.4 Application: relational databases</h3>
+<p>Let S be the set of students, M the set of modules, and R the “is enrolled in” relation from S to M.</p>
+<table>
+  <thead><tr><th>Student</th><th>Module</th></tr></thead>
+  <tbody>
+    <tr><td>Ali</td><td>CS1101S</td></tr><tr><td>Aiken</td><td>CS1231S</td></tr>
+    <tr><td>Dueet</td><td>CS1231S</td></tr><tr><td>Bam Boo</td><td>MA1101R</td></tr>
+    <tr><td>Lian Eng</td><td>CS1101S</td></tr><tr><td>Manimaran</td><td>CS1231S</td></tr>
+    <tr><td>James Tan</td><td>MA1101R</td></tr>
+  </tbody>
+</table>
+<p>Set form:</p>
+<p><code>R={(Ali,CS1101S),(Aiken,CS1231S),(Dueet,CS1231S),(Bam Boo,MA1101R),(Lian Eng,CS1101S),(Manimaran,CS1231S),(James Tan,MA1101R),…}</code>.</p>
+
+<h3 id="domain-range">6.1.5 Domain, co-domain, and range</h3>
+<p>For a relation R from A to B:</p>
+<ul>
+  <li><code>Dom(R)={a∈A:aRb for some b∈B}</code>.</li>
+  <li><code>coDom(R)=B</code>.</li>
+  <li><code>Range(R)={b∈B:aRb for some a∈A}</code>.</li>
+</ul>
+<p><strong>Example 4.</strong> Let <code>A={1,2,3}</code>, <code>B={2,4,9}</code>, and <code>xRy⇔x²=y</code>. Since 1² is not in B while 2²=4 and 3²=9:</p>
+<p><code>R={(2,4),(3,9)}</code>, <code>Dom(R)={2,3}</code>, <code>coDom(R)={2,4,9}</code>, and <code>Range(R)={4,9}</code>.</p>
+<div class="notice"><strong>Supplementary explanation:</strong> the co-domain is declared when the relation is defined; the range contains values actually reached. Therefore <code>Range(R)⊆coDom(R)</code>, but equality is not guaranteed.</div>
+
+<p><strong>Example 5.</strong> Define R from ℤ to ℤ by <code>xRy⇔x−y</code> is even.</p>
+<ul>
+  <li><code>4R0</code>, because <code>4−0=4</code> is even.</li>
+  <li><code>2R6</code>, because <code>2−6=−4</code> is even.</li>
+  <li><code>3R(−3)</code>, because <code>3−(−3)=6</code> is even.</li>
+  <li><code>5 not-R 2</code>, because <code>5−2=3</code> is odd.</li>
+</ul>
+<p>The integers related to 1 are exactly the odd integers; five examples are <code>−3,−1,1,3,5</code>.</p>
+<p><strong>Proof that every odd a satisfies aR1.</strong> Let a be odd. Then <code>a=2k+1</code> for some <code>k∈ℤ</code>, so <code>a−1=2k</code> is even. Hence <code>aR1</code>. ∎</p>
+
+<h3 id="inverse">6.1.6 Arrow diagrams and inverse relations</h3>
+<p>In an arrow diagram, elements of A and B are points in separate regions, and an arrow goes from x to y exactly when <code>xRy</code>.</p>
+<p><strong>Example 6.</strong> For <code>A={1,2,3}</code> and <code>B={1,3,5}</code>:</p>
+<ul>
+  <li>If <code>xSy⇔x&lt;y</code>, then <code>S={(1,3),(1,5),(2,3),(2,5),(3,5)}</code>.</li>
+  <li><code>T={(2,1),(2,5)}</code>.</li>
+</ul>
+<p>For <code>R⊆A×B</code>, the <strong>inverse relation</strong> from B to A reverses every ordered pair:</p>
+<p><code>R⁻¹={(y,x)∈B×A:(x,y)∈R}</code>, so <code>(y,x)∈R⁻¹⇔(x,y)∈R</code>.</p>
+<p><strong>Example 7.</strong> Let <code>A={2,3,4}</code>, <code>B={2,6,8}</code>, and <code>xRy⇔x|y</code>. Then</p>
+<p><code>R={(2,2),(2,6),(2,8),(3,6),(4,8)}</code></p>
+<p>and</p>
+<p><code>R⁻¹={(2,2),(6,2),(8,2),(6,3),(8,4)}</code>.</p>
+<p>Thus <code>yR⁻¹x</code> means y is a multiple of x, equivalently <code>x|y</code>.</p>
+
+<h3 id="relations-one-set">6.1.7 Relations on one set and directed graphs</h3>
+<p>A relation <strong>on A</strong> is a relation from A to A, hence a subset of <code>A×A=A²</code>. More generally, <code>Aⁿ=A×⋯×A</code> n times.</p>
+<p>In a directed graph (digraph), each element of A is one vertex. Draw an arrow <code>x→y</code> iff <code>xRy</code>. If <code>xRx</code>, draw a self-loop at x.</p>
+<p><strong>Example 8.</strong> Let <code>A={3,4,5,6,7,8}</code> and <code>xRy⇔2|(x−y)</code>. The vertices split into an odd component <code>{3,5,7}</code> and an even component <code>{4,6,8}</code>. Every vertex has a loop, and every pair of vertices in the same component has arrows in both directions.</p>
+
+<h3 id="composition">6.1.8 Composition of relations</h3>
+<p>Let <code>R⊆A×B</code> and <code>S⊆B×C</code>. Their composition <code>S∘R</code> is the relation from A to C given by</p>
+<p><code>x(S∘R)z ⇔ ∃y∈B(xRy ∧ ySz)</code>.</p>
+<p>Graphically, x is related to z when there is a two-stage path <code>x→y→z</code>.</p>
+<p><strong>Slide 17 example.</strong> Let students <code>A={Ann,Bryan,Candy,Danny}</code>, modules <code>B={CS1010,CS1231,IS1103,MA1101,CS2100}</code>, and venues <code>C={LT15,ICube,SR1}</code>. If R means “takes” and S means “is held in”, then <code>S∘R</code> means “goes to”.</p>
+<div class="notice"><strong>Supplementary explanation:</strong> composition is read right-to-left: in <code>S∘R</code>, follow R first and S second. This mirrors function composition.</div>
+<p><strong>Associativity.</strong> If <code>R⊆A×B</code>, <code>S⊆B×C</code>, and <code>T⊆C×D</code>, then</p>
+<p><code>T∘(S∘R)=(T∘S)∘R=T∘S∘R</code>.</p>
+<p><strong>Inverse of composition.</strong></p>
+<p><code>(S∘R)⁻¹=R⁻¹∘S⁻¹</code>.</p>
+
+<h2 id="rst">6.2 Reflexivity, symmetry, and transitivity</h2>
+<h3 id="rst-definitions">6.2.1 Formal definitions</h3>
+<p>Let R be a relation on A.</p>
+<table>
+  <thead><tr><th>Property</th><th>Definition</th><th>Digraph test</th></tr></thead>
+  <tbody>
+    <tr><td>Reflexive</td><td><code>∀x∈A, xRx</code></td><td>Every vertex has a self-loop.</td></tr>
+    <tr><td>Symmetric</td><td><code>∀x,y∈A(xRy→yRx)</code></td><td>Every edge between distinct vertices has its reverse.</td></tr>
+    <tr><td>Transitive</td><td><code>∀x,y,z∈A(xRy∧yRz→xRz)</code></td><td>Every two-step path has a direct shortcut.</td></tr>
+  </tbody>
+</table>
+<div class="notice"><strong>Common wording mistake:</strong> do not say “0 is reflexive”. These are properties of an entire relation, not individual elements. Say “0 is related to itself”, meaning <code>0R0</code>.</div>
+
+<h3 id="rst-examples">6.2.2 Evaluation examples</h3>
+<p><strong>Example 10.</strong> On <code>A={2,3,4,6,7,9}</code>, define <code>xRy⇔3|(x−y)</code>. The components are <code>{3,6,9}</code>, <code>{4,7}</code>, and <code>{2}</code>.</p>
+<ul>
+  <li><strong>Reflexive:</strong> yes, because <code>3|(x−x)=0</code>.</li>
+  <li><strong>Symmetric:</strong> yes, because divisibility of <code>x−y</code> by 3 implies divisibility of <code>y−x=−(x−y)</code>.</li>
+  <li><strong>Transitive:</strong> yes, because <code>3|(x−y)</code> and <code>3|(y−z)</code> imply <code>3|((x−y)+(y−z))=x−z</code>.</li>
+</ul>
+
+<p><strong>Example 11.</strong> On <code>A={0,1,2,3}</code>:</p>
+<p><code>R={(0,0),(0,1),(0,3),(1,0),(1,1),(2,2),(3,0),(3,3)}</code>.</p>
+<ul>
+  <li>Reflexive: yes; all four loops are present.</li>
+  <li>Symmetric: yes; <code>(0,1)</code>/<code>(1,0)</code> and <code>(0,3)</code>/<code>(3,0)</code> are paired.</li>
+  <li>Transitive: no; <code>(1,0),(0,3)∈R</code> but <code>(1,3)∉R</code>.</li>
+</ul>
+<p><code>S={(0,0),(0,2),(0,3),(2,3)}</code>.</p>
+<ul>
+  <li>Reflexive: no; loops at 1, 2, and 3 are missing.</li>
+  <li>Symmetric: no; <code>(0,2)∈S</code> but <code>(2,0)∉S</code>.</li>
+  <li>Transitive: yes; the only nontrivial two-step chain <code>0S2</code> and <code>2S3</code> has shortcut <code>0S3</code> (and chains involving <code>0S0</code> also satisfy the condition).</li>
+</ul>
+<p><code>T={(0,1),(2,3)}</code>.</p>
+<ul>
+  <li>Reflexive: no; no loops are present.</li>
+  <li>Symmetric: no; for example <code>(1,0)</code> is absent.</li>
+  <li>Transitive: vacuously yes; no two pairs form a chain <code>xTy</code> and <code>yTz</code>.</li>
+</ul>
+
+<p><strong>Example 12: congruence modulo 3 on ℤ.</strong> Define <code>xRy⇔3|(x−y)</code>.</p>
+<ul>
+  <li><strong>Reflexive:</strong> <code>x−x=0=3·0</code>, so <code>xRx</code>.</li>
+  <li><strong>Symmetric:</strong> if <code>x−y=3k</code>, then <code>y−x=3(−k)</code>, so <code>yRx</code>.</li>
+  <li><strong>Transitive:</strong> if <code>x−y=3k</code> and <code>y−z=3l</code>, then <code>x−z=3(k+l)</code>, so <code>xRz</code>.</li>
+</ul>
+
+<h3 id="transitive-closure">6.2.3 Transitive closure</h3>
+<p>The <strong>transitive closure</strong> <code>Rᵗ</code> adds exactly the pairs required to make R transitive. Formally:</p>
+<ol>
+  <li><code>Rᵗ</code> is transitive.</li>
+  <li><code>R⊆Rᵗ</code>.</li>
+  <li>If S is any transitive relation containing R, then <code>Rᵗ⊆S</code>.</li>
+</ol>
+<p><strong>Example 13.</strong> Let <code>A={0,1,2,3}</code> and <code>R={(0,1),(1,2),(2,3)}</code>.</p>
+<ul>
+  <li>Length 1 paths give the original pairs.</li>
+  <li>Length 2 paths add <code>(0,2)</code> and <code>(1,3)</code>.</li>
+  <li>A length 3 path adds <code>(0,3)</code>.</li>
+</ul>
+<p>Therefore</p>
+<p><code>Rᵗ={(0,1),(1,2),(2,3),(0,2),(1,3),(0,3)}</code>.</p>
+<div class="notice"><strong>Supplementary explanation:</strong> for a finite digraph, <code>(x,z)∈Rᵗ</code> exactly when a directed path of positive length runs from x to z. A reflexive-transitive closure would additionally add every loop.</div>
+
+<h2 id="equivalence">6.3 Equivalence relations</h2>
+<h3 id="partition-induced">6.3.1 Partitions and induced relations</h3>
+<p>A collection 𝒞 of non-empty subsets of A is a <strong>partition</strong> iff each element of A belongs to exactly one block:</p>
+<p><code>∀S∈𝒞, ∅≠S⊆A</code> and <code>∀x∈A, ∃!S∈𝒞(x∈S)</code>.</p>
+<p>The uniqueness condition expands into:</p>
+<ul>
+  <li><code>∀x∈A,∃S∈𝒞(x∈S)</code> (coverage), and</li>
+  <li><code>∀x∈A,∀S₁,S₂∈𝒞(x∈S₁∧x∈S₂→S₁=S₂)</code> (no overlap).</li>
+</ul>
+<p>The members of 𝒞 are called components, cells, or blocks.</p>
+<p>The relation induced by a partition is</p>
+<p><code>xRy ⇔ ∃S∈𝒞(x∈S ∧ y∈S)</code>.</p>
+<p><strong>Theorem 8.3.1.</strong> A relation induced by a partition is reflexive, symmetric, and transitive.</p>
+<p><strong>Example 14.</strong> For <code>A={0,1,2,3,4}</code> and <code>𝒞={{0,3,4},{1},{2}}</code>:</p>
+<p><code>R={(0,0),(3,3),(4,4),(0,3),(3,0),(0,4),(4,0),(3,4),(4,3),(1,1),(2,2)}</code>.</p>
+
+<h3 id="equivalence-classes">6.3.2 Equivalence relations and classes</h3>
+<p>A relation R on A is an <strong>equivalence relation</strong> iff it is reflexive, symmetric, and transitive. The common symbol is <code>∼</code>.</p>
+<p>For <code>a∈A</code>, its equivalence class is</p>
+<p><code>[a]∼={x∈A:a∼x}</code>, so <code>x∈[a]∼⇔a∼x</code>.</p>
+<p><strong>Example 15.</strong> Let</p>
+<p><code>X=𝒫({1,2,3})\{∅}={{1},{2},{3},{1,2},{1,3},{2,3},{1,2,3}}</code></p>
+<p>and define <code>ARB⇔min(A)=min(B)</code>.</p>
+<ul>
+  <li>Reflexive: <code>min(A)=min(A)</code>, so <code>ARA</code>.</li>
+  <li>Symmetric: <code>min(A)=min(B)</code> implies <code>min(B)=min(A)</code>.</li>
+  <li>Transitive: <code>min(A)=min(B)</code> and <code>min(B)=min(C)</code> imply <code>min(A)=min(C)</code>.</li>
+</ul>
+<p>Hence R is an equivalence relation.</p>
+<div class="notice"><strong>Supplementary worked classes:</strong> the distinct classes are <code>{{1},{1,2},{1,3},{1,2,3}}</code>, <code>{{2},{2,3}}</code>, and <code>{{3}}</code>, grouped by minimum element 1, 2, and 3.</div>
+
+<p><strong>Example 16.</strong> On <code>A={0,1,2,3,4}</code>, let</p>
+<p><code>R={(0,0),(0,4),(1,1),(1,3),(2,2),(3,1),(3,3),(4,0),(4,4)}</code>.</p>
+<p>Then <code>[0]=[4]={0,4}</code>, <code>[1]=[3]={1,3}</code>, and <code>[2]={2}</code>. The distinct equivalence classes are <code>{{0,4},{1,3},{2}}</code>.</p>
+
+<h3 id="class-lemma">6.3.3 Fundamental lemma on equivalence classes</h3>
+<p><strong>Lemma Rel.1.</strong> If ∼ is an equivalence relation on A, then for all <code>x,y∈A</code>, these are equivalent:</p>
+<ol>
+  <li><code>x∼y</code>.</li>
+  <li><code>[x]=[y]</code>.</li>
+  <li><code>[x]∩[y]≠∅</code>.</li>
+</ol>
+<h4>Proof that (1) implies (2)</h4>
+<ol>
+  <li>Suppose <code>x∼y</code>. Symmetry gives <code>y∼x</code>.</li>
+  <li>Let <code>z∈[x]</code>. Then <code>x∼z</code>. From <code>y∼x</code> and <code>x∼z</code>, transitivity gives <code>y∼z</code>, hence <code>z∈[y]</code>.</li>
+  <li>Thus <code>[x]⊆[y]</code>. Switching x and y gives <code>[y]⊆[x]</code>.</li>
+  <li>Therefore <code>[x]=[y]</code>.</li>
+</ol>
+<h4>Proof that (2) implies (3)</h4>
+<ol>
+  <li>Suppose <code>[x]=[y]</code>. Then <code>[x]∩[y]=[x]</code>.</li>
+  <li>Reflexivity gives <code>x∼x</code>, so <code>x∈[x]=[x]∩[y]</code>.</li>
+  <li>Therefore <code>[x]∩[y]≠∅</code>.</li>
+</ol>
+<h4>Proof that (3) implies (1)</h4>
+<ol>
+  <li>Suppose <code>[x]∩[y]≠∅</code> and choose <code>z∈[x]∩[y]</code>.</li>
+  <li>Then <code>x∼z</code> and <code>y∼z</code>.</li>
+  <li>Symmetry gives <code>z∼y</code>.</li>
+  <li>From <code>x∼z</code> and <code>z∼y</code>, transitivity gives <code>x∼y</code>. ∎</li>
+</ol>
+<p>Consequently, equivalence classes are either identical or disjoint; partial overlap is impossible.</p>
+
+<h3 id="quotient">6.3.4 Quotient sets and induced partitions</h3>
+<p><strong>Theorem 8.3.4 / Rel.2.</strong> If ∼ is an equivalence relation on A, then its distinct equivalence classes form a partition of A.</p>
+<p>The <strong>quotient set</strong> is</p>
+<p><code>A/∼={[x]∼:x∈A}</code>, read “A quotient ∼”. Since this is a set, repeated equal classes occur only once.</p>
+<h4>Proof</h4>
+<ol>
+  <li><strong>Every quotient member is a non-empty subset of A.</strong> Let <code>S∈A/∼</code>. Then <code>S=[x]</code> for some <code>x∈A</code>. By definition, <code>[x]⊆A</code>. Reflexivity gives <code>x∼x</code>, so <code>x∈[x]=S</code>; hence S is non-empty.</li>
+  <li><strong>Every element of A lies in at least one class.</strong> If <code>x∈A</code>, reflexivity gives <code>x∼x</code>, hence <code>x∈[x]</code>, and <code>[x]∈A/∼</code>.</li>
+  <li><strong>Every element lies in at most one distinct class.</strong> Suppose x belongs to <code>S₁,S₂∈A/∼</code>. Choose <code>y₁,y₂∈A</code> with <code>S₁=[y₁]</code> and <code>S₂=[y₂]</code>. Then <code>x∈[y₁]∩[y₂]</code>, so the intersection is non-empty. Lemma Rel.1 gives <code>[y₁]=[y₂]</code>, hence <code>S₁=S₂</code>.</li>
+</ol>
+<p>Thus <code>A/∼</code> is a partition of A. ∎</p>
+
+<h3 id="congruence">6.3.5 Congruence modulo n</h3>
+<p>Recall <code>d|m ⇔ ∃k∈ℤ(m=dk)</code>. For <code>a,b∈ℤ</code> and <code>n∈ℤ⁺</code>:</p>
+<p><code>a≡b (mod n) ⇔ n|(a−b) ⇔ a−b=nk</code> for some <code>k∈ℤ</code>.</p>
+<p><strong>Example 17.</strong></p>
+<ul>
+  <li><code>7≡1 (mod 2)</code> because <code>7−1=6=2·3</code>.</li>
+  <li><code>−3≡12 (mod 5)</code> because <code>−3−12=−15=5(−3)</code>.</li>
+  <li><code>−4≢5 (mod 7)</code> because <code>−4−5=−9</code> is not divisible by 7.</li>
+</ul>
+<p><strong>Proposition.</strong> Congruence modulo n is an equivalence relation on ℤ for every positive n.</p>
+<ul>
+  <li>Reflexive: <code>a−a=0=n·0</code>, so <code>a≡a (mod n)</code>.</li>
+  <li>Symmetric: if <code>a−b=nk</code>, then <code>b−a=n(−k)</code>, so <code>b≡a (mod n)</code>.</li>
+  <li>Transitive: if <code>a−b=nk</code> and <code>b−c=nl</code>, then <code>a−c=n(k+l)</code>, so <code>a≡c (mod n)</code>.</li>
+</ul>
+<p>The class of x is</p>
+<p><code>[x]={x+nk:k∈ℤ}={…,x−2n,x−n,x,x+n,x+2n,…}</code>.</p>
+<p>In particular, <code>[x+n]=[x]</code>, and</p>
+<p><code>ℤ/∼ₙ={[0],[1],…,[n−1]}</code>.</p>
+
+<h3 id="equivalence-map">6.3.6 Concept map</h3>
+<table>
+  <thead><tr><th>Set-theory concept</th><th>Graph interpretation</th><th>Informal meaning</th></tr></thead>
+  <tbody>
+    <tr><td>Underlying set A</td><td>All vertices</td><td>Universe to partition</td></tr>
+    <tr><td>Relation R</td><td>All directed arrows</td><td>Pairwise connection condition</td></tr>
+    <tr><td>Equivalence relation ∼</td><td>Bidirectional reachability / complete components</td><td>Generalized equality</td></tr>
+    <tr><td>Blocks S or classes [x]</td><td>Connected components</td><td>Mutually disjoint clusters</td></tr>
+    <tr><td>Quotient A/∼</td><td>Set of components</td><td>Collection of clusters</td></tr>
+  </tbody>
+</table>
+
+<h2 id="partial-orders">6.4 Partial-order relations</h2>
+<h3 id="antisymmetry">6.4.1 Antisymmetry</h3>
+<p>R on A is <strong>antisymmetric</strong> iff</p>
+<p><code>∀x,y∈A(xRy ∧ yRx → x=y)</code>.</p>
+<p>Its negation is</p>
+<p><code>∃x,y∈A(xRy ∧ yRx ∧ x≠y)</code>.</p>
+<p>Antisymmetry is <strong>not</strong> the negation of symmetry. A relation may be both, neither, symmetric only, or antisymmetric only.</p>
+<ul>
+  <li><strong>Both:</strong> the identity relation <code>I_A={(x,x):x∈A}</code>.</li>
+  <li><strong>Neither:</strong> <code>{(1,2),(2,1),(2,3)}</code> on <code>{1,2,3}</code>. The first two pairs violate antisymmetry; the absent <code>(3,2)</code> violates symmetry.</li>
+</ul>
+<p><strong>Example 19.</strong></p>
+<ul>
+  <li>Divisibility on ℤ⁺ is antisymmetric: if <code>a|b</code> and <code>b|a</code>, positivity gives <code>a≤b</code> and <code>b≤a</code>, hence <code>a=b</code>.</li>
+  <li>Divisibility on ℤ is not antisymmetric: <code>2|(−2)</code> and <code>−2|2</code>, yet <code>2≠−2</code>.</li>
+</ul>
+
+<h3 id="posets">6.4.2 Partial orders and posets</h3>
+<p>R is a <strong>partial order</strong> on A iff it is reflexive, antisymmetric, and transitive. A <strong>poset</strong> is the pair <code>(A,R)</code>. The standard partial-order symbol is <code>≼</code>.</p>
+<p>Canonical examples:</p>
+<ul>
+  <li><code>(ℝ,≤)</code>.</li>
+  <li><code>(𝒫(U),⊆)</code>.</li>
+  <li><code>(ℤ⁺,|)</code>.</li>
+</ul>
+<p>Non-examples:</p>
+<ul>
+  <li><code>&lt;</code> on ℚ is not a partial order because it is not reflexive.</li>
+  <li>Congruence modulo <code>n≥2</code> on ℤ is not a partial order: <code>0≡n (mod n)</code> and <code>n≡0 (mod n)</code>, but <code>0≠n</code>, violating antisymmetry.</li>
+</ul>
+
+<h3 id="hasse">6.4.3 Hasse diagrams</h3>
+<p>A Hasse diagram simplifies the digraph of a finite poset:</p>
+<ol>
+  <li>Place y higher than x when <code>x≺y</code>.</li>
+  <li>Remove self-loops; reflexivity makes them implicit.</li>
+  <li>Remove transitive edges; paths make them implicit.</li>
+  <li>Replace arrows with line segments; direction is upward.</li>
+</ol>
+<p>A segment joins x below y exactly when</p>
+<p><code>x≺y</code> and there is no <code>m∈A</code> with <code>x≺m≺y</code>.</p>
+<p>Then y <strong>covers</strong> x.</p>
+<p><strong>Example 21.</strong> For the source's set <code>A={1,2,3,9,18}</code> ordered by divisibility, the cover edges are <code>1—2</code>, <code>1—3</code>, <code>3—9</code>, <code>2—18</code>, and <code>9—18</code>.</p>
+<div class="notice"><strong>Supplementary clarification:</strong> although the slide calls A “divisors of 18”, 6 is also a divisor of 18. The listed Hasse edges are correct for the specifically stated subset A; adding 6 would change the diagram.</div>
+<p><strong>Example 22.</strong> <code>(𝒫({1,2,3}),⊆)</code> forms the three-dimensional Boolean lattice: ∅ is at the bottom, the singletons are above it, the two-element subsets are next, and <code>{1,2,3}</code> is at the top.</p>
+
+<h3 id="extremal">6.4.4 Comparability and extremal elements</h3>
+<p>Elements <code>a,b∈A</code> are <strong>comparable</strong> iff <code>a≼b ∨ b≼a</code>; otherwise they are noncomparable.</p>
+<table>
+  <thead><tr><th>Concept</th><th>Formal definition</th><th>Meaning</th></tr></thead>
+  <tbody>
+    <tr><td>Maximal c</td><td><code>∀x∈A(c≼x→c=x)</code></td><td>Nothing is strictly above c.</td></tr>
+    <tr><td>Minimal c</td><td><code>∀x∈A(x≼c→c=x)</code></td><td>Nothing is strictly below c.</td></tr>
+    <tr><td>Largest c</td><td><code>∀x∈A,x≼c</code></td><td>c is above every element.</td></tr>
+    <tr><td>Smallest c</td><td><code>∀x∈A,c≼x</code></td><td>c is below every element.</td></tr>
+  </tbody>
+</table>
+<p><strong>Proposition.</strong> Every smallest element is minimal, and every largest element is maximal.</p>
+<p><strong>Proof of the first statement.</strong> Let c be smallest. Suppose <code>x≼c</code>. Since c is smallest, <code>c≼x</code>. Antisymmetry yields <code>x=c</code>, so c is minimal. The dual argument proves the second statement. ∎</p>
+<p>A smallest or largest element, if it exists, is unique. Minimal and maximal elements need not be unique.</p>
+<div class="notice"><strong>Supplementary intuition:</strong> “minimal” means no way to move strictly downward from that point; it need not be below incomparable elements. “Smallest” is global: it must be below everything.</div>
+<p><strong>Example 23.</strong> In the stated Hasse diagram on <code>{a,b,c,d,e,f,g,h,i}</code>, c is isolated and the cover structure is described by <code>d—b—a—g</code>, <code>d—e—f—g</code>, <code>e—h</code>, and <code>i—h</code>. Its maximal elements are <code>{g,h}</code>, minimal elements are <code>{c,d,i}</code>, and it has neither a largest nor a smallest element.</p>
+<div class="notice"><strong>Supplementary consistency check:</strong> if c is genuinely isolated, then c is both minimal and maximal, so the maximal set would be <code>{c,g,h}</code>. The supplied statement “maximal = {g,h}” therefore suggests either that c has an omitted upward edge in the original diagram or that c was accidentally omitted from the listed answer. Check the original slide diagram before using this example in an exam.</div>
+<p><strong>Example 24.</strong> On <code>A={1,2,3,4,5,6,7,8,9,10}</code> ordered by divisibility:</p>
+<ul>
+  <li>Maximal elements are <code>{6,7,8,9,10}</code>.</li>
+  <li>The sole minimal element is 1.</li>
+  <li>There is no largest element.</li>
+  <li>1 is the smallest element because <code>1|x</code> for all <code>x∈A</code>.</li>
+</ul>
+
+<h3 id="linearization">6.4.5 Total orders, linearization, and Kahn's algorithm</h3>
+<p>A <strong>total</strong> or <strong>linear order</strong> is a partial order in which every pair is comparable:</p>
+<p><code>∀x,y∈A(xRy ∨ yRx)</code>.</p>
+<p>Its Hasse diagram is a single chain. A <strong>linearization</strong> or <strong>topological sort</strong> extends a partial order <code>≼</code> to a total order <code>≼*</code> while preserving all original comparisons:</p>
+<p><code>∀x,y∈A(x≼y→x≼*y)</code>.</p>
+<p><strong>Kahn's algorithm (1962).</strong></p>
+<ol>
+  <li>Set <code>A₀:=A</code> and <code>i:=0</code>.</li>
+  <li>While <code>Aᵢ≠∅</code>:
+    <ol>
+      <li>choose a minimal element <code>cᵢ</code> of <code>Aᵢ</code>;</li>
+      <li>set <code>Aᵢ₊₁:=Aᵢ\{cᵢ}</code>;</li>
+      <li>increase i by 1.</li>
+    </ol>
+  </li>
+  <li>Output the total order defined by <code>cᵢ≼*cⱼ⇔i≤j</code>.</li>
+</ol>
+<p><strong>Example 26.</strong> Let <code>A={d∈ℤ⁺:d|30}={1,2,3,5,6,10,15,30}</code>, ordered by divisibility.</p>
+<table>
+  <thead><tr><th>Step</th><th>Available minimal elements</th><th>Chosen</th></tr></thead>
+  <tbody>
+    <tr><td>0</td><td><code>{1}</code></td><td><code>c₀=1</code></td></tr>
+    <tr><td>1</td><td><code>{2,3,5}</code></td><td><code>c₁=3</code></td></tr>
+    <tr><td>2</td><td><code>{2,5}</code></td><td><code>c₂=2</code></td></tr>
+    <tr><td>3</td><td><code>{5,6}</code></td><td><code>c₃=6</code></td></tr>
+    <tr><td>4</td><td><code>{5}</code></td><td><code>c₄=5</code></td></tr>
+    <tr><td>5</td><td><code>{10,15}</code></td><td><code>c₅=15</code></td></tr>
+    <tr><td>6</td><td><code>{10}</code></td><td><code>c₆=10</code></td></tr>
+    <tr><td>7</td><td><code>{30}</code></td><td><code>c₇=30</code></td></tr>
+  </tbody>
+</table>
+<p>The resulting linearization is</p>
+<p><code>1≼*3≼*2≼*6≼*5≼*15≼*10≼*30</code>.</p>
+<div class="notice"><strong>Supplementary explanation:</strong> when several minimal elements are available, any may be selected, producing different valid linearizations. What cannot change is the relative order of elements already constrained by the original partial order.</div>
+
+<h3 id="well-order">6.4.6 Well-ordered sets</h3>
+<p>A total order <code>(A,≼)</code> is <strong>well-ordered</strong> iff every non-empty subset has a smallest element:</p>
+<p><code>∀S⊆A(S≠∅→∃x∈S,∀y∈S,x≼y)</code>.</p>
+<ul>
+  <li><code>(ℕ,≤)</code> is well-ordered by the Well-Ordering Principle.</li>
+  <li><code>(ℤ,≤)</code> is not: the negative integers have no smallest element.</li>
+  <li><code>(ℝ⁺,≤)</code> is not: the interval <code>(0,1)</code> has no smallest element.</li>
+</ul>
+
+<h2 id="exam-practice">NUS SoC-style exam practice</h2>
+<h3 id="counting-relations">Question 1: Counting relations</h3>
+<p>Let A be finite with <code>|A|=n≥1</code>. A relation matrix has <code>n²</code> entries: n diagonal entries and <code>(n²−n)/2=binom(n,2)</code> unordered off-diagonal pairs.</p>
+<table>
+  <thead><tr><th>Required property</th><th>Choices</th><th>Total</th></tr></thead>
+  <tbody>
+    <tr><td>None</td><td>Every one of the n² ordered pairs is independently in/out.</td><td><code>2^(n²)</code></td></tr>
+    <tr><td>Reflexive</td><td>All n loops forced in; the other <code>n²−n</code> pairs are free.</td><td><code>2^(n²−n)=2^(n(n−1))</code></td></tr>
+    <tr><td>Symmetric</td><td>Each loop has 2 choices; each unordered off-diagonal pair is both in or both out.</td><td><code>2^n·2^binom(n,2)=2^(n(n+1)/2)</code></td></tr>
+    <tr><td>Reflexive and symmetric</td><td>Loops forced in; every unordered off-diagonal pair has 2 choices.</td><td><code>2^binom(n,2)=2^(n(n−1)/2)</code></td></tr>
+    <tr><td>Antisymmetric</td><td>Loops have 2 choices; each unordered off-diagonal pair permits forward only, reverse only, or neither.</td><td><code>2^n·3^binom(n,2)=2^n·3^(n(n−1)/2)</code></td></tr>
+  </tbody>
+</table>
+<div class="notice"><strong>Supplementary exam shortcut:</strong> split the relation matrix into diagonal cells and unordered off-diagonal pairs. Then count the legal configurations independently and multiply.</div>
+
+<h3 id="well-order-proof">Question 2: Well-ordering and chains</h3>
+<h4>Part 1: the least-element property forces totality</h4>
+<p>Assume every non-empty subset of the poset <code>(A,≼)</code> has a smallest element. Let <code>x,y∈A</code> and consider <code>S={x,y}</code>. Since S is non-empty, it has a smallest element s.</p>
+<ul>
+  <li>If <code>s=x</code>, then <code>x≼y</code>.</li>
+  <li>If <code>s=y</code>, then <code>y≼x</code>.</li>
+</ul>
+<p>Thus <code>x≼y ∨ y≼x</code>. Since x and y were arbitrary, every pair is comparable, so <code>≼</code> is a total order. ∎</p>
+
+<h4>Part 2: a well-ordering of ℤ</h4>
+<p>Define <code>f:ℤ→ℕ</code> by</p>
+<p><code>f(x)=2x</code> if <code>x≥0</code>, and <code>f(x)=2|x|−1</code> if <code>x&lt;0</code>.</p>
+<p>This lists the integers as <code>0↦0, −1↦1, 1↦2, −2↦3, 2↦4,…</code> and is a bijection. Define</p>
+<p><code>x≼ℤy ⇔ f(x)≤f(y)</code>.</p>
+<p>Let S be a non-empty subset of ℤ. Its image <code>f(S)={f(s):s∈S}</code> is a non-empty subset of ℕ. By the Well-Ordering Principle, f(S) has a smallest member m. Since <code>m∈f(S)</code>, choose <code>s*∈S</code> with <code>f(s*)=m</code>. For every <code>s∈S</code>,</p>
+<p><code>f(s*)=m≤f(s)</code>, hence <code>s*≼ℤs</code>.</p>
+<p>Therefore every non-empty subset of ℤ has a smallest element under <code>≼ℤ</code>, so <code>(ℤ,≼ℤ)</code> is well-ordered even though <code>(ℤ,≤)</code> is not. ∎</p>
+<div class="notice"><strong>Supplementary detail:</strong> f is injective because non-negative inputs map to even naturals and negative inputs map to odd naturals, with each branch injective. It is surjective because <code>2k=f(k)</code> and <code>2k+1=f(−k−1)</code>.</div>
+
+<h3 id="matrix-similarity">Question 3: Equivalence under matrix similarity</h3>
+<p>On <code>M₂(ℝ)</code>, define</p>
+<p><code>A∼B ⇔ ∃P∈GL₂(ℝ), B=P⁻¹AP</code>.</p>
+<h4>Part 1: prove equivalence</h4>
+<ul>
+  <li><strong>Reflexive:</strong> choose <code>P=I₂</code>. Then <code>I₂⁻¹AI₂=A</code>, so <code>A∼A</code>.</li>
+  <li><strong>Symmetric:</strong> suppose <code>B=P⁻¹AP</code>. Multiplying by P on the left and <code>P⁻¹</code> on the right gives <code>A=PBP⁻¹</code>. Let <code>Q=P⁻¹</code>; then Q is invertible and <code>A=Q⁻¹BQ</code>, so <code>B∼A</code>.</li>
+  <li><strong>Transitive:</strong> suppose <code>B=P⁻¹AP</code> and <code>C=Q⁻¹BQ</code>. Then <code>C=Q⁻¹P⁻¹APQ=(PQ)⁻¹A(PQ)</code>. Since PQ is invertible, <code>A∼C</code>.</li>
+</ul>
+<p>Thus matrix similarity is an equivalence relation. ∎</p>
+<h4>Part 2: class of the identity</h4>
+<p>By definition,</p>
+<p><code>[I₂]∼={M∈M₂(ℝ):M=P⁻¹I₂P for some P∈GL₂(ℝ)}</code>.</p>
+<p>For every invertible P, <code>P⁻¹I₂P=P⁻¹P=I₂</code>. Therefore</p>
+<p><code>[I₂]∼={I₂}</code>, where <code>I₂=[[1,0],[0,1]]</code>. The class is a singleton. ∎</p>
+
+<h2 id="pitfalls">Common exam pitfalls</h2>
+<h3>1. Non-symmetry versus antisymmetry</h3>
+<p>Symmetry requires <code>xRy→yRx</code>. Antisymmetry requires <code>xRy∧yRx→x=y</code>. They are not opposites.</p>
+<p>On <code>A={1,2,3}</code>, <code>R={(1,2),(2,1),(1,3)}</code> is neither: the first two pairs violate antisymmetry, while the missing <code>(3,1)</code> violates symmetry. The identity relation is both.</p>
+
+<h3>2. Minimal versus smallest</h3>
+<p>Minimal means no element is strictly below it: <code>¬∃x(x≺m)</code>. Smallest means it is below every element: <code>∀x(s≼x)</code>. A poset may have several minimal elements and no smallest element.</p>
+
+<h3>3. Vacuous transitivity and symmetry</h3>
+<p>Do not demand examples that “activate” a conditional. If no two-step chains exist, transitivity holds vacuously. For example, <code>R={(1,2),(3,4)}</code> on <code>{1,2,3,4}</code> is transitive because no <code>xRy</code> and <code>yRz</code> can occur together.</p>
+<p>Similarly, for symmetry, any absent forward edge causes no obligation; only an existing <code>xRy</code> requires <code>yRx</code>.</p>
+
+<h3>4. Equivalence-class identity</h3>
+<p>For an equivalence relation, <code>[a]=[b]</code> exactly when the classes overlap. Otherwise they are disjoint. Equivalence classes can never partially overlap.</p>
+
+<h2 id="exam-checklist">Lecture 06 exam checklist</h2>
+<ol>
+  <li>A relation from A to B is any subset of <code>A×B</code>; a relation on A is a subset of <code>A²</code>.</li>
+  <li>Keep domain, co-domain, and range distinct.</li>
+  <li>Reverse every pair to form <code>R⁻¹</code>; follow R first in <code>S∘R</code>.</li>
+  <li>Test reflexivity using every loop, symmetry using reversed edges, and transitivity using every two-step chain.</li>
+  <li>To disprove a property, produce the exact counterexample required by its negation.</li>
+  <li>Equivalence relation = reflexive + symmetric + transitive; its classes partition the set.</li>
+  <li>Partial order = reflexive + antisymmetric + transitive; antisymmetry is not non-symmetry.</li>
+  <li>In a Hasse diagram, loops, arrowheads, and transitive edges are omitted.</li>
+  <li>Largest/smallest are unique global elements; maximal/minimal may be multiple.</li>
+  <li>Kahn's algorithm repeatedly removes a currently minimal element.</li>
+  <li>A well-order is total and gives every non-empty subset a smallest element.</li>
+</ol>
+</main>
+<aside class="toc">
+  <h2>On this page</h2>
+  <a href="#relations-on-sets">6.1 Relations</a>
+  <a href="#composition">Composition</a>
+  <a href="#rst">6.2 R/S/T</a>
+  <a href="#transitive-closure">Transitive closure</a>
+  <a href="#equivalence">6.3 Equivalence</a>
+  <a href="#class-lemma">Class lemma</a>
+  <a href="#congruence">Congruence</a>
+  <a href="#partial-orders">6.4 Partial orders</a>
+  <a href="#hasse">Hasse diagrams</a>
+  <a href="#extremal">Extremal elements</a>
+  <a href="#linearization">Kahn's algorithm</a>
+  <a href="#exam-practice">Exam practice</a>
+  <a href="#pitfalls">Pitfalls</a>
+</aside>
+</div>
+</body>
+</html>
