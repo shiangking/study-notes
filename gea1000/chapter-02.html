@@ -25,11 +25,11 @@
     <main class="content">
       <div class="notice">
         <strong>GEA1000 — Chapter 2 study notes</strong><br>
-        Categorical data, proportions, risk ratios and odds ratios, with the kidney-treatment and vaping examples.
+        Categorical data, proportions, risk ratios, odds ratios, Simpson’s paradox and confounders, with worked examples.
       </div>
 
       <h1 id="top">Quantitative Reasoning with Categorical Data</h1>
-      <p><strong>Primary source:</strong> Chapter 2 lecture videos on proportions, risk ratios and odds ratios. These notes condense the videos, repair formula formatting and emphasise interpretation.</p>
+      <p><strong>Primary source:</strong> Chapter 2 lecture videos on proportions, risk ratios and odds ratios, plus your supplied Simpson’s Paradox and Confounders notes. The continuation preserves the supplied data and labels supplementary explanations separately.</p>
 
       <h2 id="map">1. Chapter map</h2>
       <table>
@@ -182,7 +182,94 @@
       </table>
       <p>Using the cohort data, $RR=1.44$ while $OR=(145/855)/(101/899)\approx1.51$. Both exceed 1, so both indicate a positive association. Their numerical values differ because risk and odds are different.</p>
 
-      <h2 id="workflow">8. Exam workflow</h2>
+
+      <h2 id="simpsons-paradox">8. Simpson’s paradox: overall versus within-group results</h2>
+      <p><strong>Lecture material.</strong> Simpson’s paradox occurs when a trend or association appears in every individual subgroup (stratum), but disappears or reverses when the groups are combined. Stratification means splitting the data by a third variable so that comparisons can be made within more comparable groups.</p>
+      <p>The kidney-stone example studies three categorical variables: treatment (X or Y, the explanatory variable), outcome (success or failure, the response variable), and initial stone size (large or small, the stratifying variable). The lecture is presented by Mr. Edmil CHUE, Office of the Provost, NUS.</p>
+      <h3>Aggregated data: Y has the higher observed success rate</h3>
+      <table><thead><tr><th>Treatment</th><th>Success</th><th>Failure</th><th>Total</th><th>Success rate</th></tr></thead><tbody>
+      <tr><th>X</th><td>542</td><td>158</td><td>700</td><td>77.4%</td></tr>
+      <tr><th>Y</th><td>289</td><td>61</td><td>350</td><td>82.6%</td></tr>
+      <tr><th>Total</th><td>831</td><td>219</td><td>1,050</td><td>79.1%</td></tr></tbody></table>
+      <div class="formula">$P(\text{Success}\mid Y)=289/350\approx82.6\%>P(\text{Success}\mid X)=542/700\approx77.4\%$</div>
+      <p>Without considering size, Y is positively associated with success. This is an observed association, not proof of superior causal effectiveness.</p>
+      <h3>Large stones: X has the higher observed success rate</h3>
+      <table><thead><tr><th>Treatment</th><th>Success</th><th>Failure</th><th>Total</th><th>Success rate</th><th>Failure rate</th></tr></thead><tbody>
+      <tr><th>X</th><td>381</td><td>145</td><td>526</td><td>72.4%</td><td>27.6%</td></tr>
+      <tr><th>Y</th><td>55</td><td>25</td><td>80</td><td>68.8%</td><td>31.3%</td></tr>
+      <tr><th>Total</th><td>436</td><td>170</td><td>606</td><td>71.9%</td><td>28.1%</td></tr></tbody></table>
+      <div class="formula">$P(\text{Success}\mid X,\text{Large})=381/526\approx72.4\%>55/80\approx68.8\%$</div>
+      <h3>Small stones: X again has the higher observed success rate</h3>
+      <table><thead><tr><th>Treatment</th><th>Success</th><th>Failure</th><th>Total</th><th>Success rate</th><th>Failure rate</th></tr></thead><tbody>
+      <tr><th>X</th><td>161</td><td>13</td><td>174</td><td>92.5%</td><td>7.5%</td></tr>
+      <tr><th>Y</th><td>234</td><td>36</td><td>270</td><td>86.7%</td><td>13.3%</td></tr>
+      <tr><th>Total</th><td>395</td><td>49</td><td>444</td><td>89.0%</td><td>11.0%</td></tr></tbody></table>
+      <div class="formula">$P(\text{Success}\mid X,\text{Small})=161/174\approx92.5\%>234/270\approx86.7\%$</div>
+      <p>Percentages are rounded independently; for example, 68.8% + 31.3% is 100.1% because the exact values are 68.75% and 31.25%.</p>
+      <h3>Side-by-side comparison</h3>
+      <table><thead><tr><th>Treatment</th><th>Large: successes / total</th><th>Large rate</th><th>Small: successes / total</th><th>Small rate</th><th>Overall: successes / total</th><th>Overall rate</th></tr></thead><tbody>
+      <tr><th>X</th><td>381 / 526</td><td>72.4%</td><td>161 / 174</td><td>92.5%</td><td>542 / 700</td><td>77.4%</td></tr>
+      <tr><th>Y</th><td>55 / 80</td><td>68.8%</td><td>234 / 270</td><td>86.7%</td><td>289 / 350</td><td>82.6%</td></tr></tbody></table>
+      <p><strong>The reversal:</strong> X has the higher success rate in both strata, yet Y has the higher rate overall. Both statements are mathematically true because they compare different mixtures of patients.</p>
+      <p><strong>Sliced bar plots:</strong> create separate panels for large and small stones, showing X and Y success/failure percentages within each panel. Compare these with the overall chart. Use a common percentage scale so that group sizes do not obscure comparisons.</p>
+      <p class="source-note">Source: supplied Simpson’s Paradox and Confounders notes, sections 1–2 (overview and Tables A–C).</p>
+
+      <h2 id="reversal-mechanics">9. Why the direction reverses</h2>
+      <p><strong>Lecture material.</strong> The treatment groups have very different case mixes. Large stones are the more difficult cases in this example: their pooled success rate is 71.9%, compared with 89.0% for small stones. X receives disproportionately many large-stone cases; Y receives disproportionately many small-stone cases.</p>
+      <table><thead><tr><th>Treatment</th><th>Large stones</th><th>Small stones</th><th>Total</th><th>Large share</th><th>Small share</th></tr></thead><tbody>
+      <tr><th>X</th><td>526</td><td>174</td><td>700</td><td>75.1%</td><td>24.9%</td></tr>
+      <tr><th>Y</th><td>80</td><td>270</td><td>350</td><td>22.9%</td><td>77.1%</td></tr>
+      <tr><th>Total</th><td>606</td><td>444</td><td>1,050</td><td>57.7%</td><td>42.3%</td></tr></tbody></table>
+      <p>The 75.1% figure means <strong>75.1% of X’s patients had large stones</strong> (526/700). It does not mean 75.1% of all large-stone patients received X: that is a different denominator, 526/606.</p>
+      <div class="intuition"><h4>Supplementary explanation: overall rates are weighted averages</h4>
+      <p>Let S denote success, L large stones and M small stones. For either treatment T:</p>
+      <div class="formula">$P(S\mid T)=P(S\mid T,L)P(L\mid T)+P(S\mid T,M)P(M\mid T)$</div>
+      <p>Each subgroup’s success rate is multiplied by the fraction of that treatment group belonging to the subgroup.</p>
+      <div class="formula">$P(S\mid X)=\frac{381}{526}\frac{526}{700}+\frac{161}{174}\frac{174}{700}=\frac{542}{700}\approx77.4\%$</div>
+      <div class="formula">$P(S\mid Y)=\frac{55}{80}\frac{80}{350}+\frac{234}{270}\frac{270}{350}=\frac{289}{350}\approx82.6\%$</div>
+      <p>X’s overall average is pulled towards its lower large-stone rate because about three-quarters of its patients have large stones. Y’s average is pulled towards its higher small-stone rate because about three-quarters have small stones. The averages use different weights, so they can reverse the within-stratum ordering.</p>
+      <p>Do not simply average the two subgroup percentages: that would assign equal weights even when subgroup sizes are unequal.</p></div>
+      <div class="worked"><h4>Supplementary worked example: compare an identical case mix</h4>
+      <p>Imagine weighting both treatments as 50% large and 50% small, while retaining their observed stratum-specific success rates:</p>
+      <div class="formula">$X:\;0.5(381/526)+0.5(161/174)\approx82.5\%$</div>
+      <div class="formula">$Y:\;0.5(55/80)+0.5(234/270)\approx77.7\%$</div>
+      <p>X now has the higher rate. These are <strong>illustrative standardised rates, not additional observed results</strong>. Any common mix of the two strata preserves X’s advantage here because X has the higher rate in each stratum. Standardisation alone does not establish causation.</p></div>
+      <p class="source-note">Source: supplied notes, section 3 (case severity and unbalanced assignment). Weighted-average derivation and common-mix example: supplementary explanations calculated from the supplied counts.</p>
+
+      <h2 id="confounders">10. Confounders: definition and verification</h2>
+      <p><strong>Lecture material.</strong> A confounder is an extraneous variable associated with both the explanatory variable and the outcome, which can distort the apparent relationship between them. Here, initial stone size is related both to treatment choice and to success.</p>
+      <h3>Criterion 1: stone size is associated with treatment</h3>
+      <div class="formula">$P(L\mid X)=526/700\approx75.1\%,\qquad P(L\mid Y)=80/350\approx22.9\%$</div>
+      <p>The proportions differ substantially. Large stones are more common among X patients than Y patients, so treatment and stone size are associated.</p>
+      <h3>Criterion 2: stone size is associated with outcome</h3>
+      <table><thead><tr><th>Stone size</th><th>Success</th><th>Failure</th><th>Total</th><th>Success rate</th></tr></thead><tbody>
+      <tr><th>Large</th><td>436</td><td>170</td><td>606</td><td>71.9%</td></tr>
+      <tr><th>Small</th><td>395</td><td>49</td><td>444</td><td>89.0%</td></tr>
+      <tr><th>Total</th><td>831</td><td>219</td><td>1,050</td><td>79.1%</td></tr></tbody></table>
+      <div class="formula">$P(S\mid L)=436/606\approx71.9\%,\qquad P(S\mid M)=395/444\approx89.0\%$</div>
+      <p>Large stones are negatively associated with success. Together, these two comparisons support the lecture’s identification of stone size as a confounder: the more difficult cases are concentrated in X.</p>
+      <div class="warning"><h4>Supplementary clarification: association checks are not the entire causal argument</h4>
+      <p>A causal interpretation also depends on how and when variables arise. Initial stone size is measured before treatment, making it a plausible factor influencing both treatment choice and success. A variable caused by treatment is not automatically a confounder merely because it is associated with treatment and outcome.</p>
+      <p>The within-size results support “X has a higher observed success rate for both stone sizes.” They do not, by themselves, justify “X causes better outcomes”: other confounders may remain.</p></div>
+      <p class="source-note">Source: supplied notes, section 4 (definition and both association checks). Causal-order and interpretation cautions: supplementary explanations.</p>
+
+      <h2 id="controlling-confounding">11. Controlling confounding and random assignment</h2>
+      <h3>Observational studies</h3>
+      <p><strong>Lecture material.</strong> Treatment assignment may depend on patient choice, clinician discretion or disease severity rather than chance. Age, gender, socioeconomic status, family background and housing type are examples of potential confounders; each is a candidate, not automatically a confounder in every study.</p>
+      <p>Stratification lets us compare outcomes at a fixed level of a measured variable, as with stone size. However, several confounders can operate simultaneously, and some may be unmeasured or unidentified (lurking variables). We cannot assume all confounding has been removed. An observational association alone is not definitive causal evidence.</p>
+      <h3>Randomised controlled trials (RCTs)</h3>
+      <p><strong>Lecture material.</strong> Random assignment places patients into X or Y using chance, rather than allowing baseline characteristics to determine treatment. It addresses known as well as unknown or unmeasured confounders and supports stronger causal inference when the trial is well conducted.</p>
+      <div class="warning"><h4>Supplementary correction: balance is expected, not guaranteed</h4>
+      <p>The notes write $P(L\mid X)=P(L\mid Y)$. This expresses the ideal of treatment being independent of baseline stone size. Ordinary random assignment does <strong>not</strong> guarantee exact equality of the observed proportions in one trial. Chance imbalances remain possible; larger groups tend to be more similar.</p>
+      <p>If both groups actually had the same large-stone share—for example, 75.1%—stone size would no longer be associated with treatment in that comparison. Both treatments would have the same case-mix weights, so the reversal driven by unequal stone-size distributions would disappear.</p></div>
+      <table><thead><tr><th>Approach</th><th>What it addresses</th><th>Limitation</th></tr></thead><tbody>
+      <tr><th>Stratify observational data</th><td>Compare within levels of a measured potential confounder</td><td>Other measured or unmeasured confounders may remain</td></tr>
+      <tr><th>Random assignment before treatment</th><td>Balances baseline characteristics in expectation, including unknown ones</td><td>Not exact balance in every sample; trial conduct still matters</td></tr></tbody></table>
+      <p>Randomisation is not always feasible, ethical or practical, such as assigning people to smoke or to unjustifiably risky procedures.</p>
+      <p class="source-note">Source: supplied notes, section 5 (observational studies and RCTs). Exact-balance correction: supplementary explanation.</p>
+
+
+      <h2 id="workflow">12. Exam workflow</h2>
       <ol>
         <li><strong>Identify the variables and categories.</strong> State which group is exposed and which is unexposed.</li>
         <li><strong>Identify the study design.</strong> Cohort starts from exposure; case-control starts from outcome.</li>
@@ -190,10 +277,11 @@
         <li><strong>Choose the measure.</strong> RR requires meaningful incidence proportions; OR works for case-control data.</li>
         <li><strong>Fix the comparison direction.</strong> Write “exposed divided by unexposed” before substituting values.</li>
         <li><strong>Interpret in context.</strong> Name the groups, outcome and multiplier, then state the direction of association.</li>
+        <li><strong>Check for confounding.</strong> Compare overall and within-stratum rates, inspect subgroup weights, and test whether the third variable is associated with both treatment and outcome.</li>
         <li><strong>Avoid causal language</strong> unless the study design and evidence justify it.</li>
       </ol>
 
-      <h2 id="pitfalls">9. Common pitfalls</h2>
+      <h2 id="pitfalls">13. Common pitfalls</h2>
       <ul>
         <li>Comparing counts when group sizes differ instead of comparing conditional proportions.</li>
         <li>Confusing $P(A\mid B)$ with $P(B\mid A)$.</li>
@@ -201,7 +289,9 @@
         <li>Inverting RR or OR. Reversing the numerator and denominator changes the value to its reciprocal and reverses the interpretation.</li>
         <li>Calling odds a probability, or interpreting an odds ratio as a risk ratio.</li>
         <li>Calculating RR from a case-control sample.</li>
-        <li>Concluding causation from an observational association.</li>
+        <li>Concluding causation from an observational association, even after controlling for one confounder.</li>
+        <li>Using an unweighted average of subgroup rates when subgroup sizes differ.</li>
+        <li>Assuming random assignment guarantees exactly equal observed confounder proportions.</li>
       </ul>
 
       <div class="exam-box">
@@ -220,6 +310,10 @@
       <a href="#rr">Risk ratio</a>
       <a href="#odds">Odds ratio</a>
       <a href="#compare">RR versus OR</a>
+      <a href="#simpsons-paradox">Simpson’s paradox</a>
+      <a href="#reversal-mechanics">Why the reversal happens</a>
+      <a href="#confounders">Confounder checks</a>
+      <a href="#controlling-confounding">Controlling confounding</a>
       <a href="#workflow">Exam workflow</a>
       <a href="#pitfalls">Common pitfalls</a>
     </aside>
